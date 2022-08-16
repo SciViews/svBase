@@ -16,7 +16,9 @@ The {svBase} package sets up the way data frames (with objects like R base's \st
 \itemize{
 \item \code{\link[=dtx]{dtx()}} creates a data frame in the preferred format, with the
 following functions \code{\link[=dtbl]{dtbl()}}, \code{\link[=dtf]{dtf()}} and \code{\link[=dtt]{dtt()}} that force respectively
-the creation of a data frame in one of thespecif three formats.
+the creation of a data frame in one of the specified three formats. Use
+\code{getOption("SciViews.as_dtx", default = as_dtt)} to specify which function to
+use to convert into the preferred format.
 }
 }
 

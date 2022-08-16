@@ -5,7 +5,9 @@
 #'
 #' - [dtx()] creates a data frame in the preferred format, with the
 #' following functions [dtbl()], [dtf()] and [dtt()] that force respectively
-#' the creation of a data frame in one of the specified three formats.
+#' the creation of a data frame in one of the specified three formats. Use
+#' `getOption("SciViews.as_dtx", default = as_dtt)` to specify which function to
+#' use to convert into the preferred format.
 #'
 #' @keywords internal
 "_PACKAGE"
