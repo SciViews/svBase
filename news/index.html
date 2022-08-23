@@ -57,7 +57,7 @@
   </a>
 </li>
       </ul><div class="navbar-title">
-        <a class="navbar-brand" href="../index.html"><p class="h2">svBase <small>v0.9.0</small></p></a>
+        <a class="navbar-brand" href="../index.html"><p class="h2">svBase <small>v1.0.0</small></p></a>
       </div>
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
@@ -74,6 +74,12 @@
       <small>Source: <a href="https://github.com/SciViews/svBase/blob/HEAD/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="1.0.0" id="svbase-100">svBase 1.0.0<a class="anchor" aria-label="anchor" href="#svbase-100"></a></h2>
+<ul><li><p>The most important functions are added to manage data frames (being data.frame, data.table, or tibble tbl_df objects) in a more coherent way, with the possibility to define one’s preferred object.</p></li>
+<li><p>The <code><a href="../reference/dtx.html">dtx()</a></code>, <code><a href="../reference/as_dtx.html">as_dtx()</a></code> and <code><a href="../reference/as_dtx.html">default_dtx()</a></code> functions can be used in packages to automatically convert data frames into the preferred object without forcing it to the user.</p></li>
+<li><p>The alternate assignment operators <code>%&lt;-%</code> and <code>%-&gt;%</code> collect result from {dtplyr} (or {dbplyr}) and convert it into the preferred data frame object. Also, the multiple or deconstructing assignment implemented in {zeallot} is also usable here in addition to the conversion into the preferred data frame.</p></li>
+</ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.9.0" id="svbase-090">svBase 0.9.0<a class="anchor" aria-label="anchor" href="#svbase-090"></a></h2>
 <ul><li>This is the first version of the package with main functions to manage data.frame/data.table/tibble objects.</li></ul></div>

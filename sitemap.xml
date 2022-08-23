@@ -28,10 +28,19 @@
     <loc>https://www.sciviews.org/svBase/news/index.html</loc>
   </url>
   <url>
+    <loc>https://www.sciviews.org/svBase/reference/alt_assign.html</loc>
+  </url>
+  <url>
+    <loc>https://www.sciviews.org/svBase/reference/as_dtx.html</loc>
+  </url>
+  <url>
     <loc>https://www.sciviews.org/svBase/reference/dtx.html</loc>
   </url>
   <url>
     <loc>https://www.sciviews.org/svBase/reference/index.html</loc>
+  </url>
+  <url>
+    <loc>https://www.sciviews.org/svBase/reference/is_dtx.html</loc>
   </url>
   <url>
     <loc>https://www.sciviews.org/svBase/reference/svBase-package.html</loc>
