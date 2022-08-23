@@ -12,8 +12,11 @@
 #' @keywords internal
 "_PACKAGE"
 
-#' @importFrom data.table setDT
-#' @importFrom tibble tibble
+#' @importFrom data.table as.data.table haskey key setDT setkeyv
+#' @importFrom tibble as_tibble tibble
+#' @importFrom dplyr collect
+#' @importFrom pillar tbl_sum
+#' @import zeallot
 # The following block is used by usethis to automatically manage
 # roxygen namespace tags. Modify with care!
 ## usethis namespace: start

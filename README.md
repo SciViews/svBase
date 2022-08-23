@@ -3,7 +3,7 @@
 <!-- badges: start -->
 
 [![R-CMD-check](https://github.com/SciViews/svBase/workflows/R-CMD-check/badge.svg)](https://github.com/SciViews/svBase/actions) [![Win build status](https://ci.appveyor.com/api/projects/status/github/SciViews/svBase?branch=main&svg=true)](https://ci.appveyor.com/project/phgrosjean/svBase) [![Coverage status](https://img.shields.io/codecov/c/github/SciViews/svBase/main.svg)](https://codecov.io/github/SciViews/svBase?branch=master) [![CRAN status](https://www.r-pkg.org/badges/version/svBase)](https://cran.r-project.org/package=svBase) [![License](https://img.shields.io/badge/license-GPL-blue.svg)](https://www.gnu.org/licenses/gpl-2.0.html) [![Lifecycle: stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://www.tidyverse.org/lifecycle/#stable)
-[![R-CMD-check](https://github.com/SciViews/svBase/workflows/R-CMD-check/badge.svg)](https://github.com/SciViews/svBase/actions)
+
 <!-- badges: end -->
 
 {svBase} sets up the way data frames (with objects like R base's **data.frame**, **data.table** and tibble **tbl_df**) are managed in SciViews. The user can select the class of object it uses by default and many other SciViews functions return that format. Also conversion from one to the other is smoothed, including for the management of **data.frame**'s row names or **data.table**'s keys. Also homogeneous ways to create a data frame or to print it are also provided.
@@ -53,3 +53,4 @@ For further instructions, please, refer to the help pages at <https://www.scivie
 ## Code of Conduct
 
 Please note that the {svBase} package is released with a [Contributor Code of Conduct](https://contributor-covenant.org/version/2/0/CODE_OF_CONDUCT.html). By contributing to this project, you agree to abide by its terms.
+

@@ -4,6 +4,7 @@
 #' [tibble()] for more details on the way dynamic-dots are processed.
 #' @param .name_repair The way problematic column names are treated, see also
 #' [tibble()] for details.
+#' @param x An object to print.
 #'
 #' @return
 #' A data frame as a **tbl_df** object for [dtbl()], a **data.frame** for
@@ -34,9 +35,33 @@
 #'   f = letters[1:5],
 #'   l = sample(c(TRUE, FALSE), 5, replace = TRUE))
 #' class(dtt1)
+#'
+#' # Using dtx(), one construct the preferred data frame object
+#' # (a data.table by default, can be changed with options(SciViews.as_dtx = ...))
+#' dtx1 <- dtx(
+#'   x = 1:5,
+#'   y = rnorm(5),
+#'   f = letters[1:5],
+#'   l = sample(c(TRUE, FALSE), 5, replace = TRUE))
+#' class(dtx1) # data.table by default
+#'
+#' # With {svBase} data.table and data.frame objects have the same nice print as tibbles
+#' dtbl1
+#' dtf1
+#' dtt1
+#'
+#' # Use tribble() inside dtx() to easily create a data frame:
+#' library(tibble)
+#' dtx2 <- dtx(tribble(
+#'   ~x, ~y, ~f,
+#'    1,  3, 'a',
+#'    2,  4, 'b'
+#' ))
+#' dtx2
+#' class(dtx2)
 dtx <- function(...,
 .name_repair = c("check_unique", "unique", "universal", "minimal")) {
-  NULL # TO be changed!
+  as_dtx(tibble(..., .name_repair = .name_repair))
 }
 
 #' @export
@@ -58,4 +83,48 @@ dtf <- function(...,
 dtt <- function(...,
 .name_repair = c("check_unique", "unique", "universal", "minimal")) {
   setDT(tibble(..., .name_repair = .name_repair))
+}
+
+#' @export
+#' @rdname dtx
+#' @method print data.frame
+print.data.frame <- function(x, ...) {
+  y <- as_tibble(x)
+  class(y) <- unique(c("dataframe", class(y)))
+  print(y)
+  invisible(x)
+}
+
+#' @export
+#' @rdname dtx
+#' @method tbl_sum dataframe
+tbl_sum.dataframe <- function(x, ...) {
+  lang <- attr(comment(x), "lang")
+  if (is.null(lang)) {
+    c(`A data.frame` = paste(nrow(x), "x", ncol(x)))
+  } else {
+    c(`A data.frame` = paste(nrow(x), "x", ncol(x)), Language = lang)
+  }
+}
+
+#' @export
+#' @rdname dtx
+#' @method print data.table
+print.data.table <- function(x, ...) {
+  y <- as_tibble(x)
+  class(y) <- unique(c("datatable", class(y)))
+  print(y)
+  invisible(x)
+}
+
+#' @export
+#' @rdname dtx
+#' @method tbl_sum datatable
+tbl_sum.datatable <- function(x, ...) {
+  lang <- attr(comment(x), "lang")
+  if (is.null(lang)) {
+    c(`A data.table` = paste(nrow(x), "x", ncol(x)))
+  } else {
+    c(`A data.table` = paste(nrow(x), "x", ncol(x)), Language = lang)
+  }
 }

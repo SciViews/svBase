@@ -5,6 +5,10 @@
 \alias{dtbl}
 \alias{dtf}
 \alias{dtt}
+\alias{print.data.frame}
+\alias{tbl_sum.dataframe}
+\alias{print.data.table}
+\alias{tbl_sum.datatable}
 \title{Create a data frame (base's data.frame, data.table or tibble's tbl_df)}
 \usage{
 dtx(..., .name_repair = c("check_unique", "unique", "universal", "minimal"))
@@ -14,6 +18,14 @@ dtbl(..., .name_repair = c("check_unique", "unique", "universal", "minimal"))
 dtf(..., .name_repair = c("check_unique", "unique", "universal", "minimal"))
 
 dtt(..., .name_repair = c("check_unique", "unique", "universal", "minimal"))
+
+\method{print}{data.frame}(x, ...)
+
+\method{tbl_sum}{dataframe}(x, ...)
+
+\method{print}{data.table}(x, ...)
+
+\method{tbl_sum}{datatable}(x, ...)
 }
 \arguments{
 \item{...}{A set of name-value pairs. The content of the data frame. See
@@ -21,6 +33,8 @@ dtt(..., .name_repair = c("check_unique", "unique", "universal", "minimal"))
 
 \item{.name_repair}{The way problematic column names are treated, see also
 \code{\link[=tibble]{tibble()}} for details.}
+
+\item{x}{An object to print.}
 }
 \value{
 A data frame as a \strong{tbl_df} object for \code{\link[=dtbl]{dtbl()}}, a \strong{data.frame} for
@@ -52,4 +66,28 @@ dtt1 <- dtt(
   f = letters[1:5],
   l = sample(c(TRUE, FALSE), 5, replace = TRUE))
 class(dtt1)
+
+# Using dtx(), one construct the preferred data frame object
+# (a data.table by default, can be changed with options(SciViews.as_dtx = ...))
+dtx1 <- dtx(
+  x = 1:5,
+  y = rnorm(5),
+  f = letters[1:5],
+  l = sample(c(TRUE, FALSE), 5, replace = TRUE))
+class(dtx1) # data.table by default
+
+# With {svBase} data.table and data.frame objects have the same nice print as tibbles
+dtbl1
+dtf1
+dtt1
+
+# Use tribble() inside dtx() to easily create a data frame:
+library(tibble)
+dtx2 <- dtx(tribble(
+  ~x, ~y, ~f,
+   1,  3, 'a',
+   2,  4, 'b'
+))
+dtx2
+class(dtx2)
 }
