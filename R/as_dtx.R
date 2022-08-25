@@ -190,5 +190,8 @@ as_matrix <- function(x, rownames = NULL, ...) {
     rownames <- getOption("SciViews.dtx.rownames", default = ".rownames")
   if (is.logical(rownames) && isTRUE(!rownames))
     rownames <- NULL # The value to use for data.table conversion
+  # Special case for tbl_df: .rownames is **not** honored.
+  # So, it is transformed first
+  x <- as_dtf(x)
   as.matrix(x, rownames = rownames, row.names = rownames, ...)
 }
