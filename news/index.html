@@ -79,6 +79,8 @@
 <ul><li><p>The most important functions are added to manage data frames (being data.frame, data.table, or tibble tbl_df objects) in a more coherent way, with the possibility to define one’s preferred object.</p></li>
 <li><p>The <code><a href="../reference/dtx.html">dtx()</a></code>, <code><a href="../reference/as_dtx.html">as_dtx()</a></code> and <code><a href="../reference/as_dtx.html">default_dtx()</a></code> functions can be used in packages to automatically convert data frames into the preferred object without forcing it to the user.</p></li>
 <li><p>The alternate assignment operators <code>%&lt;-%</code> and <code>%-&gt;%</code> collect result from {dtplyr} (or {dbplyr}) and convert it into the preferred data frame object. Also, the multiple or deconstructing assignment implemented in {zeallot} is also usable here in addition to the conversion into the preferred data frame.</p></li>
+<li><p>Row names were not printed when a data.frame is using {pillar}. It is now a column named and with class &lt;rownames&gt;.</p></li>
+<li><p><code><a href="../reference/as_dtx.html">as_matrix()</a></code> applied to a tbl_df object did not honor <code>.rownames</code>. Corrected.</p></li>
 </ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.9.0" id="svbase-090">svBase 0.9.0<a class="anchor" aria-label="anchor" href="#svbase-090"></a></h2>
