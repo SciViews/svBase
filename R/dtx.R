@@ -89,7 +89,13 @@ dtt <- function(...,
 #' @rdname dtx
 #' @method print data.frame
 print.data.frame <- function(x, ...) {
-  y <- as_tibble(x)
+  # With pillar, row names are **not** printed, so, instead of as_tibble()
+  # we use as_dtbl() that creates .rownames, then we change its name and class
+  # to make it more obvious that these are the names of the rows
+  #y <- as_tibble(x)
+  y <- as_dtbl(x, rownames = "\u00a0") # u00a0 is nonbreaking space
+  if ("\u00a0" %in% names(y))
+    class(y[["\u00a0"]]) <- c("rownames", "noquote")
   class(y) <- unique(c("dataframe", class(y)))
   print(y)
   invisible(x)
@@ -100,10 +106,14 @@ print.data.frame <- function(x, ...) {
 #' @method tbl_sum dataframe
 tbl_sum.dataframe <- function(x, ...) {
   lang <- attr(comment(x), "lang")
+  nc <- ncol(x)
+  # In case we have rownames (column with name \u00a0), we have one column less
+  if ("\u00a0" %in% names(x))
+    nc <- nc - 1
   if (is.null(lang)) {
-    c(`A data.frame` = paste(nrow(x), "x", ncol(x)))
+    c(`A data.frame` = paste(nrow(x), "x", nc))
   } else {
-    c(`A data.frame` = paste(nrow(x), "x", ncol(x)), Language = lang)
+    c(`A data.frame` = paste(nrow(x), "x", nc), Language = lang)
   }
 }
 
