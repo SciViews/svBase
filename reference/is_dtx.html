@@ -57,7 +57,7 @@
   </a>
 </li>
       </ul><div class="navbar-title">
-        <a class="navbar-brand" href="../index.html"><p class="h2">svBase <small>v1.0.0</small></p></a>
+        <a class="navbar-brand" href="../index.html"><p class="h2">svBase <small>v1.1.0</small></p></a>
       </div>
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
@@ -96,7 +96,7 @@
 
 
 <dt>strict</dt>
-<dd><p>Should this be strictly the corresponding class <code>TRUE</code>, by default, or could it be subclassed too (<code>FALSE</code>).</p></dd>
+<dd><p>Should this be strictly the corresponding class <code>TRUE</code>, by default, or could it be subclassed too (<code>FALSE</code>). With <code>strict = TRUE</code>, the <strong>grouped_df</strong> tibbles and <strong>grouped_ts</strong> tsibbles are also considered (tibbles or tsibbles where <code><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">dplyr::group_by()</a></code> was applied).</p></dd>
 
 </dl></div>
     <div id="value">
@@ -125,6 +125,8 @@
 <span class="r-in"><span><span class="fu">is_dtbl</span><span class="op">(</span><span class="fu"><a href="as_dtx.html">as_dtbl</a></span><span class="op">(</span><span class="va">mtcars</span><span class="op">)</span><span class="op">)</span> <span class="co"># TRUE</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-in"><span><span class="fu">is_dtx</span><span class="op">(</span><span class="fu"><a href="as_dtx.html">as_dtbl</a></span><span class="op">(</span><span class="va">mtcars</span><span class="op">)</span><span class="op">)</span> <span class="co"># TRUE</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
+<span class="r-in"><span><span class="fu">is_dtx</span><span class="op">(</span><span class="fu"><a href="as_dtx.html">as_dtbl</a></span><span class="op">(</span><span class="va">mtcars</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">cyl</span><span class="op">)</span><span class="op">)</span> <span class="co"># TRUE (special case)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">is_dtx</span><span class="op">(</span><span class="st">"some string"</span><span class="op">)</span> <span class="co"># FALSE</span></span></span>

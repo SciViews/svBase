@@ -57,7 +57,7 @@
   </a>
 </li>
       </ul><div class="navbar-title">
-        <a class="navbar-brand" href="../index.html"><p class="h2">svBase <small>v1.0.0</small></p></a>
+        <a class="navbar-brand" href="../index.html"><p class="h2">svBase <small>v1.1.0</small></p></a>
       </div>
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
@@ -74,6 +74,11 @@
       <small>Source: <a href="https://github.com/SciViews/svBase/blob/HEAD/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="1.1.0" id="svbase-110">svBase 1.1.0<a class="anchor" aria-label="anchor" href="#svbase-110"></a></h2>
+<ul><li><p>When <code><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by()</a></code> is used, <code><a href="https://dplyr.tidyverse.org/reference/compute.html" class="external-link">collect()</a></code> creates a <strong>grouped_df</strong>. This special object is now recognized and converted by <code><a href="../reference/as_dtx.html">as_dtx()</a></code> and co into <strong>ungrouped</strong> data frame.</p></li>
+<li><p><code><a href="../reference/collect_dtx.html">collect_dtx()</a></code>/<code><a href="../reference/dtx.html">dtf()</a></code>/<code><a href="../reference/dtx.html">dtt()</a></code>/<code><a href="../reference/dtx.html">dtbl()</a></code> added to force the right data frame class (with <code><a href="../reference/collect_dtx.html">collect_dtbl()</a></code> giving the same result as <code><a href="https://dplyr.tidyverse.org/reference/compute.html" class="external-link">collect()</a></code>, except that grouped data are also ungrouped).</p></li>
+</ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="1.0.0" id="svbase-100">svBase 1.0.0<a class="anchor" aria-label="anchor" href="#svbase-100"></a></h2>
 <ul><li><p>The most important functions are added to manage data frames (being data.frame, data.table, or tibble tbl_df objects) in a more coherent way, with the possibility to define one’s preferred object.</p></li>
