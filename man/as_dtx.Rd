@@ -8,7 +8,7 @@
 \alias{default_dtx}
 \alias{as.matrix.tbl_df}
 \alias{as_matrix}
-\title{Coerce objects into data.frames, data.tables  or tibbles}
+\title{Coerce objects into data.frames, data.tables, tibbles or matrices}
 \usage{
 as_dtx(x, ..., rownames = NULL, keep.key = TRUE, byref = FALSE)
 
@@ -43,7 +43,11 @@ as_matrix(x, rownames = NULL, ...)
 The coerced object. For \code{as_dtx()}, the coercion is determined from \code{getOption("SciViews.as_dtx")} which must return one of the three other \code{as_dt...()} functions (\code{as_dtt} by default). The \code{default_dtx()} does the same as \code{as_dtx()} if the object is a data.frame, a data.table, or a tibble, but it return the unmodified object for any other class (including subclassed data frames). This is a convenient function to force conversion only between those three objects classes.
 }
 \description{
-Coerce objects into data.frames, data.tables  or tibbles
+Objects are coerced into the desired class. For \code{\link[=as_dtx]{as_dtx()}}, the
+desired class is obtained from \code{getOption("SciViews.as_dtx")}, with a default
+value producing a data.table object. If the data are grouped with
+\code{\link[dplyr:group_by]{dplyr::group_by()}}, the resulting data frame is also \code{\link[dplyr:group_by]{dplyr::ungroup()}}ed
+in the process.
 }
 \note{
 Use \code{\link[=as_matrix]{as_matrix()}} instead of \code{\link[base:matrix]{base::as.matrix()}}: it has different default
@@ -116,4 +120,10 @@ attributes(dtf3)
 (dtt3 <- as_dtt(dtf3))
 haskey(dtt3)
 key(dtt3)
+
+# Grouped tibbles are ungrouped with as_dtbl() or as_dtx()/default_dtx()!
+mtcars |> dplyr::group_by(cyl) -> mtcars_grouped
+class(mtcars_grouped)
+mtcars2 <- as_dtbl(mtcars_grouped)
+class(mtcars2)
 }

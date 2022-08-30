@@ -1,4 +1,10 @@
-#' Coerce objects into data.frames, data.tables  or tibbles
+#' Coerce objects into data.frames, data.tables, tibbles or matrices
+#'
+#' @description Objects are coerced into the desired class. For [as_dtx()], the
+#' desired class is obtained from `getOption("SciViews.as_dtx")`, with a default
+#' value producing a data.table object. If the data are grouped with
+#' [dplyr::group_by()], the resulting data frame is also [dplyr::ungroup()]ed
+#' in the process.
 #'
 #' @param x An object.
 #' @param ... Further arguments passed to the methods (not used yet).
@@ -82,12 +88,18 @@
 #' (dtt3 <- as_dtt(dtf3))
 #' haskey(dtt3)
 #' key(dtt3)
+#'
+#' # Grouped tibbles are ungrouped with as_dtbl() or as_dtx()/default_dtx()!
+#' mtcars |> dplyr::group_by(cyl) -> mtcars_grouped
+#' class(mtcars_grouped)
+#' mtcars2 <- as_dtbl(mtcars_grouped)
+#' class(mtcars2)
 as_dtx <- function(x, ..., rownames = NULL, keep.key = TRUE,
   byref = FALSE) {
   if (is.null(rownames))
     rownames <- getOption("SciViews.dtx.rownames", default = ".rownames")
-  getOption("SciViews.as_dtx", default = as_dtt)(x, ..., rownames = rownames,
-    keep.key = keep.key, byref = byref)
+  getOption("SciViews.as_dtx", default = as_dtt)(.ungroup_dtbl(x), ...,
+    rownames = rownames, keep.key = keep.key, byref = byref)
 }
 
 #' @export
@@ -97,7 +109,7 @@ as_dtf <- function(x, ..., rownames = NULL, keep.key = TRUE,
   if (is.null(rownames))
     rownames <- getOption("SciViews.dtx.rownames", default = ".rownames")
 
-  dtf <- as.data.frame(x, ...)
+  dtf <- as.data.frame(.ungroup_dtbl(x), ...)
 
   # If there is a column named as rownames, convert it into row names
   if (rownames %in% names(dtf)) {
@@ -126,11 +138,12 @@ as_dtt <- function(x, ..., rownames = NULL, keep.key = TRUE,
     } else {
       key <- NULL
     }
+    x <- .ungroup_dtbl(x)
     setDT(x, keep.rownames = rownames, key = key)
     attr(x, "key") <- NULL
   } else {
     key <- attr(x, "key")
-    x <- as.data.table(x, keep.rownames = rownames)
+    x <- as.data.table(.ungroup_dtbl(x), keep.rownames = rownames)
     if (isTRUE(keep.key) && !is.null(key))
       setkeyv(x, key)
     attr(x, "key") <- NULL
@@ -155,7 +168,7 @@ as_dtbl <- function(x, ..., rownames = NULL, keep.key = TRUE,
   } else {
     key <- NULL
   }
-  dtbl <- as_tibble(x, ..., rownames = rownames)
+  dtbl <- as_tibble(.ungroup_dtbl(x), ..., rownames = rownames)
   attr(dtbl, "key") <- key
   dtbl
 }
@@ -168,8 +181,8 @@ default_dtx <- function(x, ..., rownames = NULL, keep.key = TRUE,
     # Convert
     if (is.null(rownames))
       rownames <- getOption("SciViews.dtx.rownames", default = ".rownames")
-    getOption("SciViews.as_dtx", default = as_dtt)(x, ..., rownames = rownames,
-      keep.key = keep.key, byref = byref)
+    getOption("SciViews.as_dtx", default = as_dtt)(.ungroup_dtbl(x), ...,
+      rownames = rownames, keep.key = keep.key, byref = byref)
   } else {
     # Keep intact
     x
@@ -180,7 +193,8 @@ default_dtx <- function(x, ..., rownames = NULL, keep.key = TRUE,
 #' @rdname as_dtx
 #' @method as.matrix tbl_df
 as.matrix.tbl_df <- function(x, row.names = NULL, optional = FALSE, ...) {
-  as.matrix(as.data.frame(x, row.names = row.names, optional = optional, ...))
+  as.matrix(as.data.frame(.ungroup_dtbl(x), row.names = row.names,
+    optional = optional, ...))
 }
 
 #' @export
@@ -192,6 +206,14 @@ as_matrix <- function(x, rownames = NULL, ...) {
     rownames <- NULL # The value to use for data.table conversion
   # Special case for tbl_df: .rownames is **not** honored.
   # So, it is transformed first
-  x <- as_dtf(x)
+  x <- as_dtf(.ungroup_dtbl(x))
   as.matrix(x, rownames = rownames, row.names = rownames, ...)
+}
+
+.ungroup_dtbl <- function(x) {
+  if (inherits(x, "tbl_df")) {
+    ungroup(x)
+  } else {
+    x
+  }
 }

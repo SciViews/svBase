@@ -1,3 +1,9 @@
+# svBase 1.1.0
+
+-   When `group_by()` is used, `collect()` creates a **grouped_df**. This special object is now recognized and converted by `as_dtx()` and co into **ungrouped** data frame.
+
+-   `collect_dtx()`/`dtf()`/`dtt()`/`dtbl()` added to force the right data frame class (with `collect_dtbl()` giving the same result as `collect()`, except that grouped data are also ungrouped).
+
 # svBase 1.0.0
 
 -   The most important functions are added to manage data frames (being data.frame, data.table, or tibble tbl_df objects) in a more coherent way, with the possibility to define one's preferred object.
