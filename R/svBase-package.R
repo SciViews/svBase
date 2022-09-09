@@ -14,7 +14,8 @@
 
 #' @importFrom data.table as.data.table haskey key setDT setkeyv
 #' @importFrom tibble as_tibble tibble
-#' @importFrom dplyr collect ungroup
+#' @importFrom dplyr collect filter full_join group_by inner_join left_join mutate rename rename_with right_join select summarise transmute ungroup
+#' @importFrom collapse fselect fsummarise fmutate frename fsubset fgroup_by fungroup
 #' @importFrom pillar tbl_sum
 #' @import zeallot
 # The following block is used by usethis to automatically manage

@@ -43,6 +43,14 @@ A data frame as a \strong{tbl_df} object for \code{\link[=dtbl]{dtbl()}}, a \str
 \description{
 Create a data frame (base's data.frame, data.table or tibble's tbl_df)
 }
+\note{
+data.table and tibble's tbl_df do no use row names. However, you can
+add a column named \code{.rownames}(by default), or the name that is in
+\code{getOption("SciViews.dtx.rownames")} and it will be automatically set as row
+names when the object is converted into a data.frame with \code{\link[=as_dtf]{as_dtf()}}. For
+\code{\link[=dtf]{dtf()}}, just create a column of this name and it is directly used as row
+names for the resulting data.frame object.
+}
 \examples{
 dtbl1 <- dtbl(
   x = 1:5,
@@ -90,4 +98,7 @@ dtx2 <- dtx(tribble(
 ))
 dtx2
 class(dtx2)
+
+# This is how you specify row names for dtf (data.frame)
+dtf(x = 1:3, y = 4:6, .rownames = letters[1:3])
 }

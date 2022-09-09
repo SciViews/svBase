@@ -1,3 +1,11 @@
+# svBase 1.2.0
+
+-   Addition of "tidy" 't' functions and "speedy" 's' functions. The tidy functions are mostly renamed versions of {dplyr} or {tidyr} functions, while the speedy functions have a similar interface but are from {collapse} or {data.table}. Arguments are homogenized and sometimes reduced to restrict to features that are compatibles in the two groups.
+
+# svBase 1.1.1
+
+-   In `dtf()`, creating a column with name `.rowname` (or the value in `getOption("SciViews.dtx.rownames")`) will transform it into the row names of the resulting data.frame object.
+
 # svBase 1.1.0
 
 -   When `group_by()` is used, `collect()` creates a **grouped_df**. This special object is now recognized and converted by `as_dtx()` and co into **ungrouped** data frame.

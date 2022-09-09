@@ -6,6 +6,13 @@
 #' [tibble()] for details.
 #' @param x An object to print.
 #'
+#' @note data.table and tibble's tbl_df do no use row names. However, you can
+#' add a column named `.rownames`(by default), or the name that is in
+#' `getOption("SciViews.dtx.rownames")` and it will be automatically set as row
+#' names when the object is converted into a data.frame with [as_dtf()]. For
+#' [dtf()], just create a column of this name and it is directly used as row
+#' names for the resulting data.frame object.
+#'
 #' @return
 #' A data frame as a **tbl_df** object for [dtbl()], a **data.frame** for
 #' [dtf()] and a **data.table** for [dtt()].
@@ -59,6 +66,9 @@
 #' ))
 #' dtx2
 #' class(dtx2)
+#'
+#' # This is how you specify row names for dtf (data.frame)
+#' dtf(x = 1:3, y = 4:6, .rownames = letters[1:3])
 dtx <- function(...,
 .name_repair = c("check_unique", "unique", "universal", "minimal")) {
   as_dtx(tibble(..., .name_repair = .name_repair))
@@ -75,7 +85,7 @@ dtbl <- function(...,
 #' @rdname dtx
 dtf <- function(...,
 .name_repair = c("check_unique", "unique", "universal", "minimal")) {
-  as.data.frame(tibble(..., .name_repair = .name_repair))
+  as_dtf(tibble(..., .name_repair = .name_repair))
 }
 
 #' @export
