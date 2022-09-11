@@ -73,7 +73,10 @@
       <h1>svBase To Do list</h1>
     </div>
 
-<div id="svbase-to-do-list" class="section level1"><ul><li><p>Should <code><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames()</a></code> and <code>rownames&lt;-()</code> get and assign to <code>.rownames</code> for data/table and tbl_df objects? Should we do something similar for keys in data.table or tbl_df?</p></li>
+<div id="svbase-to-do-list" class="section level1"><ul><li><p>Rework the <code>sXXX()</code> speedy functions that simply reuse their {dplyr} or {tidyr} counterparts.</p></li>
+<li><p>Implement {tidyr} verbs that are not done yet: <code>nest_join()</code>, <code>chop()</code>, <code>unchop()</code>, <code>nest()</code>, <code>unnest()</code>, <code>unnest_longer()</code>, <code>unnest_wider()</code>, <code>hoist()</code>, <code>pack()</code>, <code>unpack()</code>.</p></li>
+<li><p>Check package dependencies and make sure that the speedy and fast functions can be used in a package with minimal dependencies ({data.table} and {collapse} are OK, but {dplyr} or {tidyr} are not).</p></li>
+<li><p>Should <code><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames()</a></code> and <code>rownames&lt;-()</code> get and assign to <code>.rownames</code> for data/table and tbl_df objects? Should we do something similar for keys in data.table or tbl_df?</p></li>
 <li><p>Display more information in the <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code> methods of data.frame, data.table and tbl_df: help page, comment, labels units, … See: vignette(“extending”, package = “pillar”). Also indicate key for data.table object.</p></li>
 </ul></div>
 

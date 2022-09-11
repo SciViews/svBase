@@ -97,10 +97,10 @@ data frames that use a non-standard evaluation and sometimes require extra
 care. These functions, like <code><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate()</a></code> or <code><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise()</a></code> are defined in the
 dplyr and tidyr packages. The collapse package proposes a couple of
 functions with similar interface, but with different and much faster code.
-For instance, <code>fselect()</code> is similar to <code><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select()</a></code>, or <code>fsummarise()</code> is
+For instance, <code><a href="https://sebkrantz.github.io/collapse/reference/select_replace_vars.html" class="external-link">fselect()</a></code> is similar to <code><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select()</a></code>, or <code><a href="https://sebkrantz.github.io/collapse/reference/fsummarise.html" class="external-link">fsummarise()</a></code> is
 similar to <code><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise()</a></code>. Not all functions are implemented, arguments and
 argument names differ, and the behavior may be very different, like
-<code>frename()</code> which uses <code>old_name = new_name</code>, while <code><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename()</a></code> uses
+<code><a href="https://sebkrantz.github.io/collapse/reference/frename.html" class="external-link">frename()</a></code> which uses <code>old_name = new_name</code>, while <code><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename()</a></code> uses
 <code>new_name = old_name</code>! The speedy functions all start with an "s" prefixed to
 the function name, like <code>smutate()</code>, and build on the work initiated in
 collapse to propose a series of paired functions with the tidy ones. So,
@@ -144,7 +144,64 @@ Avoid mixing tidy, speedy and non-tidy/speedy functions in the same pipeline.</p
 <span></span>
 <span><span class="fu">sright_join</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, by <span class="op">=</span> <span class="cn">NULL</span>, suffix <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">".x"</span>, <span class="st">".y"</span><span class="op">)</span>, copy <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">sinner_join</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, by <span class="op">=</span> <span class="cn">NULL</span>, suffix <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">".x"</span>, <span class="st">".y"</span><span class="op">)</span>, copy <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">sinner_join</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, by <span class="op">=</span> <span class="cn">NULL</span>, suffix <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">".x"</span>, <span class="st">".y"</span><span class="op">)</span>, copy <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">sbind_rows</span><span class="op">(</span><span class="va">...</span>, .id <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">sbind_cols</span><span class="op">(</span></span>
+<span>  <span class="va">...</span>,</span>
+<span>  .name_repair <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"unique"</span>, <span class="st">"universal"</span>, <span class="st">"check_unique"</span>, <span class="st">"minimal"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">sarrange</span><span class="op">(</span><span class="va">.data</span>, <span class="va">...</span>, .by_group <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">scount</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, wt <span class="op">=</span> <span class="cn">NULL</span>, sort <span class="op">=</span> <span class="cn">FALSE</span>, name <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">stally</span><span class="op">(</span><span class="va">x</span>, wt <span class="op">=</span> <span class="cn">NULL</span>, sort <span class="op">=</span> <span class="cn">FALSE</span>, name <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">sadd_count</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, wt <span class="op">=</span> <span class="cn">NULL</span>, sort <span class="op">=</span> <span class="cn">FALSE</span>, name <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">sadd_tally</span><span class="op">(</span><span class="va">x</span>, wt <span class="op">=</span> <span class="cn">NULL</span>, sort <span class="op">=</span> <span class="cn">FALSE</span>, name <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">spull</span><span class="op">(</span><span class="va">.data</span>, var <span class="op">=</span> <span class="op">-</span><span class="fl">1</span>, name <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">sdistinct</span><span class="op">(</span><span class="va">.data</span>, <span class="va">...</span>, .keep_all <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">sdrop_na</span><span class="op">(</span><span class="va">data</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">sreplace_na</span><span class="op">(</span><span class="va">data</span>, <span class="va">replace</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">spivot_longer</span><span class="op">(</span><span class="va">data</span>, <span class="va">cols</span>, names_to <span class="op">=</span> <span class="st">"name"</span>, values_to <span class="op">=</span> <span class="st">"value"</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">spivot_wider</span><span class="op">(</span><span class="va">data</span>, names_from <span class="op">=</span> <span class="va">name</span>, values_from <span class="op">=</span> <span class="va">value</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">suncount</span><span class="op">(</span><span class="va">data</span>, <span class="va">weights</span>, .remove <span class="op">=</span> <span class="cn">TRUE</span>, .id <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">sunite</span><span class="op">(</span><span class="va">data</span>, <span class="va">col</span>, <span class="va">...</span>, sep <span class="op">=</span> <span class="st">"_"</span>, remove <span class="op">=</span> <span class="cn">TRUE</span>, na.rm <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">sseparate</span><span class="op">(</span></span>
+<span>  <span class="va">data</span>,</span>
+<span>  <span class="va">col</span>,</span>
+<span>  <span class="va">into</span>,</span>
+<span>  sep <span class="op">=</span> <span class="st">"[^[:alnum:]]+"</span>,</span>
+<span>  remove <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  convert <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">sseparate_rows</span><span class="op">(</span><span class="va">data</span>, <span class="va">...</span>, sep <span class="op">=</span> <span class="st">"[^[:alnum:].]+"</span>, convert <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">sfill</span><span class="op">(</span><span class="va">data</span>, <span class="va">...</span>, .direction <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"down"</span>, <span class="st">"up"</span>, <span class="st">"downup"</span>, <span class="st">"updown"</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">sextract</span><span class="op">(</span></span>
+<span>  <span class="va">data</span>,</span>
+<span>  <span class="va">col</span>,</span>
+<span>  <span class="va">into</span>,</span>
+<span>  regex <span class="op">=</span> <span class="st">"([[:alnum:]]+)"</span>,</span>
+<span>  remove <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  convert <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -196,6 +253,118 @@ columns that come from the first or the second data frame. By default it is
 <dd><p>This argument is there for compatibility with the "t" matching
 functions, but it is not used here.</p></dd>
 
+
+<dt>.id</dt>
+<dd><p>The name of the column for the origin id, either names if all
+other arguments are named, or numbers.</p></dd>
+
+
+<dt>.name_repair</dt>
+<dd><p>How should the name be "repaired" to avoid duplicate
+column names? See <code><a href="https://dplyr.tidyverse.org/reference/bind.html" class="external-link">dplyr::bind_cols()</a></code> for more details.</p></dd>
+
+
+<dt>.by_group</dt>
+<dd><p>Logical. If <code>TRUE</code> rows are first arranger by the grouping
+variables in any. <code>FALSE</code> by default.</p></dd>
+
+
+<dt>wt</dt>
+<dd><p>Frequency weights. Can be <code>NULL</code> or a variable. Use data masking.</p></dd>
+
+
+<dt>sort</dt>
+<dd><p>If <code>TRUE</code> largest group will be shown on top.</p></dd>
+
+
+<dt>name</dt>
+<dd><p>The name of the new column in the output (<code>n</code> by default, and no
+existing column must have this name, or an error is generated).4</p></dd>
+
+
+<dt>var</dt>
+<dd><p>A variable specified as a name, a positive or a negative integer
+(counting from the end). The default is <code>-1</code> and returns last variable.</p></dd>
+
+
+<dt>.keep_all</dt>
+<dd><p>If <code>TRUE</code> keep all variables in <code>.data</code>.</p></dd>
+
+
+<dt>data</dt>
+<dd><p>A data frame, or for <code>replace_na()</code> a vector or a data frame.</p></dd>
+
+
+<dt>replace</dt>
+<dd><p>If <code>data</code> is a vector, a unique value to replace <code>NA</code>s, otherwise, a list of values, one per column of the data frame.</p></dd>
+
+
+<dt>cols</dt>
+<dd><p>A selection of the columns using tidy-select syntax, see<code><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html" class="external-link">tidyr::pivot_longer()</a></code>.</p></dd>
+
+
+<dt>names_to</dt>
+<dd><p>A character vector with the name or names of the columns for the names.</p></dd>
+
+
+<dt>values_to</dt>
+<dd><p>A string with the name of the column that receives the values.</p></dd>
+
+
+<dt>names_from</dt>
+<dd><p>The column or columns containing the names (use tidy selection and do not quote the names).</p></dd>
+
+
+<dt>values_from</dt>
+<dd><p>Idem for the column or columns that contain the values.</p></dd>
+
+
+<dt>weights</dt>
+<dd><p>A vector of weight to use to "uncount" <code>data</code>.</p></dd>
+
+
+<dt>.remove</dt>
+<dd><p>If <code>TRUE</code>, and <code>weights</code> is the name of a column, that column
+is removed from <code>data</code>.</p></dd>
+
+
+<dt>col</dt>
+<dd><p>The name quoted or not of the new column with united variable.</p></dd>
+
+
+<dt>sep</dt>
+<dd><p>Separator to use between values for united or separated columns.</p></dd>
+
+
+<dt>remove</dt>
+<dd><p>If <code>TRUE</code> the initial columns that are separated are also
+removed from <code>data</code>.</p></dd>
+
+
+<dt>na.rm</dt>
+<dd><p>If <code>TRUE</code>, <code>NA</code>s are eliminated before uniting the values.</p></dd>
+
+
+<dt>into</dt>
+<dd><p>Name of the new column to put separated variables. Use <code>NA</code> for
+items to drop.</p></dd>
+
+
+<dt>convert</dt>
+<dd><p>If <code>'TRUE</code> resulting values are converted into numeric,
+integer or logical.</p></dd>
+
+
+<dt>.direction</dt>
+<dd><p>Direction in which to fill missing data: <code>"down"</code> (by
+default), <code>"up"</code>, or <code>"downup"</code> (first down, then up), <code>"updown"</code>
+(the opposite).</p></dd>
+
+
+<dt>regex</dt>
+<dd><p>A regular expression used to extract the desired values (use one
+group with <code>(</code> and <code>)</code> for each element of <code>into</code>).</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
@@ -209,7 +378,17 @@ indication of the return values.</p>
     <p>The help page here is very basic and it aims mainly to list all the
 speedy functions. For more complete help, see their "non-s" counterparts in
 dplyr or tidyr, or use the svMisc's <code>.?smutate</code> syntax to link to the
-correct page.</p>
+correct page.
+The <code>ssummarise()</code> function does not support <code><a href="https://dplyr.tidyverse.org/reference/context.html" class="external-link">n()</a></code> as does
+<code><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">dplyr::summarise()</a></code>. You can use <code><a href="fast_functions.html">fn()</a></code> instead, but then, you must give a
+variable name as argument. The <code><a href="fast_functions.html">fn()</a></code> alternative can also be used in
+<code><a href="tidy_functions.html">tsummarise()</a></code>.
+From dplyr, the <code><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice()</a></code> and <code>slice_xxx()</code> functions are not added yet
+because they are not available for dbplyr. Also <code><a href="https://dplyr.tidyverse.org/reference/filter-joins.html" class="external-link">anti_join()</a></code>,
+<code><a href="https://dplyr.tidyverse.org/reference/filter-joins.html" class="external-link">semi_join()</a></code> and <code><a href="https://dplyr.tidyverse.org/reference/nest_join.html" class="external-link">nest_join()</a></code> are not implemented yet.
+From tidyr <code>expand()</code>, <code>chop()</code>, <code>unchop()</code>, <code>nest()</code>, <code>unnest()</code>,
+<code>unnest_longer()</code>, <code>unnest_wider()</code>, <code>hoist()</code>, <code>pack()</code> and <code>unpack()</code> are
+not implemented yet.</p>
     </div>
 
     <div id="ref-examples">

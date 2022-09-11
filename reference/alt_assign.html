@@ -146,11 +146,11 @@ Thus, before being assigned, <code>value</code> is modified by calling <code><a 
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      x2      y</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>     1 -<span style="color: #BB0000;">0.388</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>     4 -<span style="color: #BB0000;">0.756</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>     9  1.15 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span>    16  2.06 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span>    25 -<span style="color: #BB0000;">0.572</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>     1  0.143</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>     4 -<span style="color: #BB0000;">0.297</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>     9 -<span style="color: #BB0000;">0.795</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span>    16  2.95 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span>    25  0.992</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"># Use as.data.table()/as.data.frame()/as_tibble() to access results</span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span> <span class="co"># This is NOT a data frame</span></span></span>
@@ -166,11 +166,11 @@ Thus, before being assigned, <code>value</code> is modified by calling <code><a 
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A data.table: 5 x 2</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      x2      y</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>     1 -<span style="color: #BB0000;">0.388</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>     4 -<span style="color: #BB0000;">0.756</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>     9  1.15 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span>    16  2.06 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span>    25 -<span style="color: #BB0000;">0.572</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>     1  0.143</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>     4 -<span style="color: #BB0000;">0.297</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>     9 -<span style="color: #BB0000;">0.795</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span>    16  2.95 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span>    25  0.992</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span> <span class="co"># res is the preferred data frame (data.table by default)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "data.table" "data.frame"</span>
 <span class="r-in"><span></span></span>
@@ -188,7 +188,7 @@ Thus, before being assigned, <code>value</code> is modified by calling <code><a 
 <span class="r-in"><span><span class="va">X</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1 2 3 4 5</span>
 <span class="r-in"><span><span class="va">Y</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1]  1.02457636 -0.86635747 -0.08403742 -0.64735551 -0.46525199</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]  0.4737331  1.9613577 -1.1931464 -0.7881381  0.3520302</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># The %-&gt;% is meant to be used in pipelines, otherwise it does the same</span></span></span>
 </code></pre></div>
