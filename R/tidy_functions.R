@@ -33,24 +33,76 @@
 #'   `TRUE`, then `y` will be copied into the same src as `x`. This allows you
 #'   to join tables across srcs, but it is a potentially expensive operation so
 #'   you must opt into it..
+#' @param .id The name of the column for the origin id, either names if all
+#' other arguments are named, or numbers.
+#' @param .name_repair How should the name be "repaired" to avoid duplicate
+#' column names? See [dplyr::bind_cols()] for more details.
+#' @param .by_group Logical. If `TRUE` rows are first arranger by the grouping
+#' variables in any. `FALSE` by default.
+#' @param wt Frequency weights. Can be `NULL` or a variable. Use data masking.
+#' @param sort If `TRUE` largest group will be shown on top.
+#' @param name The name of the new column in the output (`n` by default, and no
+#' existing column must have this name, or an error is generated).
+#' @param var A variable specified as a name, a positive or a negative integer
+#'   (counting from the end). The default is `-1` and returns last variable.
+#' @param .keep_all If `TRUE` keep all variables in `.data`.
+#' @param data A data frame, or for `replace_na()` a vector or a data frame.
+#' @param replace If `data` is a vector, a unique value to replace `NA`s, otherwise, a list of values, one per column of the data frame.
+#' @param cols A selection of the columns using tidy-select syntax, see[tidyr::pivot_longer()].
+#' @param names_to A character vector with the name or names of the columns for the names.
+#' @param values_to A string with the name of the column that receives the values.
+#' @param names_from The column or columns containing the names (use tidy selection and do not quote the names).
+#' @param values_from Idem for the column or columns that contain the values.
+#' @param weights A vector of weight to use to "uncount" `data`.
+#' @param .remove If `TRUE`, and `weights` is the name of a column, that column
+#'   is removed from `data`.
+#' @param col The name quoted or not of the new column with united variable.
+#' @param sep Separator to use between values for united column.
+#' @param remove If 'TRUE' the columns used to unite are removed.
+#' @param na.rm If `TRUE`, `NA`s are eliminated before uniting the values.
+#' @param into Name of the new column to put separated variables. Use `NA` for
+#'   items to drop.
+#' @param remove If `TRUE` the initial columns that are separated are also
+#'   removed from `data`.
+#' @param convert If `'TRUE` resulting values are converted into numeric,
+#'   integer or logical.
+#' @param .direction Direction in which to fill missing data: `"down"` (by
+#'   default), `"up"`, or `"downup"` (first down, then up), `"updown"`
+#'   (the opposite).
+#' @param regex A regular expression used to extract the desired values (use one
+#'   group with `(` and `)` for each element of `into`).
 #'
 #' @note The help page here is very basic and it aims mainly to list all the
 #' tidy functions. For more complete help, see their "non-t" counterparts in
 #' {dplyr} or {tidyr}, or use the {svMisc}'s `.?tmutate` syntax to link to the
 #' correct page.
+#' #' From {dplyr}, the [slice()] and `slice_xxx()` functions are not added yet
+#' because they are not available for {dbplyr}. Also [anti_join()],
+#' [semi_join()] and [nest_join()] are not implemented yet.
+#' From {dplyr}, the [slice()] and `slice_xxx()` functions are not added yet
+#' because they are not available for {dbplyr}. Also [anti_join()],
+#' [semi_join()] and [nest_join()] are not implemented yet.
+#' From {tidyr} [expand()], [chop()], [unchop()], [nest()], [unnest()],
+#' [unnest_longer()], [unnest_wider()], [hoist()], [pack()] and [unpack()] are
+#' not implemented yet.
 #'
 #' @return See corresponding "non-t" function for the full help page with
 #' indication of the return values.
+#'
+#' @seealso [collapse::num_vars()] to easily keep only numeric columns from a data frame, [collapse::fscale()] for scaling and centering matrix-like objects and data frames.
 #'
 #' @export
 #'
 #' @examples
 #' # TODO...
 tidy_functions <- function() {
-  c("tfilter", "tfilter_ungroup", "tfull_join", "tgroup_by", "tinner_join",
-    "tleft_join", "tmutate", "tmutate_ungroup", "trename", "trename_with",
-    "tright_join", "tselect", "tsummarise", "ttransmute", "ttransmute_ungroup",
-    "tungroup")
+  c("tadd_count", "tadd_tally", "tarrange", "tbind_cols", "tbind_rows",
+    "tcount", "tdistinct", "tdrop_na", "textract", "tfill", "tfilter",
+    "tfilter_ungroup", "tfull_join", "tgroup_by", "tinner_join", "tleft_join",
+    "tmutate", "tmutate_ungroup", "tpivot_longer", "tpivot_wider", "tpull",
+    "trename", "trename_with", "treplace_na", "tright_join", "tselect",
+    "tseparate", "tseparate_rows", "tsummarise", "ttally", "ttransmute",
+    "ttransmute_ungroup", "tuncount", "tungroup", "tunite")
 }
 
 .src_tidy <- function(src, comment = "A tidy function, see ?tidy_functions.") {
@@ -132,7 +184,7 @@ ttransmute_ungroup <- structure(function(.data, ...) {
 tsummarise <- structure(function(.data, ...) {
   # Apparently, fsummarise() behaves like dplyr:: summarise() < 1.0, thus using
   # .groups = "drop_last' always
-  summarise(.data, ..., groups = "drop_last")
+  summarise(.data, ..., .groups = "drop_last")
 }, class = c("function", "tidy_fn"), comment = .src_tidy("dplyr::summarise"))
 
 #' @export
@@ -170,3 +222,115 @@ copy = FALSE, ...) {
     keep = FALSE) # Keep = TRUE not implemented in merge.data.table()
   # na_matches = "na" is the default # NA and NaN are considered equivalent
 }, class = c("function", "tidy_fn"), comment = .src_tidy("dplyr::inner_join"))
+
+#' @export
+#' @rdname tidy_functions
+tbind_rows <- structure(dplyr::bind_rows,
+  class = c("function", "tidy_fn"), comment = .src_tidy("dplyr::bind_rows"))
+
+#' @export
+#' @rdname tidy_functions
+tbind_cols <- structure(dplyr::bind_cols,
+  class = c("function", "tidy_fn"), comment = .src_tidy("dplyr::bind_cols"))
+
+#' @export
+#' @rdname tidy_functions
+tarrange <- structure(dplyr::arrange,
+  class = c("function", "tidy_fn"), comment = .src_tidy("dplyr::arrange"))
+
+#' @export
+#' @rdname tidy_functions
+tcount <- structure(dplyr::count,
+  class = c("function", "tidy_fn"), comment = .src_tidy("dplyr::count"))
+
+#' @export
+#' @rdname tidy_functions
+ttally <- structure(dplyr::tally,
+  class = c("function", "tidy_fn"), comment = .src_tidy("dplyr::tally"))
+
+#' @export
+#' @rdname tidy_functions
+tadd_count <- structure(function(x, ..., wt = NULL, sort = FALSE, name = NULL) {
+  add_count(x, ..., wt = wt, sort = sort, name = name) # .drop is deprecated
+}, class = c("function", "tidy_fn"), comment = .src_tidy("dplyr::add_count"))
+
+#' @export
+#' @rdname tidy_functions
+tadd_tally <- structure(dplyr::add_tally,
+  class = c("function", "tidy_fn"), comment = .src_tidy("dplyr::add_tally"))
+
+#' @export
+#' @rdname tidy_functions
+tpull <- structure(dplyr::pull,
+  class = c("function", "tidy_fn"), comment = .src_tidy("dplyr::pull"))
+
+#' @export
+#' @rdname tidy_functions
+tdistinct <- structure(dplyr::distinct,
+  class = c("function", "tidy_fn"), comment = .src_tidy("dplyr::distinct"))
+
+
+# tidyr verbs -------------------------------------------------------------
+
+#' @export
+#' @rdname tidy_functions
+tdrop_na <- structure(tidyr::drop_na,
+  class = c("function", "tidy_fn"), comment = .src_tidy("tidyr::drop_na"))
+
+#' @export
+#' @rdname tidy_functions
+treplace_na <- structure(tidyr::replace_na,
+  class = c("function", "tidy_fn"), comment = .src_tidy("tidyr::replace_na"))
+
+#' @export
+#' @rdname tidy_functions
+tpivot_longer <- structure(function(data, cols, names_to = "name",
+values_to = "values", ...) {
+  do.call(pivot_longer, list(data = data, cols = substitute(cols),
+    names_to = names_to, values_to = values_to, ...))
+},  class = c("function", "tidy_fn"), comment = .src_tidy("tidyr::pivot_longer"))
+
+# This is needed for R CMD check otherwise itwill complain
+name <- NULL
+value <- NULL
+
+#' @export
+#' @rdname tidy_functions
+tpivot_wider <- structure(function(data, names_from = name,
+values_from = value, ...) {
+  do.call(pivot_wider, list(data = data, names_from = substitute(names_from),
+    values_from = substitute(values_from), ...))
+},  class = c("function", "tidy_fn"), comment = .src_tidy("tidyr::pivot_wider"))
+
+#' @export
+#' @rdname tidy_functions
+tuncount <- structure(tidyr::uncount,
+  class = c("function", "tidy_fn"), comment = .src_tidy("tidyr::uncount"))
+
+#' @export
+#' @rdname tidy_functions
+tunite <- structure(tidyr::unite,
+  class = c("function", "tidy_fn"), comment = .src_tidy("tidyr::unite"))
+
+#' @export
+#' @rdname tidy_functions
+tseparate <- structure(function(data, col, into, sep = "[^[:alnum:]]+",
+remove = TRUE, convert = FALSE, ...) {
+  do.call(separate, list(data, col = substitute(col), into = into, sep = sep,
+    remove = remove, convert = convert, ...))
+},  class = c("function", "tidy_fn"), comment = .src_tidy("tidyr::separate"))
+
+#' @export
+#' @rdname tidy_functions
+tseparate_rows <- structure(tidyr::separate_rows,
+  class = c("function", "tidy_fn"), comment = .src_tidy("tidyr::separate_rows"))
+
+#' @export
+#' @rdname tidy_functions
+tfill <- structure(tidyr::fill,
+  class = c("function", "tidy_fn"), comment = .src_tidy("tidyr::fill"))
+
+#' @export
+#' @rdname tidy_functions
+textract <- structure(tidyr::extract,
+  class = c("function", "tidy_fn"), comment = .src_tidy("tidyr::extract"))

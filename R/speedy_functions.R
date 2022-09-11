@@ -36,11 +36,59 @@
 #' `c(".x", ".y")`.
 #' @param copy This argument is there for compatibility with the "t" matching
 #' functions, but it is not used here.
+#' @param .id The name of the column for the origin id, either names if all
+#' other arguments are named, or numbers.
+#' @param .name_repair How should the name be "repaired" to avoid duplicate
+#' column names? See [dplyr::bind_cols()] for more details.
+#' @param .by_group Logical. If `TRUE` rows are first arranger by the grouping
+#' variables in any. `FALSE` by default.
+#' @param wt Frequency weights. Can be `NULL` or a variable. Use data masking.
+#' @param sort If `TRUE` largest group will be shown on top.
+#' @param name The name of the new column in the output (`n` by default, and no
+#' existing column must have this name, or an error is generated).4
+#' @param var A variable specified as a name, a positive or a negative integer
+#'   (counting from the end). The default is `-1` and returns last variable.
+#' @param .keep_all If `TRUE` keep all variables in `.data`.
+#' @param data A data frame, or for `replace_na()` a vector or a data frame.
+#' @param replace If `data` is a vector, a unique value to replace `NA`s, otherwise, a list of values, one per column of the data frame.
+#' @param cols A selection of the columns using tidy-select syntax, see[tidyr::pivot_longer()].
+#' @param names_to A character vector with the name or names of the columns for the names.
+#' @param values_to A string with the name of the column that receives the values.
+#' @param names_from The column or columns containing the names (use tidy selection and do not quote the names).
+#' @param values_from Idem for the column or columns that contain the values.
+#' @param weights A vector of weight to use to "uncount" `data`.
+#' @param .remove If `TRUE`, and `weights` is the name of a column, that column
+#'   is removed from `data`.
+#' @param col The name quoted or not of the new column with united variable.
+#' @param sep Separator to use between values for united or separated columns.
+#' @param remove If 'TRUE' the columns used to unite are removed.
+#' @param na.rm If `TRUE`, `NA`s are eliminated before uniting the values.
+#' @param into Name of the new column to put separated variables. Use `NA` for
+#'   items to drop.
+#' @param remove If `TRUE` the initial columns that are separated are also
+#'   removed from `data`.
+#' @param convert If `'TRUE` resulting values are converted into numeric,
+#' integer or logical.
+#' @param .direction Direction in which to fill missing data: `"down"` (by
+#'   default), `"up"`, or `"downup"` (first down, then up), `"updown"`
+#'   (the opposite).
+#' @param regex A regular expression used to extract the desired values (use one
+#'   group with `(` and `)` for each element of `into`).
 #'
 #' @note The help page here is very basic and it aims mainly to list all the
 #' speedy functions. For more complete help, see their "non-s" counterparts in
 #' {dplyr} or {tidyr}, or use the {svMisc}'s `.?smutate` syntax to link to the
 #' correct page.
+#' The [ssummarise()] function does not support `n()` as does
+#' [dplyr::summarise()]. You can use [fn()] instead, but then, you must give a
+#' variable name as argument. The [fn()] alternative can also be used in
+#' [tsummarise()].
+#' From {dplyr}, the [slice()] and `slice_xxx()` functions are not added yet
+#' because they are not available for {dbplyr}. Also [anti_join()],
+#' [semi_join()] and [nest_join()] are not implemented yet.
+#' From {tidyr} [expand()], [chop()], [unchop()], [nest()], [unnest()],
+#' [unnest_longer()], [unnest_wider()], [hoist()], [pack()] and [unpack()] are
+#' not implemented yet.
 #'
 #' @return See corresponding "non-s" function for the full help page with
 #' indication of the return values.
@@ -50,10 +98,13 @@
 #' @examples
 #' # TODO...
 speedy_functions <- function() {
-  c("sfilter", "sfilter_ungroup", "sfull_join", "sgroup_by", "sinner_join",
-    "sleft_join", "smutate", "smutate_ungroup", "srename", "srename_with",
-    "sright_join", "sselect", "ssummarise", "stransmute", "stransmute_ungroup",
-    "sungroup")
+  c("sadd_count", "sadd_tally", "sarrange", "sbind_cols", "sbind_rows",
+    "scount", "sdistinct", "sdrop_na", "sextract", "sfill", "sfilter",
+    "sfilter_ungroup", "sfull_join", "sgroup_by", "sinner_join", "sleft_join",
+    "smutate", "smutate_ungroup", "spivot_longer", "spivot_wider", "spull",
+    "srename", "srename_with", "sreplace_na", "sright_join", "sselect",
+    "sseparate", "sseparate_rows", "ssummarise", "stally", "stransmute",
+    "stransmute_ungroup", "suncount", "sungroup", "sunite")
 }
 
 .src_speedy <- function(src, comment = "A speedy function, see ?speedy_functions.") {
@@ -65,6 +116,7 @@ speedy_functions <- function() {
 #' @rdname speedy_functions
 sgroup_by <- structure(function(.data, ...) {
   # Different args names than fgroup_by() and not all arguments not in group_by()
+  # TODO: accept somethinf like this: sgroup_by(df, across(...)).
   fgroup_by(.data, ...)
 }, class = c("function", "speedy_fn"), comment = .src_speedy("collapse::fgroup_by"))
 
@@ -256,3 +308,506 @@ copy = FALSE, ...) {
   res
 }, class = c("function", "speedy_fn"), comment = .src_speedy("dplyr::inner_join"))
 
+#' @export
+#' @rdname speedy_functions
+sbind_rows <- structure(function(..., .id = NULL) {
+  if (!is.null(.id) && (length(.id) != 1 || !is.character(.id)))
+    stop("`.id` must be a scalar string")
+  # We transform check the class of first argument to return something similar
+  is_x_dtf <- is_dtf(..1)
+  is_x_dtbl <- is_dtbl(..1)
+  list... <- list(...)
+  # If there is at least one non-names item, bind_rows() does not use labels,
+  # but rbindlist() does with "" where there is no name. Homogenise the behavior
+  # by eliminating all names if at least one is ""
+  if (any(...names() == ""))
+    names(list...) <- NULL
+  # dplyr::bind_rows() does the job more intelligently thant base::rbind(): it
+  # matches column names and fill missing data where needed. rbindlist() can do
+  # both, but same behavior is obtained with use.names = TRUE + fill = TRUE
+  res <- rbindlist(list..., use.names = TRUE, fill = TRUE, idcol = .id)
+  # bind_rows() always returns characters for .id, but rbindlist() sometimes
+  # returns integers
+  if (!is.null(.id))
+    res[[.id]] <- as.character(res[[.id]])
+  # Transform if needed
+  if (is_x_dtf)
+    res <- as_dtf(res)
+  if (is_x_dtbl)
+    res <- as_dtbl(res)
+  res
+}, class = c("function", "speedy_fn"), comment = .src_speedy("dplyr::bind_rows"))
+
+
+# Verbs that are not reingeneered yet -------------------------------------
+
+#' @export
+#' @rdname speedy_functions
+sbind_cols <- structure(function(...,
+.name_repair = c("unique", "universal", "check_unique", "minimal")) {
+  # For now, we use same function as tbind_cols() internally, but we convert
+  # into the correct data frame object at the end
+
+  # We transform check the class of first argument to return something similar
+  x <- ungroup(..1)
+  is_x_dtf <- is_dtf(x)
+  is_x_dtt <- is_dtt(x)
+  res <- bind_cols(..., .name_repair = .name_repair)
+  # Transform if needed
+  if (is_x_dtf)
+    res <- as_dtf(res)
+  if (is_x_dtt)
+    res <- as_dtt(res)
+  res
+}, class = c("function", "speedy_fn"), comment = .src_speedy("dplyr::bind_cols"))
+
+#' @export
+#' @rdname speedy_functions
+sarrange <- structure(function(.data, ..., .by_group = FALSE) {
+  # For now, we use same function as txxx() counterpart... still must rework
+  if (inherits(.data, c("tbl_db", "dtplyr_step")))
+    stop("You must collect results from a tidy function before using a speedy one.")
+
+  is_x_dtf <- is_dtf(.data)
+  is_x_dtt <- is_dtt(.data)
+  # Also if we have a GRP_by object from fgroup_by() or sgroup_by(), transform
+  # it in,to regular group_by and restore the GRP_by after.
+  if (inherits(.data, "GRP_df")) {
+    is_x_grp_df <- TRUE
+    gvars <- fgroup_vars(.data, return = "names")
+    gvars <- lapply(gvars, as.name)
+    # Must regroup with the regular dplyr::group_by()
+    #.data <- group_by(fungroup(.data), across(gvars)) # Warning message
+    .data <- fungroup(.data)
+    .data <- do.call(group_by, c(list(.data = .data), gvars))
+  } else {
+    is_x_grp_df <- FALSE
+  }
+  res <- arrange(.data, ..., .by_group = .by_group)
+  if (!is.data.frame(res))
+    res <- collect(res)
+  # Transform if needed
+  if (is_x_dtf)
+    res <- as_dtf(res)
+  if (is_x_dtt)
+    res <- as_dtt(res)
+  if (is_x_grp_df)
+    res <- do.call(fgroup_by, c(list(.X = res), gvars))
+  res
+}, class = c("function", "speedy_fn"), comment = .src_speedy("dplyr::arrange"))
+
+#' @export
+#' @rdname speedy_functions
+scount <- structure(function(x, ..., wt = NULL, sort = FALSE, name = NULL) {
+  # For now, we use same function as txxx() counterpart... still must rework
+  if (inherits(x, c("tbl_db", "dtplyr_step")))
+    stop("You must collect results from a tidy function before using a speedy one.")
+
+  is_x_dtf <- is_dtf(x)
+  is_x_dtt <- is_dtt(x)
+  # Also if we have a GRP_by object from fgroup_by() or sgroup_by(), transform
+  # it in,to regular group_by and restore the GRP_by after.
+  if (inherits(x, "GRP_df")) {
+    is_x_grp_df <- TRUE
+    gvars <- fgroup_vars(x, return = "names")
+    gvars <- lapply(gvars, as.name)
+    # Must regroup with the regular dplyr::group_by()
+    x <- fungroup(x)
+    x <- do.call(group_by, c(list(.data = x), gvars))
+  } else {
+    is_x_grp_df <- FALSE
+  }
+  res <- count(x, ..., wt = wt, sort = sort, name = name)
+  if (!is.data.frame(res))
+    res <- collect(res)
+  # Transform if needed
+  if (is_x_dtf)
+    res <- as_dtf(res)
+  if (is_x_dtt)
+    res <- as_dtt(res)
+  if (is_x_grp_df)
+    res <- do.call(fgroup_by, c(list(.X = res), gvars))
+  res
+}, class = c("function", "speedy_fn"), comment = .src_speedy("dplyr::count"))
+
+#' @export
+#' @rdname speedy_functions
+stally <- structure(function(x, wt = NULL, sort = FALSE, name = NULL) {
+  # For now, we use same function as txxx() counterpart... still must rework
+  if (inherits(x, c("tbl_db", "dtplyr_step")))
+    stop("You must collect results from a tidy function before using a speedy one.")
+
+  is_x_dtf <- is_dtf(x)
+  is_x_dtt <- is_dtt(x)
+  # Also if we have a GRP_by object from fgroup_by() or sgroup_by(), transform
+  # it in,to regular group_by and restore the GRP_by after.
+  if (inherits(x, "GRP_df")) {
+    is_x_grp_df <- TRUE
+    gvars <- fgroup_vars(x, return = "names")
+    gvars <- lapply(gvars, as.name)
+    # Must regroup with the regular dplyr::group_by()
+    x <- fungroup(x)
+    x <- do.call(group_by, c(list(.data = x), gvars))
+  } else {
+    is_x_grp_df <- FALSE
+  }
+
+  res <- do.call(tally, list(x = x, wt = wt, sort = sort, name = name))
+
+  if (!is.data.frame(res))
+    res <- collect(res)
+  # Transform if needed
+  if (is_x_dtf)
+    res <- as_dtf(res)
+  if (is_x_dtt)
+    res <- as_dtt(res)
+  if (is_x_grp_df)
+    res <- do.call(fgroup_by, c(list(.X = res), gvars))
+  res
+}, class = c("function", "speedy_fn"), comment = .src_speedy("dplyr::tally"))
+
+#' @export
+#' @rdname speedy_functions
+sadd_count <- structure(function(x, ..., wt = NULL, sort = FALSE, name = NULL) {
+  # For now, we use same function as txxx() counterpart... still must rework
+  if (inherits(x, c("tbl_db", "dtplyr_step")))
+    stop("You must collect results from a tidy function before using a speedy one.")
+
+  is_x_dtf <- is_dtf(x)
+  is_x_dtt <- is_dtt(x)
+  # Also if we have a GRP_by object from fgroup_by() or sgroup_by(), transform
+  # it in,to regular group_by and restore the GRP_by after.
+  if (inherits(x, "GRP_df")) {
+    is_x_grp_df <- TRUE
+    gvars <- fgroup_vars(x, return = "names")
+    gvars <- lapply(gvars, as.name)
+    # Must regroup with the regular dplyr::group_by()
+    x <- fungroup(x)
+    x <- do.call(group_by, c(list(.data = x), gvars))
+  } else {
+    is_x_grp_df <- FALSE
+  }
+  res <- add_count(x, ..., wt = wt, sort = sort, name = name)
+  if (!is.data.frame(res))
+    res <- collect(res)
+  # Transform if needed
+  if (is_x_dtf)
+    res <- as_dtf(res)
+  if (is_x_dtt)
+    res <- as_dtt(res)
+  if (is_x_grp_df)
+    res <- do.call(fgroup_by, c(list(.X = res), gvars))
+  res
+}, class = c("function", "speedy_fn"), comment = .src_speedy("dplyr::add_count"))
+
+#' @export
+#' @rdname speedy_functions
+sadd_tally <- structure(function(x, wt = NULL, sort = FALSE, name = NULL) {
+  # For now, we use same function as txxx() counterpart... still must rework
+  if (inherits(x, c("tbl_db", "dtplyr_step")))
+    stop("You must collect results from a tidy function before using a speedy one.")
+
+  is_x_dtf <- is_dtf(x)
+  is_x_dtt <- is_dtt(x)
+  # Also if we have a GRP_by object from fgroup_by() or sgroup_by(), transform
+  # it in,to regular group_by and restore the GRP_by after.
+  if (inherits(x, "GRP_df")) {
+    is_x_grp_df <- TRUE
+    gvars <- fgroup_vars(x, return = "names")
+    gvars <- lapply(gvars, as.name)
+    # Must regroup with the regular dplyr::group_by()
+    x <- fungroup(x)
+    x <- do.call(group_by, c(list(.data = x), gvars))
+  } else {
+    is_x_grp_df <- FALSE
+  }
+  res <- do.call(add_tally, list(x = x, wt = wt, sort = sort, name = name))
+  if (!is.data.frame(res))
+    res <- collect(res)
+  # Transform if needed
+  if (is_x_dtf)
+    res <- as_dtf(res)
+  if (is_x_dtt)
+    res <- as_dtt(res)
+  if (is_x_grp_df)
+    res <- do.call(fgroup_by, c(list(.X = res), gvars))
+  res
+}, class = c("function", "speedy_fn"), comment = .src_speedy("dplyr::add_tally"))
+
+#' @export
+#' @rdname speedy_functions
+spull <- structure(function(.data, var = -1, name = NULL, ...) {
+  # For now, we use same function as txxx() counterpart... still must rework
+  if (inherits(.data, c("tbl_db", "dtplyr_step")))
+    stop("You must collect results from a tidy function before using a speedy one.")
+
+  do.call(pull, list(.data = .data, var = substitute(var),
+    name = substitute(name), ...))
+}, class = c("function", "speedy_fn"), comment = .src_speedy("dplyr::pull"))
+
+#' @export
+#' @rdname speedy_functions
+sdistinct <- structure(function(.data, ..., .keep_all = FALSE) {
+  # For now, we use same function as txxx() counterpart... still must rework
+  if (inherits(.data, c("tbl_db", "dtplyr_step")))
+    stop("You must collect results from a tidy function before using a speedy one.")
+
+  is_x_dtf <- is_dtf(.data)
+  is_x_dtt <- is_dtt(.data)
+  # Also if we have a GRP_by object from fgroup_by() or sgroup_by(), transform
+  # it in,to regular group_by and restore the GRP_by after.
+  if (inherits(.data, "GRP_df")) {
+    is_x_grp_df <- TRUE
+    gvars <- fgroup_vars(.data, return = "names")
+    gvars <- lapply(gvars, as.name)
+    # Must regroup with the regular dplyr::group_by()
+    #.data <- group_by(fungroup(.data), across(gvars)) # Warning message
+    .data <- fungroup(.data)
+    .data <- do.call(group_by, c(list(.data = .data), gvars))
+  } else {
+    is_x_grp_df <- FALSE
+  }
+  res <- distinct(.data, ..., .keep_all = .keep_all)
+  if (!is.data.frame(res))
+    res <- collect(res)
+  # Transform if needed
+  if (is_x_dtf)
+    res <- as_dtf(res)
+  if (is_x_dtt)
+    res <- as_dtt(res)
+  if (is_x_grp_df)
+    res <- do.call(fgroup_by, c(list(.X = res), gvars))
+  res
+}, class = c("function", "speedy_fn"), comment = .src_speedy("dplyr::distinct"))
+
+
+# tidyr verbs -------------------------------------------------------------
+
+#' @export
+#' @rdname speedy_functions
+sdrop_na <- structure(function(data, ...) {
+  # For now, we use same function as txxx() counterpart... still must rework
+  if (inherits(data, c("tbl_db", "dtplyr_step")))
+    stop("You must collect results from a tidy function before using a speedy one.")
+
+  if (inherits(data, "GRP_df")) {
+    is_x_grp_df <- TRUE
+    gvars <- fgroup_vars(data, return = "names")
+    gvars <- lapply(gvars, as.name)
+  } else {
+    is_x_grp_df <- FALSE
+  }
+  if (is_dtt(data)) {
+    res <- collect(drop_na(data, ...))
+    res <- as_dtt(res)
+  } else {
+    res <- drop_na(data, ...)
+  }
+  if (is_x_grp_df)
+    res <- do.call(fgroup_by, c(list(.X = res), gvars))
+  res
+}, class = c("function", "speedy_fn"), comment = .src_speedy("tidyr::drop_na"))
+
+#' @export
+#' @rdname speedy_functions
+sreplace_na <- structure(function(data, replace, ...) {
+  # For now, we use same function as txxx() counterpart... still must rework
+  if (inherits(data, c("tbl_db", "dtplyr_step")))
+    stop("You must collect results from a tidy function before using a speedy one.")
+
+  if (inherits(data, "GRP_df")) {
+    is_x_grp_df <- TRUE
+    gvars <- fgroup_vars(data, return = "names")
+    gvars <- lapply(gvars, as.name)
+  } else {
+    is_x_grp_df <- FALSE
+  }
+  if (is_dtt(data)) {
+    res <- collect(replace_na(as_dtbl(data), replace, ...))
+    res <- as_dtt(res)
+  } else {
+    res <- replace_na(data, replace, ...)
+  }
+  if (is_x_grp_df)
+    res <- do.call(fgroup_by, c(list(.X = res), gvars))
+  res
+}, class = c("function", "speedy_fn"), comment = .src_speedy("tidyr::replace_na"))
+
+#' @export
+#' @rdname speedy_functions
+spivot_longer <- structure(function(data, cols, names_to = "name",
+values_to = "value", ...) {
+  # For now, we use same function as txxx() counterpart... still must rework
+  if (inherits(data, c("tbl_db", "dtplyr_step")))
+    stop("You must collect results from a tidy function before using a speedy one.")
+
+  # Object is always ungrouped => we don't care of the groups!
+  is_x_dtf <- is_dtf(data)
+  is_x_dtt <- is_dtt(data)
+  res <-  do.call(pivot_longer, list(data = data, cols = substitute(cols),
+    names_to = names_to, values_to = values_to, ...))
+  if (is_x_dtf)
+    res <- as_dtf(res)
+  if (is_x_dtt)
+    res <- as_dtt(collect(res))
+  res
+}, class = c("function", "speedy_fn"), comment = .src_speedy("tidyr::pivot_longer"))
+
+# This is needed for R CMD check otherwise itwill complain
+name <- NULL
+value <- NULL
+
+#' @export
+#' @rdname speedy_functions
+spivot_wider <- structure(function(data, names_from = name,
+  values_from = value, ...) {
+  # For now, we use same function as txxx() counterpart... still must rework
+  if (inherits(data, c("tbl_db", "dtplyr_step")))
+    stop("You must collect results from a tidy function before using a speedy one.")
+
+  # Sometimes groups are kept, sometimes not... for now, we do not care.
+  is_x_dtf <- is_dtf(data)
+  is_x_dtt <- is_dtt(data)
+  res <- do.call(pivot_wider, list(data = fungroup(data),
+    names_from = substitute(names_from), values_from = substitute(values_from), ...))
+  if (is_x_dtf)
+    res <- as_dtf(res)
+  if (is_x_dtt)
+    res <- as_dtt(collect(res))
+  res
+}, class = c("function", "speedy_fn"), comment = .src_speedy("tidyr::pivot_wider"))
+
+#' @export
+#' @rdname speedy_functions
+suncount <- structure(function(data, weights, .remove = TRUE, .id = NULL) {
+  # For now, we use same function as txxx() counterpart... still must rework
+  if (inherits(data, c("tbl_db", "dtplyr_step")))
+    stop("You must collect results from a tidy function before using a speedy one.")
+
+  # Sometimes groups are kept, sometimes not... for now, we do not care (we always ungroup).
+  is_x_dtf <- is_dtf(data)
+  is_x_dtt <- is_dtt(data)
+  res <- do.call(uncount, list(data = fungroup(data),
+    weights = substitute(weights), .remove = .remove, .id = .id))
+  if (is_x_dtf)
+    res <- as_dtf(res)
+  if (is_x_dtt)
+    res <- as_dtt(collect(res))
+  res
+}, class = c("function", "speedy_fn"), comment = .src_speedy("tidyr::uncount"))
+
+#' @export
+#' @rdname speedy_functions
+sunite <- structure(function(data, col, ..., sep = "_", remove = TRUE,
+na.rm = FALSE) {
+  # For now, we use same function as txxx() counterpart... still must rework
+  if (inherits(data, c("tbl_db", "dtplyr_step")))
+    stop("You must collect results from a tidy function before using a speedy one.")
+
+  # Sometimes groups are kept, sometimes not... for now, we do not care (we always ungroup).
+  is_x_dtf <- is_dtf(data)
+  is_x_dtt <- is_dtt(data)
+  res <- unite(data = as_dtbl(fungroup(data)), col = col, ..., sep = sep,
+    remove = remove, na.rm = na.rm)
+  if (is_x_dtf)
+    res <- as_dtf(res)
+  if (is_x_dtt)
+    res <- as_dtt(collect(res))
+  res
+}, class = c("function", "speedy_fn"), comment = .src_speedy("tidyr::unite"))
+
+#' @export
+#' @rdname speedy_functions
+sseparate <- structure(function(data, col, into, sep = "[^[:alnum:]]+",
+remove = TRUE, convert = FALSE, ...) {
+  # For now, we use same function as txxx() counterpart... still must rework
+  if (inherits(data, c("tbl_db", "dtplyr_step")))
+    stop("You must collect results from a tidy function before using a speedy one.")
+
+  # Sometimes groups are kept, sometimes not... for now, we do not care (we always ungroup).
+  is_x_dtf <- is_dtf(data)
+  is_x_dtt <- is_dtt(data)
+  res <- do.call(separate, list(data = as_dtbl(fungroup(data)),
+    col = substitute(col), into = into, sep = sep, remove = remove,
+    convert = convert, ...))
+  if (is_x_dtf)
+    res <- as_dtf(res)
+  if (is_x_dtt)
+    res <- as_dtt(collect(res))
+  res
+}, class = c("function", "speedy_fn"), comment = .src_speedy("tidyr::separate"))
+
+#' @export
+#' @rdname speedy_functions
+sseparate_rows <- structure(function(data, ..., sep = "[^[:alnum:].]+",
+convert = FALSE) {
+  # For now, we use same function as txxx() counterpart... still must rework
+  if (inherits(data, c("tbl_db", "dtplyr_step")))
+    stop("You must collect results from a tidy function before using a speedy one.")
+
+  # Sometimes groups are kept, sometimes not... for now, we do not care (we always ungroup).
+  is_x_dtf <- is_dtf(data)
+  is_x_dtt <- is_dtt(data)
+  res <- separate_rows(data = as_dtbl(fungroup(data)), ..., sep = sep,
+    convert = convert)
+  if (is_x_dtf)
+    res <- as_dtf(res)
+  if (is_x_dtt)
+    res <- as_dtt(collect(res))
+  res
+}, class = c("function", "speedy_fn"), comment = .src_speedy("tidyr::unite"))
+
+#' @export
+#' @rdname speedy_functions
+sfill <- structure(function(data, ...,
+.direction = c("down", "up", "downup", "updown")) {
+  # For now, we use same function as txxx() counterpart... still must rework
+  if (inherits(data, c("tbl_db", "dtplyr_step")))
+    stop("You must collect results from a tidy function before using a speedy one.")
+
+  if (inherits(data, "GRP_df")) {
+    is_x_grp_df <- TRUE
+    gvars <- fgroup_vars(data, return = "names")
+    gvars <- lapply(gvars, as.name)
+  } else {
+    is_x_grp_df <- FALSE
+  }
+  if (is_dtt(data)) {
+    res <- collect(fill(as_dtbl(data), ..., .direction = .direction))
+    res <- as_dtt(res)
+  } else {
+    res <- fill(data, ..., .direction = .direction)
+  }
+  if (is_x_grp_df)
+    res <- do.call(fgroup_by, c(list(.X = res), gvars))
+  res
+}, class = c("function", "speedy_fn"), comment = .src_speedy("tidyr::fill"))
+
+#' @export
+#' @rdname speedy_functions
+sextract <- structure(function(data, col, into, regex = "([[:alnum:]]+)",
+remove = TRUE, convert = FALSE, ...) {
+  # For now, we use same function as txxx() counterpart... still must rework
+  if (inherits(data, c("tbl_db", "dtplyr_step")))
+    stop("You must collect results from a tidy function before using a speedy one.")
+
+  if (inherits(data, "GRP_df")) {
+    is_x_grp_df <- TRUE
+    gvars <- fgroup_vars(data, return = "names")
+    gvars <- lapply(gvars, as.name)
+  } else {
+    is_x_grp_df <- FALSE
+  }
+  if (is_dtt(data)) {
+
+    res <- do.call(extract, list(as_dtbl(data), col = substitute(col),
+      into = into, regex = regex, remove = remove, convert = convert, ...))
+    res <- as_dtt(collect(res))
+  } else {
+    res <- do.call(extract, list(data, col = substitute(col), into = into,
+      regex = regex, remove = remove, convert = convert, ...))
+  }
+  if (is_x_grp_df)
+    res <- do.call(fgroup_by, c(list(.X = res), gvars))
+  res
+}, class = c("function", "speedy_fn"), comment = .src_speedy("tidyr::extract"))

@@ -1,6 +1,14 @@
 # svBase 1.2.0
 
--   Addition of "tidy" 't' functions and "speedy" 's' functions. The tidy functions are mostly renamed versions of {dplyr} or {tidyr} functions, while the speedy functions have a similar interface but are from {collapse} or {data.table}. Arguments are homogenized and sometimes reduced to restrict to features that are compatibles in the two groups.
+-   Addition of "tidy" 't' functions and "speedy" 's' functions. The tidy functions are mostly renamed versions of {dplyr} or {tidyr} functions, while the speedy functions have a similar interface but are from {collapse} or {data.table} for a big part of them. Arguments are homogenized and sometimes reduced to restrict to features that are compatibles in the two groups.
+
+-   The function `n()` is not working in `ssumarise()`. Use `fn(var)` instead, and you can also use it in `tsummarise()`.
+
+-   Addition of "fast" functions from {collapse} + `fnobs_all()` and `fnobs_na`.
+
+-   The `%xf%` operators where `x`can be `-`, `/`, etc. for a more readable alternative to `TRA=` in the fast functions.
+
+-   More robust strict `is_dt_()` functions for grouped data.
 
 # svBase 1.1.1
 

@@ -26,6 +26,8 @@ is_dtx <- function(x, strict = TRUE) {
     class1 <- class(x)[1]
     if (class1 == "grouped_df" || class1 == "grouped_ts") {# Special case
       inherits(x, "tbl_df")
+    } else if (class1 == "GRP_df") {
+        inherits(x, "data.frame")
     } else {
       class1 == "data.frame" || class1 == "data.table" || class1 == "tbl_df"
     }
@@ -39,7 +41,9 @@ is_dtx <- function(x, strict = TRUE) {
 #' @rdname is_dtx
 is_dtf <- function(x, strict = TRUE) {
   if (isTRUE(strict)) {
-    class(x)[1] == "data.frame"
+    class1 <- class(x)[1]
+    class1 == "data.frame" ||
+      (class1 == "GRP_df" && !inherits(x, c("data.table", "tbl_df", "tbl_ts")))
   } else {
     inherits(x, "data.frame")
   }
@@ -49,7 +53,8 @@ is_dtf <- function(x, strict = TRUE) {
 #' @rdname is_dtx
 is_dtt <- function(x, strict = TRUE) {
   if (isTRUE(strict)) {
-    class(x)[1] == "data.table"
+    class1 <- class(x)[1]
+    inherits(x, "data.table") && class1 %in% c("data.table", "GRP_df")
   } else {
     inherits(x, "data.table")
   }

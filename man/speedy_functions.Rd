@@ -18,6 +18,25 @@
 \alias{sleft_join}
 \alias{sright_join}
 \alias{sinner_join}
+\alias{sbind_rows}
+\alias{sbind_cols}
+\alias{sarrange}
+\alias{scount}
+\alias{stally}
+\alias{sadd_count}
+\alias{sadd_tally}
+\alias{spull}
+\alias{sdistinct}
+\alias{sdrop_na}
+\alias{sreplace_na}
+\alias{spivot_longer}
+\alias{spivot_wider}
+\alias{suncount}
+\alias{sunite}
+\alias{sseparate}
+\alias{sseparate_rows}
+\alias{sfill}
+\alias{sextract}
 \title{Speedy functions (mainly from {collapse} and {data.table}) to manipulate data frames}
 \usage{
 speedy_functions()
@@ -53,6 +72,63 @@ sleft_join(x, y, by = NULL, suffix = c(".x", ".y"), copy = FALSE, ...)
 sright_join(x, y, by = NULL, suffix = c(".x", ".y"), copy = FALSE, ...)
 
 sinner_join(x, y, by = NULL, suffix = c(".x", ".y"), copy = FALSE, ...)
+
+sbind_rows(..., .id = NULL)
+
+sbind_cols(
+  ...,
+  .name_repair = c("unique", "universal", "check_unique", "minimal")
+)
+
+sarrange(.data, ..., .by_group = FALSE)
+
+scount(x, ..., wt = NULL, sort = FALSE, name = NULL)
+
+stally(x, wt = NULL, sort = FALSE, name = NULL)
+
+sadd_count(x, ..., wt = NULL, sort = FALSE, name = NULL)
+
+sadd_tally(x, wt = NULL, sort = FALSE, name = NULL)
+
+spull(.data, var = -1, name = NULL, ...)
+
+sdistinct(.data, ..., .keep_all = FALSE)
+
+sdrop_na(data, ...)
+
+sreplace_na(data, replace, ...)
+
+spivot_longer(data, cols, names_to = "name", values_to = "value", ...)
+
+spivot_wider(data, names_from = name, values_from = value, ...)
+
+suncount(data, weights, .remove = TRUE, .id = NULL)
+
+sunite(data, col, ..., sep = "_", remove = TRUE, na.rm = FALSE)
+
+sseparate(
+  data,
+  col,
+  into,
+  sep = "[^[:alnum:]]+",
+  remove = TRUE,
+  convert = FALSE,
+  ...
+)
+
+sseparate_rows(data, ..., sep = "[^[:alnum:].]+", convert = FALSE)
+
+sfill(data, ..., .direction = c("down", "up", "downup", "updown"))
+
+sextract(
+  data,
+  col,
+  into,
+  regex = "([[:alnum:]]+)",
+  remove = TRUE,
+  convert = FALSE,
+  ...
+)
 }
 \arguments{
 \item{.data}{A data frame (data.frame, data.table or tibble's tbl_df)}
@@ -82,6 +158,68 @@ columns that come from the first or the second data frame. By default it is
 
 \item{copy}{This argument is there for compatibility with the "t" matching
 functions, but it is not used here.}
+
+\item{.id}{The name of the column for the origin id, either names if all
+other arguments are named, or numbers.}
+
+\item{.name_repair}{How should the name be "repaired" to avoid duplicate
+column names? See \code{\link[dplyr:bind]{dplyr::bind_cols()}} for more details.}
+
+\item{.by_group}{Logical. If \code{TRUE} rows are first arranger by the grouping
+variables in any. \code{FALSE} by default.}
+
+\item{wt}{Frequency weights. Can be \code{NULL} or a variable. Use data masking.}
+
+\item{sort}{If \code{TRUE} largest group will be shown on top.}
+
+\item{name}{The name of the new column in the output (\code{n} by default, and no
+existing column must have this name, or an error is generated).4}
+
+\item{var}{A variable specified as a name, a positive or a negative integer
+(counting from the end). The default is \code{-1} and returns last variable.}
+
+\item{.keep_all}{If \code{TRUE} keep all variables in \code{.data}.}
+
+\item{data}{A data frame, or for \code{replace_na()} a vector or a data frame.}
+
+\item{replace}{If \code{data} is a vector, a unique value to replace \code{NA}s, otherwise, a list of values, one per column of the data frame.}
+
+\item{cols}{A selection of the columns using tidy-select syntax, see\code{\link[tidyr:pivot_longer]{tidyr::pivot_longer()}}.}
+
+\item{names_to}{A character vector with the name or names of the columns for the names.}
+
+\item{values_to}{A string with the name of the column that receives the values.}
+
+\item{names_from}{The column or columns containing the names (use tidy selection and do not quote the names).}
+
+\item{values_from}{Idem for the column or columns that contain the values.}
+
+\item{weights}{A vector of weight to use to "uncount" \code{data}.}
+
+\item{.remove}{If \code{TRUE}, and \code{weights} is the name of a column, that column
+is removed from \code{data}.}
+
+\item{col}{The name quoted or not of the new column with united variable.}
+
+\item{sep}{Separator to use between values for united or separated columns.}
+
+\item{remove}{If \code{TRUE} the initial columns that are separated are also
+removed from \code{data}.}
+
+\item{na.rm}{If \code{TRUE}, \code{NA}s are eliminated before uniting the values.}
+
+\item{into}{Name of the new column to put separated variables. Use \code{NA} for
+items to drop.}
+
+\item{convert}{If \verb{'TRUE} resulting values are converted into numeric,
+integer or logical.}
+
+\item{.direction}{Direction in which to fill missing data: \code{"down"} (by
+default), \code{"up"}, or \code{"downup"} (first down, then up), \code{"updown"}
+(the opposite).}
+
+\item{regex}{A regular expression used to extract the desired values (use one
+group with \code{(} and \verb{)} for each element of \code{into}).}
 }
 \value{
 See corresponding "non-s" function for the full help page with
@@ -111,6 +249,16 @@ The help page here is very basic and it aims mainly to list all the
 speedy functions. For more complete help, see their "non-s" counterparts in
 {dplyr} or {tidyr}, or use the {svMisc}'s \code{.?smutate} syntax to link to the
 correct page.
+The \code{\link[=ssummarise]{ssummarise()}} function does not support \code{n()} as does
+\code{\link[dplyr:summarise]{dplyr::summarise()}}. You can use \code{\link[=fn]{fn()}} instead, but then, you must give a
+variable name as argument. The \code{\link[=fn]{fn()}} alternative can also be used in
+\code{\link[=tsummarise]{tsummarise()}}.
+From {dplyr}, the \code{\link[=slice]{slice()}} and \code{slice_xxx()} functions are not added yet
+because they are not available for {dbplyr}. Also \code{\link[=anti_join]{anti_join()}},
+\code{\link[=semi_join]{semi_join()}} and \code{\link[=nest_join]{nest_join()}} are not implemented yet.
+From {tidyr} \code{\link[=expand]{expand()}}, \code{\link[=chop]{chop()}}, \code{\link[=unchop]{unchop()}}, \code{\link[=nest]{nest()}}, \code{\link[=unnest]{unnest()}},
+\code{\link[=unnest_longer]{unnest_longer()}}, \code{\link[=unnest_wider]{unnest_wider()}}, \code{\link[=hoist]{hoist()}}, \code{\link[=pack]{pack()}} and \code{\link[=unpack]{unpack()}} are
+not implemented yet.
 }
 \examples{
 # TODO...
