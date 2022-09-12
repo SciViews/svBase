@@ -79,13 +79,13 @@
 #' @examples
 #' # TODO...
 list_tidy_functions <- function() {
-  c("tadd_count", "tadd_tally", "tarrange", "tbind_cols", "tbind_rows",
-    "tcount", "tdistinct", "tdrop_na", "textract", "tfill", "tfilter",
-    "tfilter_ungroup", "tfull_join", "tgroup_by", "tinner_join", "tleft_join",
-    "tmutate", "tmutate_ungroup", "tpivot_longer", "tpivot_wider", "tpull",
-    "trename", "trename_with", "treplace_na", "tright_join", "tselect",
-    "tseparate", "tseparate_rows", "tsummarise", "ttally", "ttransmute",
-    "ttransmute_ungroup", "tuncount", "tungroup", "tunite")
+  c("add_count", "add_tally", "arrange", "bind_cols", "bind_rows", "count",
+    "distinct", "drop_na", "extract", "fill", "filter", "filter_ungroup",
+    "full_join", "group_by", "inner_join", "left_join", "mutate",
+    "mutate_ungroup", "pivot_longer", "pivot_wider", "pull", "rename",
+    "rename_with", "replace_na", "right_join", "select", "separate",
+    "separate_rows", "summarise", "tally", "transmute", "transmute_ungroup",
+    "uncount", "ungroup", "unite")
 }
 
 #.src_tidy <- function(src, comment = "A tidy function, see ?tidy_functions.") {
