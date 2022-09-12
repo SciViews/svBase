@@ -9,14 +9,19 @@
 #' similar to [summarise()]. Not all functions are implemented, arguments and
 #' argument names differ, and the behavior may be very different, like
 #' [frename()] which uses `old_name = new_name`, while [rename()] uses
-#' `new_name = old_name`! The speedy functions all start with an "s" prefixed to
-#' the function name, like [smutate()], and build on the work initiated in
-#' {collapse} to propose a series of paired functions with the tidy ones. So,
-#' [smutate()] and [tmutate()] are "speedy" and 'tidy" counterparts and they are
-#' used in a very similar, if not identical way as the original [mutate()]
-#' function. This notation using a "s" prefix is there to draw the attention on
-#' their particularities. Their classes are **function** and **speedy_fn**.
-#' Avoid mixing tidy, speedy and non-tidy/speedy functions in the same pipeline.
+#' `new_name = old_name`! The speedy functions all are prefixed with an "s",
+#' like [smutate()], and build on the work initiated in {collapse} to propose a
+#' series of paired functions with the tidy ones. So, [smutate()] and [mutate()]
+#' are "speedy" and 'tidy" counterparts and they are used in a very similar, if
+#' not identical way. This notation using a "s" prefix is there to draw the
+#' attention on their particularities. Their classes are **function** and
+#' **speedy_fn**. Avoid mixing tidy, speedy and non-tidy/speedy functions in the
+#' same pipeline.
+#' **This is a global page to present all the speedy functions in one place.**
+#' It is not meant to be a clear and detailed help page of all individual "s"
+#' functions. Please, refer to the corresponding help page of the non-"s" paired
+#' function for more details! You can use the {svMisc}'s `.?smutate` syntax to
+#' go to the help page of the non-"s" function with a message.
 #'
 #' @param .data A data frame (data.frame, data.table or tibble's tbl_df)
 #' @param ... Arguments dependent to the context of the function and most of
@@ -50,7 +55,8 @@
 #'   (counting from the end). The default is `-1` and returns last variable.
 #' @param .keep_all If `TRUE` keep all variables in `.data`.
 #' @param data A data frame, or for `replace_na()` a vector or a data frame.
-#' @param replace If `data` is a vector, a unique value to replace `NA`s, otherwise, a list of values, one per column of the data frame.
+#' @param replace If `data` is a vector, a unique value to replace `NA`s,
+#' otherwise, a list of values, one per column of the data frame.
 #' @param cols A selection of the columns using tidy-select syntax, see[tidyr::pivot_longer()].
 #' @param names_to A character vector with the name or names of the columns for the names.
 #' @param values_to A string with the name of the column that receives the values.
@@ -75,14 +81,10 @@
 #' @param regex A regular expression used to extract the desired values (use one
 #'   group with `(` and `)` for each element of `into`).
 #'
-#' @note The help page here is very basic and it aims mainly to list all the
-#' speedy functions. For more complete help, see their "non-s" counterparts in
-#' {dplyr} or {tidyr}, or use the {svMisc}'s `.?smutate` syntax to link to the
-#' correct page.
-#' The [ssummarise()] function does not support `n()` as does
+#' @note The [ssummarise()] function does not support `n()` as does
 #' [dplyr::summarise()]. You can use [fn()] instead, but then, you must give a
 #' variable name as argument. The [fn()] alternative can also be used in
-#' [tsummarise()].
+#' [summarise()] for homogeneous syntax between the two.
 #' From {dplyr}, the [slice()] and `slice_xxx()` functions are not added yet
 #' because they are not available for {dbplyr}. Also [anti_join()],
 #' [semi_join()] and [nest_join()] are not implemented yet.
@@ -94,10 +96,11 @@
 #' indication of the return values.
 #'
 #' @export
+#' @name speedy_functions
 #'
 #' @examples
 #' # TODO...
-speedy_functions <- function() {
+list_speedy_functions <- function() {
   c("sadd_count", "sadd_tally", "sarrange", "sbind_cols", "sbind_rows",
     "scount", "sdistinct", "sdrop_na", "sextract", "sfill", "sfilter",
     "sfilter_ungroup", "sfull_join", "sgroup_by", "sinner_join", "sleft_join",

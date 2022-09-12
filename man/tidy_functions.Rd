@@ -2,133 +2,19 @@
 % Please edit documentation in R/tidy_functions.R
 \name{tidy_functions}
 \alias{tidy_functions}
-\alias{tgroup_by}
-\alias{tungroup}
-\alias{trename}
-\alias{trename_with}
-\alias{tfilter}
-\alias{tfilter_ungroup}
-\alias{tselect}
-\alias{tmutate}
-\alias{tmutate_ungroup}
-\alias{ttransmute}
-\alias{ttransmute_ungroup}
-\alias{tsummarise}
-\alias{tfull_join}
-\alias{tleft_join}
-\alias{tright_join}
-\alias{tinner_join}
-\alias{tbind_rows}
-\alias{tbind_cols}
-\alias{tarrange}
-\alias{tcount}
-\alias{ttally}
-\alias{tadd_count}
-\alias{tadd_tally}
-\alias{tpull}
-\alias{tdistinct}
-\alias{tdrop_na}
-\alias{treplace_na}
-\alias{tpivot_longer}
-\alias{tpivot_wider}
-\alias{tuncount}
-\alias{tunite}
-\alias{tseparate}
-\alias{tseparate_rows}
-\alias{tfill}
-\alias{textract}
+\alias{list_tidy_functions}
+\alias{filter_ungroup}
+\alias{mutate_ungroup}
+\alias{transmute_ungroup}
 \title{Tidy functions (mainly from {dplyr} and {tidyr}) to manipulate data frames}
 \usage{
-tidy_functions()
+list_tidy_functions()
 
-tgroup_by(.data, ...)
+filter_ungroup(.data, ...)
 
-tungroup(.data, ...)
+mutate_ungroup(.data, ..., .keep = "all")
 
-trename(.data, ...)
-
-trename_with(.data, .fn, .cols = everything(), ...)
-
-tfilter(.data, ...)
-
-tfilter_ungroup(.data, ...)
-
-tselect(.data, ...)
-
-tmutate(.data, ...)
-
-tmutate_ungroup(.data, ..., .keep = "all")
-
-ttransmute(.data, ...)
-
-ttransmute_ungroup(.data, ...)
-
-tsummarise(.data, ...)
-
-tfull_join(x, y, by = NULL, suffix = c(".x", ".y"), copy = FALSE, ...)
-
-tleft_join(x, y, by = NULL, suffix = c(".x", ".y"), copy = FALSE, ...)
-
-tright_join(x, y, by = NULL, suffix = c(".x", ".y"), copy = FALSE, ...)
-
-tinner_join(x, y, by = NULL, suffix = c(".x", ".y"), copy = FALSE, ...)
-
-tbind_rows(..., .id = NULL)
-
-tbind_cols(
-  ...,
-  .name_repair = c("unique", "universal", "check_unique", "minimal")
-)
-
-tarrange(.data, ..., .by_group = FALSE)
-
-tcount(x, ..., wt = NULL, sort = FALSE, name = NULL)
-
-ttally(x, wt = NULL, sort = FALSE, name = NULL)
-
-tadd_count(x, ..., wt = NULL, sort = FALSE, name = NULL)
-
-tadd_tally(x, wt = NULL, sort = FALSE, name = NULL)
-
-tpull(.data, var = -1, name = NULL, ...)
-
-tdistinct(.data, ..., .keep_all = FALSE)
-
-tdrop_na(data, ...)
-
-treplace_na(data, replace, ...)
-
-tpivot_longer(data, cols, names_to = "name", values_to = "values", ...)
-
-tpivot_wider(data, names_from = name, values_from = value, ...)
-
-tuncount(data, weights, .remove = TRUE, .id = NULL)
-
-tunite(data, col, ..., sep = "_", remove = TRUE, na.rm = FALSE)
-
-tseparate(
-  data,
-  col,
-  into,
-  sep = "[^[:alnum:]]+",
-  remove = TRUE,
-  convert = FALSE,
-  ...
-)
-
-tseparate_rows(data, ..., sep = "[^[:alnum:].]+", convert = FALSE)
-
-tfill(data, ..., .direction = c("down", "up", "downup", "updown"))
-
-textract(
-  data,
-  col,
-  into,
-  regex = "([[:alnum:]]+)",
-  remove = TRUE,
-  convert = FALSE,
-  ...
-)
+transmute_ungroup(.data, ...)
 }
 \arguments{
 \item{.data}{A data frame, data frame extension (e.g. a tibble), or a lazy
@@ -137,96 +23,14 @@ data frame (e.g. from dbplyr or dtplyr). See \code{\link[=mutate]{mutate()}} for
 \item{...}{Arguments dependent to the context of the function and most of
 the time, not evaluated in a standard way (cf. the tidyverse approach).}
 
-\item{.fn}{A function to use.}
-
-\item{.cols}{The list of the column where to apply the transformation. See
-\code{\link[=rename_with]{rename_with()}} with a list of functions that can be used here to specify
-easily these columns.}
-
 \item{.keep}{Which columns to keep. The default is \code{"all"}, possible values
 are \code{"used"}, \code{"unused"}, or \code{"none"} (see \code{\link[=mutate]{mutate()}}).}
-
-\item{x}{A data frame or lazy data frame, as for \code{.data}.}
-
-\item{y}{A second data frame or lazy data frame.}
-
-\item{by}{A list of names of the columns to use for joining the two data
-frames.}
-
-\item{suffix}{The suffix to the column names to use to differentiate the
-columns that come from the first or the second data frame. By default it is
-\code{c(".x", ".y")}.}
-
-\item{copy}{If \code{x} and \code{y} are not from the same data source, and \code{copy} is
-\code{TRUE}, then \code{y} will be copied into the same src as \code{x}. This allows you
-to join tables across srcs, but it is a potentially expensive operation so
-you must opt into it..}
-
-\item{.id}{The name of the column for the origin id, either names if all
-other arguments are named, or numbers.}
-
-\item{.name_repair}{How should the name be "repaired" to avoid duplicate
-column names? See \code{\link[dplyr:bind]{dplyr::bind_cols()}} for more details.}
-
-\item{.by_group}{Logical. If \code{TRUE} rows are first arranger by the grouping
-variables in any. \code{FALSE} by default.}
-
-\item{wt}{Frequency weights. Can be \code{NULL} or a variable. Use data masking.}
-
-\item{sort}{If \code{TRUE} largest group will be shown on top.}
-
-\item{name}{The name of the new column in the output (\code{n} by default, and no
-existing column must have this name, or an error is generated).}
-
-\item{var}{A variable specified as a name, a positive or a negative integer
-(counting from the end). The default is \code{-1} and returns last variable.}
-
-\item{.keep_all}{If \code{TRUE} keep all variables in \code{.data}.}
-
-\item{data}{A data frame, or for \code{replace_na()} a vector or a data frame.}
-
-\item{replace}{If \code{data} is a vector, a unique value to replace \code{NA}s, otherwise, a list of values, one per column of the data frame.}
-
-\item{cols}{A selection of the columns using tidy-select syntax, see\code{\link[tidyr:pivot_longer]{tidyr::pivot_longer()}}.}
-
-\item{names_to}{A character vector with the name or names of the columns for the names.}
-
-\item{values_to}{A string with the name of the column that receives the values.}
-
-\item{names_from}{The column or columns containing the names (use tidy selection and do not quote the names).}
-
-\item{values_from}{Idem for the column or columns that contain the values.}
-
-\item{weights}{A vector of weight to use to "uncount" \code{data}.}
-
-\item{.remove}{If \code{TRUE}, and \code{weights} is the name of a column, that column
-is removed from \code{data}.}
-
-\item{col}{The name quoted or not of the new column with united variable.}
-
-\item{sep}{Separator to use between values for united column.}
-
-\item{remove}{If \code{TRUE} the initial columns that are separated are also
-removed from \code{data}.}
-
-\item{na.rm}{If \code{TRUE}, \code{NA}s are eliminated before uniting the values.}
-
-\item{into}{Name of the new column to put separated variables. Use \code{NA} for
-items to drop.}
-
-\item{convert}{If \verb{'TRUE} resulting values are converted into numeric,
-integer or logical.}
-
-\item{.direction}{Direction in which to fill missing data: \code{"down"} (by
-default), \code{"up"}, or \code{"downup"} (first down, then up), \code{"updown"}
-(the opposite).}
-
-\item{regex}{A regular expression used to extract the desired values (use one
-group with \code{(} and \verb{)} for each element of \code{into}).}
 }
 \value{
 See corresponding "non-t" function for the full help page with
-indication of the return values.
+indication of the return values. \code{\link[=list_tidy_functions]{list_tidy_functions()}} returns a list of
+all the tidy(verse) functions that have their speedy "s" counterpart, see
+\link{speedy_functions}.
 }
 \description{
 The Tidyverse defines a coherent set of tools to manipulate
@@ -235,17 +39,50 @@ care. These functions, like \code{\link[=mutate]{mutate()}} or \code{\link[=summ
 {dplyr} and {tidyr} packages. When using variants, like {dtplyr} for
 \strong{data.frame} objects, or {dbplyr} to work with external databases,
 successive commands in a pipeline are pooled together but not computed. One
-has to \code{\link[=collect]{collect()}} the result to get its final form. The tidy functions have
-the same name as their {dplyr} or {tidyr} equivalent, but prefixed with "t".
-These functions are otherwise quasi-identical and use the same code, but
-their class is both \strong{function} and \strong{tidy_fn}. This notation using a "t"
-prefix is there to draw the attention on their particularities.
+has to \code{\link[=collect]{collect()}} the result to get its final form. Most of the tidy
+functions that have their "speedy" counterpart prefixed with "s" are listed
+with\code{\link[=list_tidy_functions]{list_tidy_functions()}}. Their main usages are (excluding less used
+arguments, or those that are not compatibles with the speedy "s" counterpart
+functions):
+\itemize{
+\item \code{group_by(.data, ...)}
+\item \code{ungroup(.data)}
+\item \code{rename(.data, ...)}
+\item \code{rename_with(.data, .fn, .cols = everything(), ...)}
+\item \code{filter(.data, ...)}
+\item \code{select(.data, ...)}
+\item \code{mutate(.data, ..., .keep = "all")}
+\item \code{transmute(.data, ...)}
+\item \code{summarise(.data, ...)}
+\item \code{full_join(x, y, by = NULL, suffix = c(".x", ".y"), copy = FALSE, ...)}
+\item \code{left_join(x, y, by = NULL, suffix = c(".x", ".y"), copy = FALSE, ...)}
+\item \code{right_join(x, y, by = NULL, suffix = c(".x", ".y"), copy = FALSE, ...)}
+\item \code{inner_join(x, y, by = NULL, suffix = c(".x", ".y"), copy = FALSE, ...)}
+\item \code{bind_rows(..., .id = NULL)}
+\item \code{bind_cols(..., .name_repair = c("unique", "universal", "check_unique", "minimal"))}
+\item \code{arrange(.data, ..., .by_group = FALSE)}
+\item \code{count(x, ..., wt = NULL, sort = FALSE, name = NULL)}
+\item \code{tally(x, wt = NULL, sort = FALSE, name = NULL)}
+\item \code{add_count(x, ..., wt = NULL, sort = FALSE, name = NULL)}
+\item \code{add_tally(x, wt = NULL, sort = FALSE, name = NULL)}
+\item \code{pull(.data, var = -1, name = NULL)}
+\item \code{distinct(.data, ..., .keep_all = FALSE)}
+\item \code{drop_na(data, ...)}
+\item \code{replace_na(data, replace)}
+\item \code{pivot_longer(data, cols, names_to = "name", values_to = "value")}
+\item \code{pivot_wider(data, names_from = name, values_from = value)}
+\item \code{uncount(data, weights, .remove = TRUE, .id = NULL)}
+\item \code{unite(data, col, ..., sep = "_", remove = TRUE, na.rm = FALSE)}
+\item \code{separate(data, col, into, sep = "[^[:alnum:]]+", remove = TRUE, convert = FALSE)}
+\item \code{separate_rows(data, ..., sep = "[^[:alnum:].]+", convert = FALSE)}
+\item \code{fill(data, ..., .direction = c("down", "up", "downup", "updown"))}
+\item \code{extract(data, col, into, regex = "([[:alnum:]]+)", remove = TRUE, convert = FALSE)}
+plus the functions defined here under.
+}
 }
 \note{
 The help page here is very basic and it aims mainly to list all the
-tidy functions. For more complete help, see their "non-t" counterparts in
-{dplyr} or {tidyr}, or use the {svMisc}'s \code{.?tmutate} syntax to link to the
-correct page.
+tidy functions. For more complete help, see the {dplyr} or {tidyr} packages.
 #' From {dplyr}, the \code{\link[=slice]{slice()}} and \code{slice_xxx()} functions are not added yet
 because they are not available for {dbplyr}. Also \code{\link[=anti_join]{anti_join()}},
 \code{\link[=semi_join]{semi_join()}} and \code{\link[=nest_join]{nest_join()}} are not implemented yet.
@@ -260,5 +97,6 @@ not implemented yet.
 # TODO...
 }
 \seealso{
-\code{\link[collapse:select_replace_vars]{collapse::num_vars()}} to easily keep only numeric columns from a data frame, \code{\link[collapse:fscale]{collapse::fscale()}} for scaling and centering matrix-like objects and data frames.
+\code{\link[collapse:select_replace_vars]{collapse::num_vars()}} to easily keep only numeric columns from a
+data frame, \code{\link[collapse:fscale]{collapse::fscale()}} for scaling and centering matrix-like objects and data frames.
 }

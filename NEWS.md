@@ -1,10 +1,18 @@
+# svBase 1.2.1
+
+-   The tidy functions are reworked to use the original function name, not the one with a "t" prefix.
+
+-   The functions that list family functions now start with `list_`, like `list_tidy_functions()`, `list_speedy_functions()` or `list_fstat_functions()`.
+
+-   `dtx_rows()` and other similar functions are added to avoid using `dtx(tribble(...))`.
+
 # svBase 1.2.0
 
 -   Addition of "tidy" 't' functions and "speedy" 's' functions. The tidy functions are mostly renamed versions of {dplyr} or {tidyr} functions, while the speedy functions have a similar interface but are from {collapse} or {data.table} for a big part of them. Arguments are homogenized and sometimes reduced to restrict to features that are compatibles in the two groups.
 
 -   The function `n()` is not working in `ssumarise()`. Use `fn(var)` instead, and you can also use it in `tsummarise()`.
 
--   Addition of "fast" functions from {collapse} + `fnobs_all()` and `fnobs_na`.
+-   Addition of "fast" functions from {collapse} + `fn()` and `fna()`.
 
 -   The `%xf%` operators where `x`can be `-`, `/`, etc. for a more readable alternative to `TRA=` in the fast functions.
 

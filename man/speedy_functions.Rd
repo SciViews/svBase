@@ -2,6 +2,7 @@
 % Please edit documentation in R/speedy_functions.R
 \name{speedy_functions}
 \alias{speedy_functions}
+\alias{list_speedy_functions}
 \alias{sgroup_by}
 \alias{sungroup}
 \alias{srename}
@@ -39,7 +40,7 @@
 \alias{sextract}
 \title{Speedy functions (mainly from {collapse} and {data.table}) to manipulate data frames}
 \usage{
-speedy_functions()
+list_speedy_functions()
 
 sgroup_by(.data, ...)
 
@@ -182,7 +183,8 @@ existing column must have this name, or an error is generated).4}
 
 \item{data}{A data frame, or for \code{replace_na()} a vector or a data frame.}
 
-\item{replace}{If \code{data} is a vector, a unique value to replace \code{NA}s, otherwise, a list of values, one per column of the data frame.}
+\item{replace}{If \code{data} is a vector, a unique value to replace \code{NA}s,
+otherwise, a list of values, one per column of the data frame.}
 
 \item{cols}{A selection of the columns using tidy-select syntax, see\code{\link[tidyr:pivot_longer]{tidyr::pivot_longer()}}.}
 
@@ -235,24 +237,25 @@ For instance, \code{\link[=fselect]{fselect()}} is similar to \code{\link[=selec
 similar to \code{\link[=summarise]{summarise()}}. Not all functions are implemented, arguments and
 argument names differ, and the behavior may be very different, like
 \code{\link[=frename]{frename()}} which uses \code{old_name = new_name}, while \code{\link[=rename]{rename()}} uses
-\code{new_name = old_name}! The speedy functions all start with an "s" prefixed to
-the function name, like \code{\link[=smutate]{smutate()}}, and build on the work initiated in
-{collapse} to propose a series of paired functions with the tidy ones. So,
-\code{\link[=smutate]{smutate()}} and \code{\link[=tmutate]{tmutate()}} are "speedy" and 'tidy" counterparts and they are
-used in a very similar, if not identical way as the original \code{\link[=mutate]{mutate()}}
-function. This notation using a "s" prefix is there to draw the attention on
-their particularities. Their classes are \strong{function} and \strong{speedy_fn}.
-Avoid mixing tidy, speedy and non-tidy/speedy functions in the same pipeline.
+\code{new_name = old_name}! The speedy functions all are prefixed with an "s",
+like \code{\link[=smutate]{smutate()}}, and build on the work initiated in {collapse} to propose a
+series of paired functions with the tidy ones. So, \code{\link[=smutate]{smutate()}} and \code{\link[=mutate]{mutate()}}
+are "speedy" and 'tidy" counterparts and they are used in a very similar, if
+not identical way. This notation using a "s" prefix is there to draw the
+attention on their particularities. Their classes are \strong{function} and
+\strong{speedy_fn}. Avoid mixing tidy, speedy and non-tidy/speedy functions in the
+same pipeline.
+\strong{This is a global page to present all the speedy functions in one place.}
+It is not meant to be a clear and detailed help page of all individual "s"
+functions. Please, refer to the corresponding help page of the non-"s" paired
+function for more details! You can use the {svMisc}'s \code{.?smutate} syntax to
+go to the help page of the non-"s" function with a message.
 }
 \note{
-The help page here is very basic and it aims mainly to list all the
-speedy functions. For more complete help, see their "non-s" counterparts in
-{dplyr} or {tidyr}, or use the {svMisc}'s \code{.?smutate} syntax to link to the
-correct page.
 The \code{\link[=ssummarise]{ssummarise()}} function does not support \code{n()} as does
 \code{\link[dplyr:summarise]{dplyr::summarise()}}. You can use \code{\link[=fn]{fn()}} instead, but then, you must give a
 variable name as argument. The \code{\link[=fn]{fn()}} alternative can also be used in
-\code{\link[=tsummarise]{tsummarise()}}.
+\code{\link[=summarise]{summarise()}} for homogeneous syntax between the two.
 From {dplyr}, the \code{\link[=slice]{slice()}} and \code{slice_xxx()} functions are not added yet
 because they are not available for {dbplyr}. Also \code{\link[=anti_join]{anti_join()}},
 \code{\link[=semi_join]{semi_join()}} and \code{\link[=nest_join]{nest_join()}} are not implemented yet.

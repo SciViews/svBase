@@ -3,14 +3,16 @@
 #' @description The fast statistical function, or fast-flexible-friendly
 #' statistical functions are prefixed with "f". These vectorized functions
 #' supersede the no-f functions, bringing the capacity to work smoothly on
-#' matrix-like and data frame objects. For instance, base [mean()] operates on a
-#' vector, but not on a data frame. A matrix is recognized as a vector and a
-#' single mean is returned. On, the contrary, [fmean()] calculates one mean per
-#' column. It does the same for a data frame, and it does so usually quicker
-#' than base functions. No need for `colMeans()`, a separate function to do so.
-#' Fast functions also recognize grouping with [fgroup_by()], [sgroup_by()],
-#' [tgroup_by()] or [group_by()] and calculate the mean by group in this case.
-#' Again, no need for a different function like [stats::ave()].
+#' matrix-like and data frame objects. Most of them are defined in the
+#' {collapse} package
+#' For instance, base [mean()] operates on a vector, but not on a data frame. A
+#' matrix is recognized as a vector and a single mean is returned. On, the
+#' contrary, [fmean()] calculates one mean per column. It does the same for a
+#' data frame, and it does so usually quicker than base functions. No need for
+#' `colMeans()`, a separate function to do so. Fast statistical functions also
+#' recognize grouping with [fgroup_by()], [sgroup_by()] or [group_by()] and
+#' calculate the mean by group in this case. Again, no need for a different
+#' function like [stats::ave()].
 #' Finally, these functions also have a `TRA=` argument that computes, for
 #' instance, if `TRA = "-"`, `(x  f(x))` very efficiently (for instance to
 #' calculate residuals by subtracting the mean).
@@ -42,16 +44,19 @@
 #' @param expr The expression to evaluate as RHS of the `%__f%` operators.
 #'
 #' @note The page [collapse::fast-statistical-functions] gives more details.
-#' [fnobs_all()] count all observations, including `NA`s, [fnobs_na()] counts
+#' [fn()] count all observations, including `NA`s, [fna()] counts
 #' only `NA`s, where [fnobs()] counts non-missing observations.
-#' Instead of `TRA=` one can use the `%__f%` functions where `__` is `replace`, `replace_fill`, `-`, `+`, `-+`, `/`, `/*100` for `TRA="%"`, `*`, `mod` for `TRA="%%"`, or `-mod` for `TRA="-%%"`. See example.
+#' Instead of `TRA=` one can use the `%__f%` functions where `__` is `replace`,
+#' `replace_fill`, `-`, `+`, `-+`, `/`, `/*100` for `TRA="%"`, `*`, `mod` for
+#' `TRA="%%"`, or `-mod` for `TRA="-%%"`. See example.
 #[fquantile()] corresponds to [collapse::fnth()] where `n < 1`.
 #'
-#' @return The number of all observations for [fnobs_all()] or the number of
-#' missing observations for [fnobs_na()]. [fast_functions()] returns a list of
+#' @return The number of all observations for [fn()] or the number of
+#' missing observations for [fna()]. [list_fstat_functions()] returns a list of
 #' all the known fast statistical functions.
 #'
 #' @export
+#' @name fstat_functions
 #'
 #' @examples
 #' library(collapse)
@@ -69,64 +74,64 @@
 #' iris |> fgroup_by(Species) %-f% fmean()
 #' # or:
 #' iris_num %-f% fmean(g = iris$Species)
-fast_functions <- function() {
+list_fstat_functions <- function() {
   c("ffirst", "flast", "fmax", "fmean", "fmedian", "fmin", "fmode",
-    "fndistinct", "fnobs", "fnobs_all", "fnobs_na", "fnth", "fprod", #"fquantile",
+    "fndistinct", "fnobs", "fn", "fna", "fnth", "fprod", #"fquantile",
     "fsd", "fsum", "fvar")
 }
 
-#.src_fast <- function(src, comment = "A fast (flexible and friendly) function, see ?fast_functions.") {
+#.src_fast <- function(src, comment = "A fast (flexible and friendly) function, see ?fstat_functions.") {
 #  attr(comment, "src") <- src
 #  comment
 #}
 
 # #' @export
-# #' @rdname fast_functions
+# #' @rdname fstat_functions
 #fsum <- structure(collapse::fsum,
 #  class = c("function", "fast_fn"), comment = .src_fast("collapse::fsum"))
 
 # #' @export
-# #' @rdname fast_functions
+# #' @rdname fstat_functions
 #fprod <- structure(collapse::fprod,
 #  class = c("function", "fast_fn"), comment = .src_fast("collapse::fprod"))
 
 # #' @export
-# #' @rdname fast_functions
+# #' @rdname fstat_functions
 #fmean <- structure(collapse::fmean,
 #  class = c("function", "fast_fn"), comment = .src_fast("collapse::fmean"))
 
 # #' @export
-# #' @rdname fast_functions
+# #' @rdname fstat_functions
 #fmedian <- structure(collapse::fmedian,
 #  class = c("function", "fast_fn"), comment = .src_fast("collapse::fmedian"))
 
 # #' @export
-# #' @rdname fast_functions
+# #' @rdname fstat_functions
 #fmode <- structure(collapse::fmode,
 #  class = c("function", "fast_fn"), comment = .src_fast("collapse::fmode"))
 
 # #' @export
-# #' @rdname fast_functions
+# #' @rdname fstat_functions
 #fvar <- structure(collapse::fvar,
 #  class = c("function", "fast_fn"), comment = .src_fast("collapse::fvar"))
 
 # #' @export
-# #' @rdname fast_functions
+# #' @rdname fstat_functions
 #fsd <- structure(collapse::fsd,
 #  class = c("function", "fast_fn"), comment = .src_fast("collapse::fsd"))
 
 # #' @export
-# #' @rdname fast_functions
+# #' @rdname fstat_functions
 #fmin <- structure(collapse::fmin,
 #  class = c("function", "fast_fn"), comment = .src_fast("collapse::fmin"))
 
 # #' @export
-# #' @rdname fast_functions
+# #' @rdname fast_stat_functions
 #fmax <- structure(collapse::fmax,
 #  class = c("function", "fast_fn"), comment = .src_fast("collapse::fmax"))
 
 # #' @export
-# #' @rdname fast_functions
+# #' @rdname fstat_functions
 #fnth <- structure(function(x, n = 1, ...) {
 #  if (length(n) != 1 || n < 0)
 #    stop("n must be a scalar integer between 1 and NROW(x) or 0 < n < 1.")
@@ -153,51 +158,39 @@ fast_functions <- function() {
 #}, class = c("function", "fast_fn"), comment = .src_fast("collapse::fnth"))
 
 # #' @export
-# #' @rdname fast_functions
+# #' @rdname fstat_functions
 #ffirst <- structure(collapse::ffirst,
 #  class = c("function", "fast_fn"), comment = .src_fast("collapse::ffirst"))
 
 # #' @export
-# #' @rdname fast_functions
+# #' @rdname fstat_functions
 #flast <- structure(collapse::flast,
 #  class = c("function", "fast_fn"), comment = .src_fast("collapse::flast"))
 
 # #' @export
-# #' @rdname fast_functions
+# #' @rdname fstat_functions
 #fnobs <- structure(collapse::fnobs,
 #  class = c("function", "fast_fn"), comment = .src_fast("collapse::fnobs"))
 
 #' @export
-#' @rdname fast_functions
+#' @rdname fstat_functions
 fn <- function(x, ...) {
   fnobs(replace_NA(x), ...)
 }
 
 #' @export
-#' @rdname fast_functions
-fnobs_all <- function(x, ...) {
-  fnobs(replace_NA(x), ...)
-}
-#fnobs_all <- structure(function(x, ...) {
-#  collapse::fnobs(replace_NA(x), ...)
-#}, class = c("function", "fast_fn"), comment = .src_fast("collapse::fnobs"))
-
-#' @export
-#' @rdname fast_functions
-fnobs_na <- function(x, ...) {
+#' @rdname fstat_functions
+fna <- function(x, ...) {
   fnobs(replace_NA(x), ...) - fnobs(x, ...)
 }
-#fnobs_na <- structure(function(x, ...) {
-#  collapse::fnobs(replace_NA(x), ...) - collapse::fnobs(x, ...)
-#}, class = c("function", "fast_fn"), comment = .src_fast("collapse::fnobs"))
 
 # #' @export
-# #' @rdname fast_functions
+# #' @rdname fstat_functions
 #fndistinct <- structure(collapse::fndistinct,
 #  class = c("function", "fast_fn"), comment = .src_fast("collapse::fndistinct"))
 
 #' @export
-#' @rdname fast_functions
+#' @rdname fstat_functions
 `%replacef%` <- function(x, expr) {
   expr <- substitute(expr)
   expr$x <- x
@@ -206,7 +199,7 @@ fnobs_na <- function(x, ...) {
 }
 
 #' @export
-#' @rdname fast_functions
+#' @rdname fstat_functions
 `%replace_fillf%` <- function(x, expr) {
   expr <- substitute(expr)
   expr$x <- x
@@ -215,7 +208,7 @@ fnobs_na <- function(x, ...) {
 }
 
 #' @export
-#' @rdname fast_functions
+#' @rdname fstat_functions
 `%-f%` <- function(x, expr) {
   expr <- substitute(expr)
   expr$x <- x
@@ -224,7 +217,7 @@ fnobs_na <- function(x, ...) {
 }
 
 #' @export
-#' @rdname fast_functions
+#' @rdname fstat_functions
 `%+f%` <- function(x, expr) {
   expr <- substitute(expr)
   expr$x <- x
@@ -233,7 +226,7 @@ fnobs_na <- function(x, ...) {
 }
 
 #' @export
-#' @rdname fast_functions
+#' @rdname fstat_functions
 `%-+f%` <- function(x, expr) {
   expr <- substitute(expr)
   expr$x <- x
@@ -242,7 +235,7 @@ fnobs_na <- function(x, ...) {
 }
 
 #' @export
-#' @rdname fast_functions
+#' @rdname fstat_functions
 `%/f%` <- function(x, expr) {
   expr <- substitute(expr)
   expr$x <- x
@@ -251,7 +244,7 @@ fnobs_na <- function(x, ...) {
 }
 
 #' @export
-#' @rdname fast_functions
+#' @rdname fstat_functions
 `%/*100f%` <- function(x, expr) {
   expr <- substitute(expr)
   expr$x <- x
@@ -260,7 +253,7 @@ fnobs_na <- function(x, ...) {
 }
 
 #' @export
-#' @rdname fast_functions
+#' @rdname fstat_functions
 `%*f%` <- function(x, expr) {
   expr <- substitute(expr)
   expr$x <- x
@@ -269,7 +262,7 @@ fnobs_na <- function(x, ...) {
 }
 
 #' @export
-#' @rdname fast_functions
+#' @rdname fstat_functions
 `%modf%` <- function(x, expr) {
   expr <- substitute(expr)
   expr$x <- x
@@ -278,7 +271,7 @@ fnobs_na <- function(x, ...) {
 }
 
 #' @export
-#' @rdname fast_functions
+#' @rdname fstat_functions
 `%-modf%` <- function(x, expr) {
   expr <- substitute(expr)
   expr$x <- x
@@ -287,6 +280,6 @@ fnobs_na <- function(x, ...) {
 }
 
 # #' @export
-# #' @rdname fast_functions
+# #' @rdname fstat_functions
 #fgroup_by <- function(x, ...)
 #  collapse::fgroup_by(x, ...)
