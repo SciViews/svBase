@@ -8,14 +8,19 @@ For instance, fselect() is similar to select(), or fsummarise() is
 similar to summarise(). Not all functions are implemented, arguments and
 argument names differ, and the behavior may be very different, like
 frename() which uses old_name = new_name, while rename() uses
-new_name = old_name! The speedy functions all start with an &quot;s&quot; prefixed to
-the function name, like smutate(), and build on the work initiated in
-collapse to propose a series of paired functions with the tidy ones. So,
-smutate() and tmutate() are &quot;speedy&quot; and 'tidy&quot; counterparts and they are
-used in a very similar, if not identical way as the original mutate()
-function. This notation using a &quot;s&quot; prefix is there to draw the attention on
-their particularities. Their classes are function and speedy_fn.
-Avoid mixing tidy, speedy and non-tidy/speedy functions in the same pipeline."><meta name="twitter:card" content="summary"><!-- Mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.6/MathJax.js" async integrity="sha256-nlrDrBTHxJJlDDX22AS33xYI1OJHnGMDhiYMSe2U0e0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.6/config/TeX-AMS-MML_HTMLorMML.js" async integrity="sha256-4zys9A4hMQmtq2EUL+JRoXc0NZi8jVJMzb8onewOaSQ=" crossorigin="anonymous"></script><!-- Global site tag (gtag.js) - Google Analytics --><!--<script async src="https://www.googletagmanager.com/gtag/js?id=UA-462421-8"></script>
+new_name = old_name! The speedy functions all are prefixed with an &quot;s&quot;,
+like smutate(), and build on the work initiated in collapse to propose a
+series of paired functions with the tidy ones. So, smutate() and mutate()
+are &quot;speedy&quot; and 'tidy&quot; counterparts and they are used in a very similar, if
+not identical way. This notation using a &quot;s&quot; prefix is there to draw the
+attention on their particularities. Their classes are function and
+speedy_fn. Avoid mixing tidy, speedy and non-tidy/speedy functions in the
+same pipeline.
+This is a global page to present all the speedy functions in one place.
+It is not meant to be a clear and detailed help page of all individual &quot;s&quot;
+functions. Please, refer to the corresponding help page of the non-&quot;s&quot; paired
+function for more details! You can use the svMisc's .?smutate syntax to
+go to the help page of the non-&quot;s&quot; function with a message."><meta name="twitter:card" content="summary"><!-- Mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.6/MathJax.js" async integrity="sha256-nlrDrBTHxJJlDDX22AS33xYI1OJHnGMDhiYMSe2U0e0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.6/config/TeX-AMS-MML_HTMLorMML.js" async integrity="sha256-4zys9A4hMQmtq2EUL+JRoXc0NZi8jVJMzb8onewOaSQ=" crossorigin="anonymous"></script><!-- Global site tag (gtag.js) - Google Analytics --><!--<script async src="https://www.googletagmanager.com/gtag/js?id=UA-462421-8"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
@@ -73,7 +78,7 @@ Avoid mixing tidy, speedy and non-tidy/speedy functions in the same pipeline."><
   </a>
 </li>
       </ul><div class="navbar-title">
-        <a class="navbar-brand" href="../index.html"><p class="h2">svBase <small>v1.2.0</small></p></a>
+        <a class="navbar-brand" href="../index.html"><p class="h2">svBase <small>v1.2.1</small></p></a>
       </div>
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
@@ -101,18 +106,23 @@ For instance, <code><a href="https://sebkrantz.github.io/collapse/reference/sele
 similar to <code><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise()</a></code>. Not all functions are implemented, arguments and
 argument names differ, and the behavior may be very different, like
 <code><a href="https://sebkrantz.github.io/collapse/reference/frename.html" class="external-link">frename()</a></code> which uses <code>old_name = new_name</code>, while <code><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename()</a></code> uses
-<code>new_name = old_name</code>! The speedy functions all start with an "s" prefixed to
-the function name, like <code>smutate()</code>, and build on the work initiated in
-collapse to propose a series of paired functions with the tidy ones. So,
-<code>smutate()</code> and <code><a href="tidy_functions.html">tmutate()</a></code> are "speedy" and 'tidy" counterparts and they are
-used in a very similar, if not identical way as the original <code><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate()</a></code>
-function. This notation using a "s" prefix is there to draw the attention on
-their particularities. Their classes are <strong>function</strong> and <strong>speedy_fn</strong>.
-Avoid mixing tidy, speedy and non-tidy/speedy functions in the same pipeline.</p>
+<code>new_name = old_name</code>! The speedy functions all are prefixed with an "s",
+like <code>smutate()</code>, and build on the work initiated in collapse to propose a
+series of paired functions with the tidy ones. So, <code>smutate()</code> and <code><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate()</a></code>
+are "speedy" and 'tidy" counterparts and they are used in a very similar, if
+not identical way. This notation using a "s" prefix is there to draw the
+attention on their particularities. Their classes are <strong>function</strong> and
+<strong>speedy_fn</strong>. Avoid mixing tidy, speedy and non-tidy/speedy functions in the
+same pipeline.
+<strong>This is a global page to present all the speedy functions in one place.</strong>
+It is not meant to be a clear and detailed help page of all individual "s"
+functions. Please, refer to the corresponding help page of the non-"s" paired
+function for more details! You can use the svMisc's <code>.?smutate</code> syntax to
+go to the help page of the non-"s" function with a message.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">speedy_functions</span><span class="op">(</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">list_speedy_functions</span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">sgroup_by</span><span class="op">(</span><span class="va">.data</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
@@ -296,7 +306,8 @@ existing column must have this name, or an error is generated).4</p></dd>
 
 
 <dt>replace</dt>
-<dd><p>If <code>data</code> is a vector, a unique value to replace <code>NA</code>s, otherwise, a list of values, one per column of the data frame.</p></dd>
+<dd><p>If <code>data</code> is a vector, a unique value to replace <code>NA</code>s,
+otherwise, a list of values, one per column of the data frame.</p></dd>
 
 
 <dt>cols</dt>
@@ -375,14 +386,10 @@ indication of the return values.</p>
     </div>
     <div id="note">
     <h2>Note</h2>
-    <p>The help page here is very basic and it aims mainly to list all the
-speedy functions. For more complete help, see their "non-s" counterparts in
-dplyr or tidyr, or use the svMisc's <code>.?smutate</code> syntax to link to the
-correct page.
-The <code>ssummarise()</code> function does not support <code><a href="https://dplyr.tidyverse.org/reference/context.html" class="external-link">n()</a></code> as does
-<code><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">dplyr::summarise()</a></code>. You can use <code><a href="fast_functions.html">fn()</a></code> instead, but then, you must give a
-variable name as argument. The <code><a href="fast_functions.html">fn()</a></code> alternative can also be used in
-<code><a href="tidy_functions.html">tsummarise()</a></code>.
+    <p>The <code>ssummarise()</code> function does not support <code><a href="https://dplyr.tidyverse.org/reference/context.html" class="external-link">n()</a></code> as does
+<code><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">dplyr::summarise()</a></code>. You can use <code><a href="fstat_functions.html">fn()</a></code> instead, but then, you must give a
+variable name as argument. The <code><a href="fstat_functions.html">fn()</a></code> alternative can also be used in
+<code><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise()</a></code> for homogeneous syntax between the two.
 From dplyr, the <code><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice()</a></code> and <code>slice_xxx()</code> functions are not added yet
 because they are not available for dbplyr. Also <code><a href="https://dplyr.tidyverse.org/reference/filter-joins.html" class="external-link">anti_join()</a></code>,
 <code><a href="https://dplyr.tidyverse.org/reference/filter-joins.html" class="external-link">semi_join()</a></code> and <code><a href="https://dplyr.tidyverse.org/reference/nest_join.html" class="external-link">nest_join()</a></code> are not implemented yet.

@@ -57,7 +57,7 @@
   </a>
 </li>
       </ul><div class="navbar-title">
-        <a class="navbar-brand" href="../index.html"><p class="h2">svBase <small>v1.2.0</small></p></a>
+        <a class="navbar-brand" href="../index.html"><p class="h2">svBase <small>v1.2.1</small></p></a>
       </div>
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
@@ -75,10 +75,16 @@
     </div>
 
     <div class="section level2">
+<h2 class="page-header" data-toc-text="1.2.1" id="svbase-121">svBase 1.2.1<a class="anchor" aria-label="anchor" href="#svbase-121"></a></h2>
+<ul><li><p>The tidy functions are reworked to use the original function name, not the one with a “t” prefix.</p></li>
+<li><p>The functions that list family functions now start with <code>list_</code>, like <code><a href="../reference/tidy_functions.html">list_tidy_functions()</a></code>, <code><a href="../reference/speedy_functions.html">list_speedy_functions()</a></code> or <code><a href="../reference/fstat_functions.html">list_fstat_functions()</a></code>.</p></li>
+<li><p><code><a href="../reference/dtx_rows.html">dtx_rows()</a></code> and other similar functions are added to avoid using <code>dtx(tribble(...))</code>.</p></li>
+</ul></div>
+    <div class="section level2">
 <h2 class="page-header" data-toc-text="1.2.0" id="svbase-120">svBase 1.2.0<a class="anchor" aria-label="anchor" href="#svbase-120"></a></h2>
 <ul><li><p>Addition of “tidy” ‘t’ functions and “speedy” ‘s’ functions. The tidy functions are mostly renamed versions of {dplyr} or {tidyr} functions, while the speedy functions have a similar interface but are from {collapse} or {data.table} for a big part of them. Arguments are homogenized and sometimes reduced to restrict to features that are compatibles in the two groups.</p></li>
-<li><p>The function <code><a href="https://dplyr.tidyverse.org/reference/context.html" class="external-link">n()</a></code> is not working in <code>ssumarise()</code>. Use <code>fn(var)</code> instead, and you can also use it in <code><a href="../reference/tidy_functions.html">tsummarise()</a></code>.</p></li>
-<li><p>Addition of “fast” functions from {collapse} + <code><a href="../reference/fast_functions.html">fnobs_all()</a></code> and <code>fnobs_na</code>.</p></li>
+<li><p>The function <code><a href="https://dplyr.tidyverse.org/reference/context.html" class="external-link">n()</a></code> is not working in <code>ssumarise()</code>. Use <code>fn(var)</code> instead, and you can also use it in <code>tsummarise()</code>.</p></li>
+<li><p>Addition of “fast” functions from {collapse} + <code><a href="../reference/fstat_functions.html">fn()</a></code> and <code><a href="../reference/fstat_functions.html">fna()</a></code>.</p></li>
 <li><p>The <code>%xf%</code> operators where <code>x</code>can be <code>-</code>, <code>/</code>, etc. for a more readable alternative to <code>TRA=</code> in the fast functions.</p></li>
 <li><p>More robust strict <code>is_dt_()</code> functions for grouped data.</p></li>
 </ul></div>
