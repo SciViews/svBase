@@ -158,85 +158,85 @@ arguments to better account for <code>rownames</code> in data.table and tibble!<
 <span class="r-in"><span><span class="co"># Convert into a tibble</span></span></span>
 <span class="r-in"><span><span class="op">(</span><span class="va">dtbl</span> <span class="op">&lt;-</span> <span class="fu">as_dtbl</span><span class="op">(</span><span class="va">dtf</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 5 × 4</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       x      y f     l    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>     1 -<span style="color: #BB0000;">0.118</span> a     FALSE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>     2  0.576 b     TRUE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>     3  0.462 c     TRUE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span>     4  0.453 d     TRUE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span>     5  2.01  e     TRUE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       x       y f     l    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>     1  1.67   a     TRUE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>     2 -<span style="color: #BB0000;">0.765</span>  b     TRUE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>     3  1.59   c     FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span>     4 -<span style="color: #BB0000;">0.946</span>  d     TRUE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span>     5  0.046<span style="text-decoration: underline;">4</span> e     TRUE </span>
 <span class="r-in"><span><span class="co"># Since row names are trivial (1 -&gt; 5), a .rownames column is not added</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">dtf2</span> <span class="op">&lt;-</span> <span class="va">dtf</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">dtf2</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">letters</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span></span></span>
 <span class="r-in"><span><span class="va">dtf2</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A data.frame: 5 x 4</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ` `            x      y f     l    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;rownames&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> a              1 -<span style="color: #BB0000;">0.118</span> a     FALSE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> b              2  0.576 b     TRUE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> c              3  0.462 c     TRUE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> d              4  0.453 d     TRUE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> e              5  2.01  e     TRUE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ` `            x       y f     l    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;rownames&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> a              1  1.67   a     TRUE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> b              2 -<span style="color: #BB0000;">0.765</span>  b     TRUE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> c              3  1.59   c     FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> d              4 -<span style="color: #BB0000;">0.946</span>  d     TRUE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> e              5  0.046<span style="text-decoration: underline;">4</span> e     TRUE </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Now, the conversion into a tibble adds .rownames</span></span></span>
 <span class="r-in"><span><span class="op">(</span><span class="va">dtbl2</span> <span class="op">&lt;-</span> <span class="fu">as_dtbl</span><span class="op">(</span><span class="va">dtf2</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 5 × 5</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .rownames     x      y f     l    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> a             1 -<span style="color: #BB0000;">0.118</span> a     FALSE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> b             2  0.576 b     TRUE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> c             3  0.462 c     TRUE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> d             4  0.453 d     TRUE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> e             5  2.01  e     TRUE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .rownames     x       y f     l    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> a             1  1.67   a     TRUE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> b             2 -<span style="color: #BB0000;">0.765</span>  b     TRUE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> c             3  1.59   c     FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> d             4 -<span style="color: #BB0000;">0.946</span>  d     TRUE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> e             5  0.046<span style="text-decoration: underline;">4</span> e     TRUE </span>
 <span class="r-in"><span><span class="co"># and data frame row names are set again when converted bock to dtf</span></span></span>
 <span class="r-in"><span><span class="fu">as_dtf</span><span class="op">(</span><span class="va">dtbl2</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A data.frame: 5 x 4</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ` `            x      y f     l    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;rownames&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> a              1 -<span style="color: #BB0000;">0.118</span> a     FALSE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> b              2  0.576 b     TRUE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> c              3  0.462 c     TRUE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> d              4  0.453 d     TRUE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> e              5  2.01  e     TRUE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ` `            x       y f     l    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;rownames&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> a              1  1.67   a     TRUE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> b              2 -<span style="color: #BB0000;">0.765</span>  b     TRUE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> c              3  1.59   c     FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> d              4 -<span style="color: #BB0000;">0.946</span>  d     TRUE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> e              5  0.046<span style="text-decoration: underline;">4</span> e     TRUE </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># It also work for conversions data.frame &lt;-&gt; data.table</span></span></span>
 <span class="r-in"><span><span class="op">(</span><span class="va">dtt2</span> <span class="op">&lt;-</span> <span class="fu">as_dtt</span><span class="op">(</span><span class="va">dtf2</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A data.table: 5 x 5</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .rownames     x      y f     l    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> a             1 -<span style="color: #BB0000;">0.118</span> a     FALSE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> b             2  0.576 b     TRUE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> c             3  0.462 c     TRUE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> d             4  0.453 d     TRUE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> e             5  2.01  e     TRUE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .rownames     x       y f     l    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> a             1  1.67   a     TRUE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> b             2 -<span style="color: #BB0000;">0.765</span>  b     TRUE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> c             3  1.59   c     FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> d             4 -<span style="color: #BB0000;">0.946</span>  d     TRUE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> e             5  0.046<span style="text-decoration: underline;">4</span> e     TRUE </span>
 <span class="r-in"><span><span class="fu">as_dtf</span><span class="op">(</span><span class="va">dtt2</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A data.frame: 5 x 4</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ` `            x      y f     l    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;rownames&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> a              1 -<span style="color: #BB0000;">0.118</span> a     FALSE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> b              2  0.576 b     TRUE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> c              3  0.462 c     TRUE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> d              4  0.453 d     TRUE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> e              5  2.01  e     TRUE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ` `            x       y f     l    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;rownames&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> a              1  1.67   a     TRUE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> b              2 -<span style="color: #BB0000;">0.765</span>  b     TRUE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> c              3  1.59   c     FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> d              4 -<span style="color: #BB0000;">0.946</span>  d     TRUE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> e              5  0.046<span style="text-decoration: underline;">4</span> e     TRUE </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># It does not work when converting a tibble or a data.table into a matrix</span></span></span>
 <span class="r-in"><span><span class="co"># with as.matrix()</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="va">dtbl2</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      .rownames x   y            f   l      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] "a"       "1" "-0.1180149" "a" "FALSE"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] "b"       "2" " 0.5761500" "b" "TRUE" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [3,] "c"       "3" " 0.4623009" "c" "TRUE" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [4,] "d"       "4" " 0.4530848" "d" "TRUE" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [5,] "e"       "5" " 2.0087064" "e" "TRUE" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      .rownames x   y             f   l      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] "a"       "1" " 1.66597922" "a" "TRUE" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] "b"       "2" "-0.76498957" "b" "TRUE" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3,] "c"       "3" " 1.59470576" "c" "FALSE"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [4,] "d"       "4" "-0.94610665" "d" "TRUE" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [5,] "e"       "5" " 0.04644793" "e" "TRUE" </span>
 <span class="r-in"><span><span class="co"># ... but as_matrix() does the job!</span></span></span>
 <span class="r-in"><span><span class="fu">as_matrix</span><span class="op">(</span><span class="va">dtbl2</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   x   y            f   l      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> a "1" "-0.1180149" "a" "FALSE"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> b "2" " 0.5761500" "b" "TRUE" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> c "3" " 0.4623009" "c" "TRUE" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> d "4" " 0.4530848" "d" "TRUE" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> e "5" " 2.0087064" "e" "TRUE" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   x   y             f   l      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> a "1" " 1.66597922" "a" "TRUE" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> b "2" "-0.76498957" "b" "TRUE" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> c "3" " 1.59470576" "c" "FALSE"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> d "4" "-0.94610665" "d" "TRUE" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> e "5" " 0.04644793" "e" "TRUE" </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># The name for row in dtt and dtbl is in:</span></span></span>
 <span class="r-in"><span><span class="co"># (data.frame's row names are converted into a column with this name)</span></span></span>
@@ -246,13 +246,13 @@ arguments to better account for <code>rownames</code> in data.table and tibble!<
 <span class="r-in"><span><span class="co"># Convert into the preferred data frame object (data.table by default)</span></span></span>
 <span class="r-in"><span><span class="op">(</span><span class="va">dtx2</span> <span class="op">&lt;-</span> <span class="fu">as_dtx</span><span class="op">(</span><span class="va">dtf2</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A data.table: 5 x 5</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .rownames     x      y f     l    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> a             1 -<span style="color: #BB0000;">0.118</span> a     FALSE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> b             2  0.576 b     TRUE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> c             3  0.462 c     TRUE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> d             4  0.453 d     TRUE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> e             5  2.01  e     TRUE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .rownames     x       y f     l    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> a             1  1.67   a     TRUE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> b             2 -<span style="color: #BB0000;">0.765</span>  b     TRUE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> c             3  1.59   c     FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> d             4 -<span style="color: #BB0000;">0.946</span>  d     TRUE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> e             5  0.046<span style="text-decoration: underline;">4</span> e     TRUE </span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">dtx2</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "data.table" "data.frame"</span>
 <span class="r-in"><span></span></span>
@@ -285,7 +285,7 @@ arguments to better account for <code>rownames</code> in data.table and tibble!<
 <span class="r-out co"><span class="r-pr">#&gt;</span>     rownames(x) &lt;- NULL</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     x</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;bytecode: 0x55b7015e4bc8&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;bytecode: 0x555a38dfefe8&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: namespace:svBase&gt;</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># default_dtx() does the same as as_dtx(),</span></span></span>
@@ -293,13 +293,13 @@ arguments to better account for <code>rownames</code> in data.table and tibble!<
 <span class="r-in"><span><span class="co"># So, it is safe to use whaterver the object you pass to it</span></span></span>
 <span class="r-in"><span><span class="op">(</span><span class="va">dtx2</span> <span class="op">&lt;-</span> <span class="fu">default_dtx</span><span class="op">(</span><span class="va">dtf2</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A data.table: 5 x 5</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .rownames     x      y f     l    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> a             1 -<span style="color: #BB0000;">0.118</span> a     FALSE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> b             2  0.576 b     TRUE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> c             3  0.462 c     TRUE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> d             4  0.453 d     TRUE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> e             5  2.01  e     TRUE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .rownames     x       y f     l    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> a             1  1.67   a     TRUE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> b             2 -<span style="color: #BB0000;">0.765</span>  b     TRUE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> c             3  1.59   c     FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> d             4 -<span style="color: #BB0000;">0.946</span>  d     TRUE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> e             5  0.046<span style="text-decoration: underline;">4</span> e     TRUE </span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">dtx2</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "data.table" "data.frame"</span>
 <span class="r-in"><span><span class="co"># Any other object than data.frame, data.table or tbl_df is not converted</span></span></span>
@@ -322,13 +322,13 @@ arguments to better account for <code>rownames</code> in data.table and tibble!<
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="op">(</span><span class="va">dtf3</span> <span class="op">&lt;-</span> <span class="fu">as_dtf</span><span class="op">(</span><span class="va">dtt2</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A data.frame: 5 x 4</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ` `            x      y f     l    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;rownames&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> a              1 -<span style="color: #BB0000;">0.118</span> a     FALSE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> b              2  0.576 b     TRUE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> c              3  0.462 c     TRUE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> d              4  0.453 d     TRUE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> e              5  2.01  e     TRUE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ` `            x       y f     l    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;rownames&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> a              1  1.67   a     TRUE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> b              2 -<span style="color: #BB0000;">0.765</span>  b     TRUE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> c              3  1.59   c     FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> d              4 -<span style="color: #BB0000;">0.946</span>  d     TRUE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> e              5  0.046<span style="text-decoration: underline;">4</span> e     TRUE </span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/attributes.html" class="external-link">attributes</a></span><span class="op">(</span><span class="va">dtf3</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $names</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "x" "y" "f" "l"</span>
@@ -345,13 +345,13 @@ arguments to better account for <code>rownames</code> in data.table and tibble!<
 <span class="r-in"><span><span class="co"># Key is restored when converted back into a data.table (also from a tibble)</span></span></span>
 <span class="r-in"><span><span class="op">(</span><span class="va">dtt3</span> <span class="op">&lt;-</span> <span class="fu">as_dtt</span><span class="op">(</span><span class="va">dtf3</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A data.table: 5 x 5</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .rownames     x      y f     l    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> a             1 -<span style="color: #BB0000;">0.118</span> a     FALSE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> b             2  0.576 b     TRUE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> c             3  0.462 c     TRUE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> d             4  0.453 d     TRUE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> e             5  2.01  e     TRUE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .rownames     x       y f     l    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> a             1  1.67   a     TRUE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> b             2 -<span style="color: #BB0000;">0.765</span>  b     TRUE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> c             3  1.59   c     FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> d             4 -<span style="color: #BB0000;">0.946</span>  d     TRUE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> e             5  0.046<span style="text-decoration: underline;">4</span> e     TRUE </span>
 <span class="r-in"><span><span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/setkey.html" class="external-link">haskey</a></span><span class="op">(</span><span class="va">dtt3</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-in"><span><span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/setkey.html" class="external-link">key</a></span><span class="op">(</span><span class="va">dtt3</span><span class="op">)</span></span></span>
