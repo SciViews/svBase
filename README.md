@@ -1,8 +1,8 @@
-# svBase - Functions for Base Objects like Data Frames in SciViews
+# svBase - Functions for Base Objects like Data Frames in SciViews <a href='https://www.sciviews.org/svBase'><img src="man/figures/logo.png" align="right" height="139"/></a>
 
 <!-- badges: start -->
 
-[![R-CMD-check](https://github.com/SciViews/svBase/workflows/R-CMD-check/badge.svg)](https://github.com/SciViews/svBase/actions) [![Win build status](https://ci.appveyor.com/api/projects/status/github/SciViews/svBase?branch=main&svg=true)](https://ci.appveyor.com/project/phgrosjean/svBase) [![Coverage status](https://img.shields.io/codecov/c/github/SciViews/svBase/main.svg)](https://codecov.io/github/SciViews/svBase?branch=master) [![CRAN status](https://www.r-pkg.org/badges/version/svBase)](https://cran.r-project.org/package=svBase) [![License](https://img.shields.io/badge/license-GPL-blue.svg)](https://www.gnu.org/licenses/gpl-2.0.html) [![Lifecycle: stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://www.tidyverse.org/lifecycle/#stable)
+[![R-CMD-check](https://github.com/SciViews/svBase/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/SciViews/svBase/actions/workflows/R-CMD-check.yaml) [![Coverage status](https://img.shields.io/codecov/c/github/SciViews/svBase/main.svg)](https://codecov.io/github/SciViews/svBase?branch=master) [![CRAN status](https://www.r-pkg.org/badges/version/svBase)](https://cran.r-project.org/package=svBase) [![License](https://img.shields.io/badge/license-GPL-blue.svg)](https://www.gnu.org/licenses/gpl-2.0.html) [![Lifecycle: stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://www.tidyverse.org/lifecycle/#stable)
 
 <!-- badges: end -->
 
@@ -30,8 +30,6 @@ remotes::install_github("SciViews/svBase")
 
 R should install all required dependencies automatically, and then it should compile and install {svBase}.
 
-Latest devel version of {svBase} (source + Windows binaries for the latest stable version of R at the time of compilation) is also available from [appveyor](https://ci.appveyor.com/project/phgrosjean/svBase/build/artifacts).
-
 ## Further explore {svBase}
 
 You can get further help about this package this way: Make the {svBase} package available in your R session:
@@ -53,4 +51,3 @@ For further instructions, please, refer to the help pages at <https://www.scivie
 ## Code of Conduct
 
 Please note that the {svBase} package is released with a [Contributor Code of Conduct](https://contributor-covenant.org/version/2/0/CODE_OF_CONDUCT.html). By contributing to this project, you agree to abide by its terms.
-
