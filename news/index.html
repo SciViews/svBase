@@ -57,7 +57,7 @@
   </a>
 </li>
       </ul><div class="navbar-title">
-        <a class="navbar-brand" href="../index.html"><p class="h2">svBase <small>v1.2.1</small></p></a>
+        <a class="navbar-brand" href="../index.html"><p class="h2">svBase <small>v1.2.2</small></p></a>
       </div>
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
@@ -74,6 +74,11 @@
       <small>Source: <a href="https://github.com/SciViews/svBase/blob/HEAD/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="1.2.2" id="svbase-122">svBase 1.2.2<a class="anchor" aria-label="anchor" href="#svbase-122"></a></h2>
+<ul><li><p><code><a href="../reference/is_dtx.html">is_dtx()</a></code> and similar functions now also detect <strong>spec_tbl_df</strong> objects from {readr} and <strong>groupedData</strong> of {datasets} are true data frames, even with <code>strict = TRUE</code>. Consequently, <code><a href="../reference/as_dtx.html">default_dtx()</a></code> converts also these objects.</p></li>
+<li><p><code><a href="../reference/as_dtx.html">as_dtx()</a></code> and similar functions get labels and units from the corresponding attributes of <strong>groupedData</strong> objects and apply them to each vector in the resulting data frame.</p></li>
+</ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="1.2.1" id="svbase-121">svBase 1.2.1<a class="anchor" aria-label="anchor" href="#svbase-121"></a></h2>
 <ul><li><p>The tidy functions are reworked to use the original function name, not the one with a “t” prefix.</p></li>
