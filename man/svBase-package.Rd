@@ -6,6 +6,8 @@
 \alias{svBase-package}
 \title{svBase: 'SciViews' - Functions for Base Objects like Data Frames}
 \description{
+\if{html}{\figure{logo.png}{options: align='right' alt='logo' width='120'}}
+
 Functions to manipulated the three main classes of "data frames" for 'SciViews': data.frame, data.table and tibble. Allow to select the preferred one, and to convert more carefully between the three, taking care of correct presentation of row names and data.table's keys. More homogeneous way of creating these three data frames and of printing them on the R console.
 }
 \details{

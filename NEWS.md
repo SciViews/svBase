@@ -1,3 +1,9 @@
+# svBase 1.2.2
+
+-   `is_dtx()` and similar functions now also detect **spec_tbl_df** objects from {readr} and **groupedData** of {datasets} are true data frames, even with `strict = TRUE`. Consequently, `default_dtx()` converts also these objects.
+
+-   `as_dtx()` and similar functions get labels and units from the corresponding attributes of **groupedData** objects and apply them to each vector in the resulting data frame.
+
 # svBase 1.2.1
 
 -   The tidy functions are reworked to use the original function name, not the one with a "t" prefix.

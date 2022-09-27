@@ -211,9 +211,40 @@ as_matrix <- function(x, rownames = NULL, ...) {
 }
 
 .ungroup_dtbl <- function(x) {
-  if (inherits(x, "tbl_df")) {
-    ungroup(x)
+  if (inherits(x, "GRP_df")) {
+    res <- fungroup(x)
+  } else if (inherits(x, "tbl_df")) {
+    res <- ungroup(x)
   } else {
-    x
+    res <- x
   }
+  # Special case for "groupedData"
+  if (inherits(res, "groupedData")) {
+    res <- as.data.frame(res)
+    # If there are labels or units, apply them to res properly
+    # y and x, according to formula
+    f <- attr(res, "formula")
+    # It is like y ~ x | z
+    if (length(f) == 3 && length(f[[3]]) == 3) {
+      xy <- list(x = as.character(f[[3]][[2]]), y = as.character(f[[2]]))
+      labels <- attr(res, "labels")
+      if (!is.null(labels) && is.list(labels)) {
+        # Apply labels to each column
+        nms <- names(labels)
+        for (nm in nms)
+          attr(res[[xy[[nm]]]], "label") <- labels[[nm]]
+        attr(res, "labels") <- NULL
+      }
+      units <- attr(res, "units")
+      if (!is.null(units) && is.list(units)) {
+        # Apply labels to each column
+        nms <- names(units)
+        # If units are between parentheses, eliminate them
+        for (nm in nms)
+          attr(res[[xy[[nm]]]], "units") <- sub("^\\((.+)\\)$", "\\1", units[[nm]])
+        attr(res, "units") <- NULL
+      }
+    }
+  }
+  res
 }

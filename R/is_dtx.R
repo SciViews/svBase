@@ -24,12 +24,14 @@ is_dtx <- function(x, strict = TRUE) {
   if (isTRUE(strict)) {
     # One of the three type, and not subclassed (except with grouped_df)
     class1 <- class(x)[1]
-    if (class1 == "grouped_df" || class1 == "grouped_ts") {# Special case
-      inherits(x, "tbl_df")
-    } else if (class1 == "GRP_df") {
-        inherits(x, "data.frame")
+    # Special cases: {datasets}, dplyr::group_by(), collapse::fgroup_by(),
+    # readr::read_csv()
+    # TODO: for nfnGroupedData, get labels and units
+    if (class1 %in% c("nfnGroupedData", "nfGroupedData", "groupedData",
+      "grouped_df", "grouped_ts", "GRP_df", "spec_tbl_df")) {
+      inherits(x, "data.frame")
     } else {
-      class1 == "data.frame" || class1 == "data.table" || class1 == "tbl_df"
+      class1 %in% c("data.frame", "data.table", "tbl_df")
     }
   } else {
     # All three types inherits from data.frame
@@ -42,8 +44,12 @@ is_dtx <- function(x, strict = TRUE) {
 is_dtf <- function(x, strict = TRUE) {
   if (isTRUE(strict)) {
     class1 <- class(x)[1]
-    class1 == "data.frame" ||
-      (class1 == "GRP_df" && !inherits(x, c("data.table", "tbl_df", "tbl_ts")))
+    if (class1 %in% c("nfnGroupedData", "nfGroupedData", "groupedData",
+      "grouped_df", "grouped_ts", "GRP_df", "spec_tbl_df")) {
+      !inherits(x, c("data.table", "tbl_df", "tbl_ts"))
+    } else {
+      class1 == "data.frame"
+    }
   } else {
     inherits(x, "data.frame")
   }
@@ -65,7 +71,8 @@ is_dtt <- function(x, strict = TRUE) {
 is_dtbl <- function(x, strict = TRUE) {
   if (isTRUE(strict)) {
     class1 <- class(x)[1]
-    if (class1 == "grouped_df" || class1 == "grouped_ts") {# Special case
+    # Special case
+    if (class1 %in% c("grouped_df", "grouped_ts", "GRP_df", "spec_tbl_df")) {
       inherits(x, "tbl_df")
     } else {
       class1 == "tbl_df"
