@@ -1,6 +1,6 @@
 # svBase 1.3.0
 
--   `print.data.frame()` and `print.data.table()` are renamed `show.xxx()` to avoid spurious warnings.
+-   ...
 
 # svBase 1.2.2
 
