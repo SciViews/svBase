@@ -5,6 +5,7 @@
 #' @param .name_repair The way problematic column names are treated, see also
 #' [tibble()] for details.
 #' @param x An object to print.
+#' @param object An object to print.
 #'
 #' @note data.table and tibble's tbl_df do no use row names. However, you can
 #' add a column named `.rownames`(by default), or the name that is in
@@ -98,17 +99,17 @@ dtt <- function(...,
 #' @export
 #' @rdname dtx
 #' @method show data.frame
-show.data.frame <- function(x, ...) {
+show.data.frame <- function(object) {
   # With pillar, row names are **not** printed, so, instead of as_tibble()
   # we use as_dtbl() that creates .rownames, then we change its name and class
   # to make it more obvious that these are the names of the rows
-  #y <- as_tibble(x)
-  y <- as_dtbl(x, rownames = "\u00a0") # u00a0 is nonbreaking space
+  #y <- as_tibble(object)
+  y <- as_dtbl(object, rownames = "\u00a0") # u00a0 is nonbreaking space
   if ("\u00a0" %in% names(y))
     class(y[["\u00a0"]]) <- c("rownames", "noquote")
   class(y) <- unique(c("dataframe", class(y)))
   show(y)
-  invisible(x)
+  invisible(object)
 }
 
 #' @export
@@ -130,11 +131,11 @@ tbl_sum.dataframe <- function(x, ...) {
 #' @export
 #' @rdname dtx
 #' @method show data.table
-show.data.table <- function(x, ...) {
-  y <- as_tibble(x)
+show.data.table <- function(object) {
+  y <- as_tibble(object)
   class(y) <- unique(c("datatable", class(y)))
   show(y)
-  invisible(x)
+  invisible(object)
 }
 
 #' @export

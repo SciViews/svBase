@@ -196,7 +196,9 @@ sselect <- structure(function(.data, ...) {
 
 #' @export
 #' @rdname speedy_functions
-smutate <- structure(collapse::fmutate,
+smutate <- structure(function(.data, ..., .keep = "all") {
+    fmutate(.data, ..., .keep = .keep)
+  },
   # TODO: Arguments .before= and .after= not supported yet, but to be implemented
   class = c("function", "speedy_fn"), comment = .src_speedy("collapse::fmutate"))
 

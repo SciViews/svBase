@@ -19,11 +19,11 @@ dtf(..., .name_repair = c("check_unique", "unique", "universal", "minimal"))
 
 dtt(..., .name_repair = c("check_unique", "unique", "universal", "minimal"))
 
-\method{show}{data.frame}(x, ...)
+\method{show}{data.frame}(object)
 
 \method{tbl_sum}{dataframe}(x, ...)
 
-\method{show}{data.table}(x, ...)
+\method{show}{data.table}(object)
 
 \method{tbl_sum}{datatable}(x, ...)
 }
@@ -33,6 +33,8 @@ dtt(..., .name_repair = c("check_unique", "unique", "universal", "minimal"))
 
 \item{.name_repair}{The way problematic column names are treated, see also
 \code{\link[=tibble]{tibble()}} for details.}
+
+\item{object}{An object to print.}
 
 \item{x}{An object to print.}
 }
