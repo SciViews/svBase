@@ -5,9 +5,9 @@
 \alias{dtbl}
 \alias{dtf}
 \alias{dtt}
-\alias{print.data.frame}
+\alias{show.data.frame}
 \alias{tbl_sum.dataframe}
-\alias{print.data.table}
+\alias{show.data.table}
 \alias{tbl_sum.datatable}
 \title{Create a data frame (base's data.frame, data.table or tibble's tbl_df)}
 \usage{
@@ -19,11 +19,11 @@ dtf(..., .name_repair = c("check_unique", "unique", "universal", "minimal"))
 
 dtt(..., .name_repair = c("check_unique", "unique", "universal", "minimal"))
 
-\method{print}{data.frame}(x, ...)
+\method{show}{data.frame}(x, ...)
 
 \method{tbl_sum}{dataframe}(x, ...)
 
-\method{print}{data.table}(x, ...)
+\method{show}{data.table}(x, ...)
 
 \method{tbl_sum}{datatable}(x, ...)
 }

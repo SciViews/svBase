@@ -1,5 +1,9 @@
 # svBase To Do list
 
+-   Rewrite `%<-%` and `%->%` to not use `try()`, better check the class of the object before collecting.
+
+-   `collect_dtx()`: do not use collect, but `as_tibble()` and the like that automatically ungroup (currently, we collect and ungroup then).
+
 -   Rework the `sXXX()` speedy functions that simply reuse their {dplyr} or {tidyr} counterparts.
 
 -   Implement {tidyr} verbs that are not done yet: `nest_join()`, `chop()`, `unchop()`, `nest()`, `unnest()`, `unnest_longer()`, `unnest_wider()`, `hoist()`, `pack()`, `unpack()`.

@@ -97,8 +97,8 @@ dtt <- function(...,
 
 #' @export
 #' @rdname dtx
-#' @method print data.frame
-print.data.frame <- function(x, ...) {
+#' @method show data.frame
+show.data.frame <- function(x, ...) {
   # With pillar, row names are **not** printed, so, instead of as_tibble()
   # we use as_dtbl() that creates .rownames, then we change its name and class
   # to make it more obvious that these are the names of the rows
@@ -107,7 +107,7 @@ print.data.frame <- function(x, ...) {
   if ("\u00a0" %in% names(y))
     class(y[["\u00a0"]]) <- c("rownames", "noquote")
   class(y) <- unique(c("dataframe", class(y)))
-  print(y)
+  show(y)
   invisible(x)
 }
 
@@ -129,11 +129,11 @@ tbl_sum.dataframe <- function(x, ...) {
 
 #' @export
 #' @rdname dtx
-#' @method print data.table
-print.data.table <- function(x, ...) {
+#' @method show data.table
+show.data.table <- function(x, ...) {
   y <- as_tibble(x)
   class(y) <- unique(c("datatable", class(y)))
-  print(y)
+  show(y)
   invisible(x)
 }
 
