@@ -12,7 +12,6 @@
 #' @keywords internal
 "_PACKAGE"
 
-#' @importFrom methods show
 #' @importFrom data.table as.data.table haskey key rbindlist setDT setkeyv
 #' @importFrom tibble as_tibble tibble tribble
 #' @importFrom dplyr across add_count add_tally arrange bind_cols collect count distinct filter full_join group_by inner_join left_join mutate pull rename rename_with right_join select summarise tally transmute ungroup
