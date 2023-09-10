@@ -1,5 +1,7 @@
 # svBase To Do list
 
+-   `fquantile()` and `frange()` operate on vectors only, but it would be useful to get a function that returns only one quantile in the fast stat functions. Also `fcumsum()`, `flag()`, ... => make a category for these additional functions.
+
 -   `collect_dtx()`: do not use collect, but `as_tibble()` and the like that automatically ungroup (currently, we collect and ungroup then). Should we???
 
 -   Rework the `sXXX()` speedy functions that simply reuse their {dplyr} or {tidyr} counterparts.

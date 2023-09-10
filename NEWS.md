@@ -8,6 +8,8 @@
 
 -   `scount()`, `sadd_count()`, `tally()` and `add_tally()` are now based on `collapse::fcount()` with some changes to better match the arguments and behavior of the corresponding{dplyr} functions.
 
+-   Bug correction in `sunite()`, the argument `col=` was setting the name of the column always to "col".
+
 # svBase 1.2.2
 
 -   `is_dtx()` and similar functions now also detect **spec_tbl_df** objects from {readr} and **groupedData** of {datasets} are true data frames, even with `strict = TRUE`. Consequently, `default_dtx()` converts also these objects.

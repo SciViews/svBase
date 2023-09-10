@@ -849,8 +849,8 @@ na.rm = FALSE) {
   # Sometimes groups are kept, sometimes not... for now, we do not care (we always ungroup).
   is_x_dtf <- is_dtf(data)
   is_x_dtt <- is_dtt(data)
-  res <- unite(data = as_dtbl(fungroup(data)), col = col, ..., sep = sep,
-    remove = remove, na.rm = na.rm)
+  res <- inject(unite(data = as_dtbl(fungroup(data)), col = !!substitute(col),
+    ..., sep = sep, remove = remove, na.rm = na.rm))
   if (is_x_dtf)
     res <- as_dtf(res)
   if (is_x_dtt)
