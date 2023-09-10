@@ -86,7 +86,10 @@ imported from the zeallot package (see the corresponding help page at <a href="h
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="va">value</span> <span class="op">%-&gt;%</span> <span class="va">x</span></span>
 <span></span>
-<span><span class="va">x</span> <span class="op">%&lt;-%</span> <span class="va">value</span></span></code></pre></div>
+<span><span class="va">x</span> <span class="op">%&lt;-%</span> <span class="va">value</span></span>
+<span></span>
+<span><span class="co"># S3 method for default</span></span>
+<span><span class="fu">collect</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -96,21 +99,30 @@ imported from the zeallot package (see the corresponding help page at <a href="h
 
 
 <dt>x</dt>
-<dd><p>A name, or a name structure for multiple (deconstructing) assignment.</p></dd>
+<dd><p>A name, or a name structure for multiple (deconstructing)
+assignment, or any object that does not have a specific [dplyr::collect[])
+method for <code>collect.default()</code>.</p></dd>
+
+
+<dt>...</dt>
+<dd><p>further arguments passed to the method (not used for the default
+one)</p></dd>
 
 </dl></div>
     <div id="value">
     <h2>Value</h2>
     
 
-<p>These operators invisibly return <code>value</code>.</p>
+<p>These operators invisibly return <code>value</code>. <code>collect.default()</code> simply
+return <code>x</code>.</p>
     </div>
     <div id="details">
     <h2>Details</h2>
     <p>These assignation operator are overloaded to get interesting
 properties in the context of tidyverse pipelines and to make sure to always
 return our preferred data frame object (data.frame, data.table, or tibble).
-Thus, before being assigned, <code>value</code> is modified by calling <code><a href="https://dplyr.tidyverse.org/reference/compute.html" class="external-link">dplyr::collect()</a></code> on it and by applying <code><a href="as_dtx.html">default_dtx()</a></code>.</p>
+Thus, before being assigned, <code>value</code> is modified by calling
+<code><a href="https://dplyr.tidyverse.org/reference/compute.html" class="external-link">dplyr::collect()</a></code> on it and by applying <code><a href="as_dtx.html">default_dtx()</a></code>.</p>
     </div>
 
     <div id="ref-examples">
@@ -141,32 +153,52 @@ Thus, before being assigned, <code>value</code> is modified by calling <code><a 
 <span class="r-in"><span>  <span class="va">res</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A data.table: 5 x 2</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    x2          y</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1:  1  0.8744337</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2:  4 -0.6019658</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3:  9 -3.3785085</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4: 16  1.2266122</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5: 25  0.8812550</span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span> <span class="co"># This is a data frame</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "data.table" "data.frame"</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">dtt</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://dtplyr.tidyverse.org/reference/lazy_dt.html" class="external-link">lazy_dt</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>x2 <span class="op">=</span> <span class="va">x</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">x2</span>, <span class="va">y</span><span class="op">)</span> <span class="op">-&gt;</span></span></span>
+<span class="r-in"><span>  <span class="va">res</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Source: </span>local data table [5 x 2]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Call:   </span>setcolorder(copy(`_DT1`)[, `:=`(x2 = x^2)][, `:=`("x", NULL)], </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     c("x2", "y"))</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      x2      y</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>     1 -<span style="color: #BB0000;">1.06</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>     4 -<span style="color: #BB0000;">0.210</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>     9 -<span style="color: #BB0000;">2.10</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span>    16 -<span style="color: #BB0000;">0.834</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span>    25  0.477</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>     1  0.874</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>     4 -<span style="color: #BB0000;">0.602</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>     9 -<span style="color: #BB0000;">3.38</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span>    16  1.23 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span>    25  0.881</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"># Use as.data.table()/as.data.frame()/as_tibble() to access results</span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span> <span class="co"># This is NOT a data frame</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "data.table" "data.frame"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "dtplyr_step_call" "dtplyr_step"     </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Same pipeline, but assigning with %-&gt;%</span></span></span>
 <span class="r-in"><span><span class="va">dtt</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://dtplyr.tidyverse.org/reference/lazy_dt.html" class="external-link">lazy_dt</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>x2 <span class="op">=</span> <span class="va">x</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">x2</span>, <span class="va">y</span><span class="op">)</span> <span class="op">%-&gt;%</span></span></span>
 <span class="r-in"><span>  <span class="va">res</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A data.table: 5 x 2</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      x2      y</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>     1 -<span style="color: #BB0000;">1.06</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>     4 -<span style="color: #BB0000;">0.210</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>     9 -<span style="color: #BB0000;">2.10</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span>    16 -<span style="color: #BB0000;">0.834</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span>    25  0.477</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    x2          y</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1:  1  0.8744337</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2:  4 -0.6019658</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3:  9 -3.3785085</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4: 16  1.2266122</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5: 25  0.8812550</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span> <span class="co"># res is the preferred data frame (data.table by default)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "data.table" "data.frame"</span>
 <span class="r-in"><span></span></span>
@@ -184,7 +216,7 @@ Thus, before being assigned, <code>value</code> is modified by calling <code><a 
 <span class="r-in"><span><span class="va">X</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1 2 3 4 5</span>
 <span class="r-in"><span><span class="va">Y</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -1.78939475 -1.07244044  0.09568346  1.32055971 -1.46451920</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -1.1471830 -1.0914002  0.4550546  0.4432119  1.2781663</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># The %-&gt;% is meant to be used in pipelines, otherwise it does the same</span></span></span>
 </code></pre></div>

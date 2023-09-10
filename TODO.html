@@ -75,8 +75,7 @@
 
 <div id="svbase-to-do-list" class="section level1">
 
-<ul><li><p>Rewrite <code>%&lt;-%</code> and <code>%-&gt;%</code> to not use <code><a href="https://rdrr.io/r/base/try.html" class="external-link">try()</a></code>, better check the class of the object before collecting.</p></li>
-<li><p><code><a href="reference/collect_dtx.html">collect_dtx()</a></code>: do not use collect, but <code>as_tibble()</code> and the like that automatically ungroup (currently, we collect and ungroup then).</p></li>
+<ul><li><p><code><a href="reference/collect_dtx.html">collect_dtx()</a></code>: do not use collect, but <code>as_tibble()</code> and the like that automatically ungroup (currently, we collect and ungroup then). Should we???</p></li>
 <li><p>Rework the <code>sXXX()</code> speedy functions that simply reuse their {dplyr} or {tidyr} counterparts.</p></li>
 <li><p>Implement {tidyr} verbs that are not done yet: <code>nest_join()</code>, <code>chop()</code>, <code>unchop()</code>, <code>nest()</code>, <code>unnest()</code>, <code>unnest_longer()</code>, <code>unnest_wider()</code>, <code>hoist()</code>, <code>pack()</code>, <code>unpack()</code>.</p></li>
 <li><p>Check package dependencies and make sure that the speedy and fast functions can be used in a package with minimal dependencies ({data.table} and {collapse} are OK, but {dplyr} or {tidyr} are not).</p></li>
