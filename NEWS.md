@@ -1,6 +1,12 @@
 # svBase 1.3.0
 
--   ...
+-   The alternate assignments `%<-%` and `%->%` do not evaluate `collect()` in a `try()` construct, silently swallowing any error any more. A `collect.default()` method is defined to make sure to return intact any object that cannot be collected without error.
+
+-    Default `print()` methods are restored for **data.frame** and **data.table** objects.
+
+-    Since {dplyr} functions now return the same object as it is receiving (tibble -> tibble, but data.frame -> data.frame and data.table -> data.table), the use of `lazy_dt()` is mandatory to benefit of {dtplyr} translation into {data.table} statements and its speed performance, examples are adapted accordingly.
+
+-   `scount()`, `sadd_count()`, `tally()` and `add_tally()` are now based on `collapse::fcount()` with some changes to better match the arguments and behavior of the corresponding{dplyr} functions.
 
 # svBase 1.2.2
 

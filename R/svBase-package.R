@@ -16,8 +16,9 @@
 #' @importFrom tibble as_tibble tibble tribble
 #' @importFrom dplyr across add_count add_tally arrange bind_cols collect count distinct filter full_join group_by inner_join left_join mutate pull rename rename_with right_join select summarise tally transmute ungroup
 #' @importFrom tidyr drop_na extract fill pivot_longer pivot_wider replace_na separate separate_rows uncount unite
-#' @importFrom collapse fnobs fselect fsummarise fmutate frename fsubset fgroup_by fgroup_vars fungroup replace_NA
-#' @importFrom pillar tbl_sum
+#' @importFrom collapse fcount fnobs fselect fsummarise fmutate frename fsubset fgroup_by fgroup_vars fungroup replace_NA
+#' @importFrom rlang inject
+# @importFrom pillar tbl_sum
 #' @import zeallot
 # The following block is used by usethis to automatically manage
 # roxygen namespace tags. Modify with care!

@@ -4,14 +4,18 @@
 #' multiple assignment (also known as destructuring assignment). These are
 #' imported from the {zeallot} package (see the corresponding help page at [zeallot::operator] for complete description). They also performs a [dplyr::collect()] allowing to get results from dplyr extensions like {dtplyr} for data.tables, or {dbplyr} for databases. Finally these two assignment operators also make sure that the preferred data frame object is returned by using [default_dtx()].
 #' @param value The object to be assigned.
-#' @param x A name, or a name structure for multiple (deconstructing) assignment.
+#' @param x A name, or a name structure for multiple (deconstructing)
+#'  assignment, or any object that does not have a specific [dplyr::collect[])
+#'  method for `collect.default()`.
 #'
-#' @return These operators invisibly return `value`.
+#' @return These operators invisibly return `value`. `collect.default()` simply
+#'   return `x`.
 #'
 #' @details These assignation operator are overloaded to get interesting
 #' properties in the context of {tidyverse} pipelines and to make sure to always
 #' return our preferred data frame object (data.frame, data.table, or tibble).
-#' Thus, before being assigned, `value` is modified by calling [dplyr::collect()] on it and by applying [default_dtx()].
+#' Thus, before being assigned, `value` is modified by calling
+#' [dplyr::collect()] on it and by applying [default_dtx()].
 #'
 #' @export
 #' @name alt_assign
@@ -30,10 +34,20 @@
 #'   res
 #'
 #' print(res)
+#' class(res) # This is a data frame
+#'
+#' dtt |>
+#'   lazy_dt() |>
+#'   mutate(x2 = x^2) |>
+#'   select(x2, y) ->
+#'   res
+#'
+#' print(res)
 #' class(res) # This is NOT a data frame
 #'
 #' # Same pipeline, but assigning with %->%
 #' dtt |>
+#'   lazy_dt() |>
 #'   mutate(x2 = x^2) |>
 #'   select(x2, y) %->%
 #'   res
@@ -57,8 +71,7 @@
 `%->%` <- zeallot::`%->%`
 body(`%->%`) <- bquote({
   # Collect and possibly transform data frames
-  val <- try(dplyr::collect(value), silent = TRUE)
-  if (inherits(val, "try-error")) val <- value
+  val <- dplyr::collect(value)
   value <- svBase::default_dtx(val)
 
   # This is the original code in zeallot::`%->%`
@@ -76,8 +89,7 @@ body(`%->%`) <- bquote({
 `%<-%` <- zeallot::`%<-%`
 body(`%<-%`) <- bquote({
   # Collect and possibly transform data frames
-  val <- try(dplyr::collect(value), silent = TRUE)
-  if (inherits(val, "try-error")) val <- value
+  val <- dplyr::collect(value)
   value <- svBase::default_dtx(val)
 
   # This is the original code in zeallot::`%<-%`
@@ -88,3 +100,12 @@ body(`%<-%`) <- bquote({
       stop("invalid `%<-%` right-hand side, ", e$message, call. = FALSE)
     })
 })
+
+#' @export
+#' @rdname alt_assign
+#' @param ... further arguments passed to the method (not used for the default
+#'   one)
+#' @method collect default
+collect.default <- function(x, ...) {
+  x
+}

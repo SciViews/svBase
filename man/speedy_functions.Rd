@@ -83,13 +83,13 @@ sbind_cols(
 
 sarrange(.data, ..., .by_group = FALSE)
 
-scount(x, ..., wt = NULL, sort = FALSE, name = NULL)
+scount(x, ..., wt = NULL, sort = FALSE, name = NULL, decreasing = FALSE)
 
-stally(x, wt = NULL, sort = FALSE, name = NULL)
+stally(x, wt = NULL, sort = FALSE, name = NULL, decreasing = FALSE)
 
-sadd_count(x, ..., wt = NULL, sort = FALSE, name = NULL)
+sadd_count(x, ..., wt = NULL, sort = FALSE, name = NULL, decreasing = FALSE)
 
-sadd_tally(x, wt = NULL, sort = FALSE, name = NULL)
+sadd_tally(x, wt = NULL, sort = FALSE, name = NULL, decreasing = FALSE)
 
 spull(.data, var = -1, name = NULL, ...)
 
@@ -164,7 +164,7 @@ functions, but it is not used here.}
 other arguments are named, or numbers.}
 
 \item{.name_repair}{How should the name be "repaired" to avoid duplicate
-column names? See \code{\link[dplyr:bind]{dplyr::bind_cols()}} for more details.}
+column names? See \code{\link[dplyr:bind_cols]{dplyr::bind_cols()}} for more details.}
 
 \item{.by_group}{Logical. If \code{TRUE} rows are first arranger by the grouping
 variables in any. \code{FALSE} by default.}
@@ -175,6 +175,8 @@ variables in any. \code{FALSE} by default.}
 
 \item{name}{The name of the new column in the output (\code{n} by default, and no
 existing column must have this name, or an error is generated).4}
+
+\item{decreasing}{Is sorting done in decreasing order (\code{FALSE} by default)?}
 
 \item{var}{A variable specified as a name, a positive or a negative integer
 (counting from the end). The default is \code{-1} and returns last variable.}

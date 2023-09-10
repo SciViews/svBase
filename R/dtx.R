@@ -4,7 +4,6 @@
 #' [tibble()] for more details on the way dynamic-dots are processed.
 #' @param .name_repair The way problematic column names are treated, see also
 #' [tibble()] for details.
-#' @param x An object to print.
 #'
 #' @note data.table and tibble's tbl_df do no use row names. However, you can
 #' add a column named `.rownames`(by default), or the name that is in
@@ -95,56 +94,58 @@ dtt <- function(...,
   setDT(tibble(..., .name_repair = .name_repair))
 }
 
-#' @export
-#' @rdname dtx
-#' @method print data.frame
-print.data.frame <- function(x, ...) {
-  # With pillar, row names are **not** printed, so, instead of as_tibble()
-  # we use as_dtbl() that creates .rownames, then we change its name and class
-  # to make it more obvious that these are the names of the rows
-  #y <- as_tibble(x)
-  y <- as_dtbl(x, rownames = "\u00a0") # u00a0 is nonbreaking space
-  if ("\u00a0" %in% names(y))
-    class(y[["\u00a0"]]) <- c("rownames", "noquote")
-  class(y) <- unique(c("dataframe", class(y)))
-  show(y)
-  invisible(x)
-}
+# No, we use default print methods for data.frame now
+# @export
+# @rdname dtx
+# @method print data.frame
+#print.data.frame <- function(x, ...) {
+#  # With pillar, row names are **not** printed, so, instead of as_tibble()
+#  # we use as_dtbl() that creates .rownames, then we change its name and class
+#  # to make it more obvious that these are the names of the rows
+#  #y <- as_tibble(x)
+#  y <- as_dtbl(x, rownames = "\u00a0") # u00a0 is non breaking space
+#  if ("\u00a0" %in% names(y))
+#    class(y[["\u00a0"]]) <- c("rownames", "noquote")
+#  class(y) <- unique(c("dataframe", class(y)))
+#  show(y)
+#  invisible(x)
+#}
 
-#' @export
-#' @rdname dtx
-#' @method tbl_sum dataframe
-tbl_sum.dataframe <- function(x, ...) {
-  lang <- attr(comment(x), "lang")
-  nc <- ncol(x)
-  # In case we have rownames (column with name \u00a0), we have one column less
-  if ("\u00a0" %in% names(x))
-    nc <- nc - 1
-  if (is.null(lang)) {
-    c(`A data.frame` = paste(nrow(x), "x", nc))
-  } else {
-    c(`A data.frame` = paste(nrow(x), "x", nc), Language = lang)
-  }
-}
+# @export
+# @rdname dtx
+# @method tbl_sum dataframe
+#tbl_sum.dataframe <- function(x, ...) {
+#  lang <- attr(comment(x), "lang")
+#  nc <- ncol(x)
+#  # In case we have rownames (column with name \u00a0), we have one column less
+#  if ("\u00a0" %in% names(x))
+#    nc <- nc - 1
+#  if (is.null(lang)) {
+#    c(`A data.frame` = paste(nrow(x), "x", nc))
+#  } else {
+#    c(`A data.frame` = paste(nrow(x), "x", nc), Language = lang)
+#  }
+#}
 
-#' @export
-#' @rdname dtx
-#' @method print data.table
-print.data.table <- function(x, ...) {
-  y <- as_tibble(x)
-  class(y) <- unique(c("datatable", class(y)))
-  show(y)
-  invisible(x)
-}
+# No, use default data.table print method for now
+# @export
+# @rdname dtx
+# @method print data.table
+#print.data.table <- function(x, ...) {
+#  y <- as_tibble(x)
+#  class(y) <- unique(c("datatable", class(y)))
+#  show(y)
+#  invisible(x)
+#}
 
-#' @export
-#' @rdname dtx
-#' @method tbl_sum datatable
-tbl_sum.datatable <- function(x, ...) {
-  lang <- attr(comment(x), "lang")
-  if (is.null(lang)) {
-    c(`A data.table` = paste(nrow(x), "x", ncol(x)))
-  } else {
-    c(`A data.table` = paste(nrow(x), "x", ncol(x)), Language = lang)
-  }
-}
+# @export
+# @rdname dtx
+# @method tbl_sum datatable
+#tbl_sum.datatable <- function(x, ...) {
+#  lang <- attr(comment(x), "lang")
+#  if (is.null(lang)) {
+#    c(`A data.table` = paste(nrow(x), "x", ncol(x)))
+#  } else {
+#    c(`A data.table` = paste(nrow(x), "x", ncol(x)), Language = lang)
+#  }
+#}

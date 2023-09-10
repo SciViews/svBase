@@ -4,19 +4,28 @@
 \alias{alt_assign}
 \alias{\%->\%}
 \alias{\%<-\%}
+\alias{collect.default}
 \title{Alternate assignment (multiple and/or collect results from dplyr)}
 \usage{
 value \%->\% x
 
 x \%<-\% value
+
+\method{collect}{default}(x, ...)
 }
 \arguments{
 \item{value}{The object to be assigned.}
 
-\item{x}{A name, or a name structure for multiple (deconstructing) assignment.}
+\item{x}{A name, or a name structure for multiple (deconstructing)
+assignment, or any object that does not have a specific [dplyr::collect[])
+method for \code{collect.default()}.}
+
+\item{...}{further arguments passed to the method (not used for the default
+one)}
 }
 \value{
-These operators invisibly return \code{value}.
+These operators invisibly return \code{value}. \code{collect.default()} simply
+return \code{x}.
 }
 \description{
 These alternate assignment operators can be used to perform
@@ -27,7 +36,8 @@ imported from the {zeallot} package (see the corresponding help page at \link[ze
 These assignation operator are overloaded to get interesting
 properties in the context of {tidyverse} pipelines and to make sure to always
 return our preferred data frame object (data.frame, data.table, or tibble).
-Thus, before being assigned, \code{value} is modified by calling \code{\link[dplyr:compute]{dplyr::collect()}} on it and by applying \code{\link[=default_dtx]{default_dtx()}}.
+Thus, before being assigned, \code{value} is modified by calling
+\code{\link[dplyr:compute]{dplyr::collect()}} on it and by applying \code{\link[=default_dtx]{default_dtx()}}.
 }
 \examples{
 # The alternate assignment operator performs three steps:
@@ -43,10 +53,20 @@ dtt |>
   res
 
 print(res)
+class(res) # This is a data frame
+
+dtt |>
+  lazy_dt() |>
+  mutate(x2 = x^2) |>
+  select(x2, y) ->
+  res
+
+print(res)
 class(res) # This is NOT a data frame
 
 # Same pipeline, but assigning with \%->\%
 dtt |>
+  lazy_dt() |>
   mutate(x2 = x^2) |>
   select(x2, y) \%->\%
   res

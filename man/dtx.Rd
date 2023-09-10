@@ -5,10 +5,6 @@
 \alias{dtbl}
 \alias{dtf}
 \alias{dtt}
-\alias{print.data.frame}
-\alias{tbl_sum.dataframe}
-\alias{print.data.table}
-\alias{tbl_sum.datatable}
 \title{Create a data frame (base's data.frame, data.table or tibble's tbl_df)}
 \usage{
 dtx(..., .name_repair = c("check_unique", "unique", "universal", "minimal"))
@@ -18,14 +14,6 @@ dtbl(..., .name_repair = c("check_unique", "unique", "universal", "minimal"))
 dtf(..., .name_repair = c("check_unique", "unique", "universal", "minimal"))
 
 dtt(..., .name_repair = c("check_unique", "unique", "universal", "minimal"))
-
-\method{print}{data.frame}(x, ...)
-
-\method{tbl_sum}{dataframe}(x, ...)
-
-\method{print}{data.table}(x, ...)
-
-\method{tbl_sum}{datatable}(x, ...)
 }
 \arguments{
 \item{...}{A set of name-value pairs. The content of the data frame. See
@@ -33,8 +21,6 @@ dtt(..., .name_repair = c("check_unique", "unique", "universal", "minimal"))
 
 \item{.name_repair}{The way problematic column names are treated, see also
 \code{\link[=tibble]{tibble()}} for details.}
-
-\item{x}{An object to print.}
 }
 \value{
 A data frame as a \strong{tbl_df} object for \code{\link[=dtbl]{dtbl()}}, a \strong{data.frame} for

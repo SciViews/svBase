@@ -9,16 +9,20 @@
 #' @export
 #'
 #' @examples
-#' # Assuming the default data framev for {svBase} is a data.table
+#' # Assuming the default data frame for {svBase} is a data.table
 #' mtcars_dtt <- as_dtt(mtcars)
 #' library(dplyr)
 #' library(dtplyr)
 #' # A lazy data frame, not a "real" data frame!
+#' mtcars_dtt |> lazy_dt() |> select(mpg:disp) |> class()
+#' # A data frame
+#' mtcars |> select(mpg:disp) |> class()
+#' # A data table
 #' mtcars_dtt |> select(mpg:disp) |> class()
-#' # A tibble's tbl_df, always
-#' mtcars_dtt |> select(mpg:disp) |> collect() |> class()
+#' # A tibble, always!
+#' mtcars_dtt |> lazy_dt() |> select(mpg:disp) |> collect() |> class()
 #' # The data frame object you want, default one specified for {svBase}
-#' mtcars_dtt |> select(mpg:disp) |> collect_dtx() |> class()
+#' mtcars_dtt |> lazy_dt() |> select(mpg:disp) |> collect_dtx() |> class()
 collect_dtx <- function(x, ...) {
   as_dtx(collect(x, ...))
 }
