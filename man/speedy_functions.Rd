@@ -20,12 +20,12 @@
 \alias{sright_join}
 \alias{sinner_join}
 \alias{sbind_rows}
-\alias{sbind_cols}
-\alias{sarrange}
 \alias{scount}
 \alias{stally}
 \alias{sadd_count}
 \alias{sadd_tally}
+\alias{sbind_cols}
+\alias{sarrange}
 \alias{spull}
 \alias{sdistinct}
 \alias{sdrop_na}
@@ -76,20 +76,52 @@ sinner_join(x, y, by = NULL, suffix = c(".x", ".y"), copy = FALSE, ...)
 
 sbind_rows(..., .id = NULL)
 
+scount(
+  x,
+  ...,
+  wt = NULL,
+  sort = FALSE,
+  name = NULL,
+  .drop = dplyr::group_by_drop_default(x),
+  sort_cat = TRUE,
+  decreasing = FALSE
+)
+
+stally(
+  x,
+  wt = NULL,
+  sort = FALSE,
+  name = NULL,
+  sort_cat = TRUE,
+  decreasing = FALSE
+)
+
+sadd_count(
+  x,
+  ...,
+  wt = NULL,
+  sort = FALSE,
+  name = NULL,
+  .drop = NULL,
+  sort_cat = TRUE,
+  decreasing = FALSE
+)
+
+sadd_tally(
+  x,
+  wt = NULL,
+  sort = FALSE,
+  name = NULL,
+  sort_cat = TRUE,
+  decreasing = FALSE
+)
+
 sbind_cols(
   ...,
   .name_repair = c("unique", "universal", "check_unique", "minimal")
 )
 
 sarrange(.data, ..., .by_group = FALSE)
-
-scount(x, ..., wt = NULL, sort = FALSE, name = NULL, decreasing = FALSE)
-
-stally(x, wt = NULL, sort = FALSE, name = NULL, decreasing = FALSE)
-
-sadd_count(x, ..., wt = NULL, sort = FALSE, name = NULL, decreasing = FALSE)
-
-sadd_tally(x, wt = NULL, sort = FALSE, name = NULL, decreasing = FALSE)
 
 spull(.data, var = -1, name = NULL, ...)
 
@@ -163,12 +195,6 @@ functions, but it is not used here.}
 \item{.id}{The name of the column for the origin id, either names if all
 other arguments are named, or numbers.}
 
-\item{.name_repair}{How should the name be "repaired" to avoid duplicate
-column names? See \code{\link[dplyr:bind_cols]{dplyr::bind_cols()}} for more details.}
-
-\item{.by_group}{Logical. If \code{TRUE} rows are first arranger by the grouping
-variables in any. \code{FALSE} by default.}
-
 \item{wt}{Frequency weights. Can be \code{NULL} or a variable. Use data masking.}
 
 \item{sort}{If \code{TRUE} largest group will be shown on top.}
@@ -176,7 +202,17 @@ variables in any. \code{FALSE} by default.}
 \item{name}{The name of the new column in the output (\code{n} by default, and no
 existing column must have this name, or an error is generated).4}
 
+\item{.drop}{Are levels with no observations dropped (\code{TRUE} by default).}
+
+\item{sort_cat}{Are levels sorted (\code{TRUE} by default).}
+
 \item{decreasing}{Is sorting done in decreasing order (\code{FALSE} by default)?}
+
+\item{.name_repair}{How should the name be "repaired" to avoid duplicate
+column names? See \code{\link[dplyr:bind_cols]{dplyr::bind_cols()}} for more details.}
+
+\item{.by_group}{Logical. If \code{TRUE} rows are first arranger by the grouping
+variables in any. \code{FALSE} by default.}
 
 \item{var}{A variable specified as a name, a positive or a negative integer
 (counting from the end). The default is \code{-1} and returns last variable.}

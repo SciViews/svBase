@@ -6,7 +6,7 @@
 
 -    Since {dplyr} functions now return the same object as it is receiving (tibble -> tibble, but data.frame -> data.frame and data.table -> data.table), the use of `lazy_dt()` is mandatory to benefit of {dtplyr} translation into {data.table} statements and its speed performance, examples are adapted accordingly.
 
--   `scount()`, `sadd_count()`, `tally()` and `add_tally()` are now based on `collapse::fcount()` with some changes to better match the arguments and behavior of the corresponding{dplyr} functions.
+-   `scount()`, `sadd_count()`, `tally()` and `add_tally()` are now based on `collapse::fcount()` with some changes to better match the arguments and behavior of the corresponding{dplyr} functions. However, much work was needed to align these speedy functions to the behavior of their tidy counterparts, in part because the tidy functions sort of the frequencies columns and the `collapse::fcount()` function that is used sorts on the categories labels... and it does not sort on it by default.
 
 -   Bug correction in `sunite()`, the argument `col=` was setting the name of the column always to "col".
 
@@ -28,7 +28,7 @@
 
 -   Addition of "tidy" 't' functions and "speedy" 's' functions. The tidy functions are mostly renamed versions of {dplyr} or {tidyr} functions, while the speedy functions have a similar interface but are from {collapse} or {data.table} for a big part of them. Arguments are homogenized and sometimes reduced to restrict to features that are compatibles in the two groups.
 
--   The function `n()` is not working in `ssumarise()`. Use `fn(var)` instead, and you can also use it in `tsummarise()`.
+-   The function `n()` is not working in `ssummarise()`. Use `fn(var)` instead, and you can also use it in `tsummarise()`.
 
 -   Addition of "fast" functions from {collapse} + `fn()` and `fna()`.
 

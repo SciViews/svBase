@@ -49,6 +49,8 @@
 #' variables in any. `FALSE` by default.
 #' @param wt Frequency weights. Can be `NULL` or a variable. Use data masking.
 #' @param sort If `TRUE` largest group will be shown on top.
+#' @param .drop Are levels with no observations dropped (`TRUE` by default).
+#' @param sort_cat Are levels sorted (`TRUE` by default).
 #' @param decreasing Is sorting done in decreasing order (`FALSE` by default)?
 #' @param name The name of the new column in the output (`n` by default, and no
 #' existing column must have this name, or an error is generated).4
@@ -330,7 +332,7 @@ sbind_rows <- structure(function(..., .id = NULL) {
   # by eliminating all names if at least one is ""
   if (any(...names() == ""))
     names(list...) <- NULL
-  # dplyr::bind_rows() does the job more intelligently thant base::rbind(): it
+  # dplyr::bind_rows() does the job more intelligently than base::rbind(): it
   # matches column names and fill missing data where needed. rbindlist() can do
   # both, but same behavior is obtained with use.names = TRUE + fill = TRUE
   res <- rbindlist(list..., use.names = TRUE, fill = TRUE, idcol = .id)
@@ -346,8 +348,181 @@ sbind_rows <- structure(function(..., .id = NULL) {
   res
 }, class = c("function", "speedy_fn"), comment = .src_speedy("dplyr::bind_rows"))
 
+#' @export
+#' @rdname speedy_functions
+scount <- structure(function(x, ..., wt = NULL, sort = FALSE, name = NULL,
+.drop = dplyr::group_by_drop_default(x), sort_cat = TRUE, decreasing = FALSE) {
+  # TODO: .drop = FALSE not implemented yet
+  if (isFALSE(.drop))
+    stop(".drop = FALSE not implemented yet in scount(), use count() instead")
+  # TODO: this does not work yet -> send an error message
+  # starwars %>% scount(birth_decade = round(birth_year, -1))
+  check <- try(rlang::check_dots_unnamed(), silent = TRUE)
+  if (inherits(check, "try-error"))
+    stop("scount() does not use computed values for ... yet, use count() instead")
+  # TODO: align arguments with dplyr::count, currently, it is .drop = TRUE
+  # but must implement .drop = FALSE too (shows 0 for levels that have no cases)
+  # TODO: allow pronouns .data and .env
+  if (is.null(name))
+    name <- "n" # Default value is N in collapse, but n in dplyr
+  # In case there are no groups defined, return just the number of rows
+  if (!...length() && is.null(attr(x, "groups"))) {
+    if (!missing(wt)) {
+      swt <- substitute(wt)
+      if (is.symbol(swt)) {
+        res <- data.frame(n = sum(x[[as.character(swt)]], na.rm = TRUE))
+      } else {
+        if (length(wt) != NROW(x))
+          stop("'wt' must be same length as the number of rows in 'x', or the name of a column in 'x'")
+        res <- data.frame(n = sum(wt, na.rm = TRUE))
+      }
+    } else {
+      res <- data.frame(n = NROW(x))
+    }
+    names(res) <- name
+    return(default_dtx(res))
+  }
+  if (is.symbol(substitute(wt))) {
+    res <- inject(fcount(x, ..., w = !!substitute(wt), sort = sort_cat,
+      name = name, decreasing = decreasing, add = FALSE))
+  } else {
+    res <- fcount(x, ..., w = wt, sort = sort_cat,
+      name = name, decreasing = decreasing, add = FALSE)
+  }
+  # sort= argument of dplyr::count sorts the frequency column indeed, not the
+  # category column(s)
+  if (isTRUE(sort))
+    res <- res[order(res[[name]], decreasing = TRUE), ] # TODO: use data.table::setorder() instead
+  default_dtx(res)
+}, class = c("function", "speedy_fn"), comment = .src_speedy("collapse::fcount"))
 
-# Verbs that are not reingeneered yet -------------------------------------
+#' @export
+#' @rdname speedy_functions
+stally <- structure(function(x, wt = NULL, sort = FALSE, name = NULL,
+sort_cat = TRUE, decreasing = FALSE) {
+  # Same as scount(), but without ...; grouping must be done with sgroup_by()
+  if (is.null(name))
+    name <- "n" # Default value is N in collapse, but n in dplyr
+  # In case there are no groups defined, return just the number of rows
+  if (is.null(attr(x, "groups"))) {
+    if (!missing(wt)) {
+      swt <- substitute(wt)
+      if (is.symbol(swt)) {
+        res <- data.frame(n = sum(x[[as.character(swt)]], na.rm = TRUE))
+      } else {
+        if (length(wt) != NROW(x))
+          stop("'wt' must be same length as the number of rows in 'x', or the name of a column in 'x'")
+        res <- data.frame(n = sum(wt, na.rm = TRUE))
+      }
+    } else {
+      res <- data.frame(n = NROW(x))
+    }
+    names(res) <- name
+    return(default_dtx(res))
+  }
+  if (is.symbol(substitute(wt))) {
+    res <- inject(fcount(x, w = !!substitute(wt), sort = sort_cat, name = name,
+      decreasing = decreasing, add = FALSE))
+  } else {
+    res <- fcount(x, w = wt, sort = sort_cat, name = name,
+      decreasing = decreasing, add = FALSE)
+  }
+  # sort= argument of dplyr::tally()sorts the frequency column indeed, not the
+  # category column(s)
+  if (isTRUE(sort))
+    res <- res[order(res[[name]], decreasing = TRUE), ] # TODO: use data.table::setorder() instead
+  default_dtx(res)
+}, class = c("function", "speedy_fn"), comment = .src_speedy("collapse::fcount"))
+
+#' @export
+#' @rdname speedy_functions
+sadd_count <- structure(function(x, ..., wt = NULL, sort = FALSE, name = NULL,
+  .drop = NULL, sort_cat = TRUE, decreasing = FALSE) {
+  if (!missing(.drop))
+    warning("the .drop= argument is deprecated in (s)add_count()")
+  # TODO: this does not work yet -> send an error message
+  # starwars %>% scount(birth_decade = round(birth_year, -1))
+  check <- try(rlang::check_dots_unnamed(), silent = TRUE)
+  if (inherits(check, "try-error"))
+    stop("sadd_count() does not use computed values for ... yet, use add_count() instead")
+  # TODO: align arguments with dplyr::count, currently, it is .drop = TRUE
+  # but must implement .drop = FALSE too (shows 0 for levels that have no cases)
+  # TODO: allow pronouns .data and .env
+  if (is.null(name))
+    name <- "n" # Default value is N in collapse, but n in dplyr
+  # In case there are no groups defined, return just the number of rows
+  if (!...length() && is.null(attr(x, "groups"))) {
+    n <- numeric(0)
+    if (!missing(wt)) {
+      swt <- substitute(wt)
+      if (is.symbol(swt)) {
+        x[[name]] <- sum(x[[as.character(swt)]], na.rm = TRUE)
+      } else {
+        if (length(wt) != NROW(x))
+          stop("'wt' must be same length as the number of rows in 'x', or the name of a column in 'x'")
+        x[[name]] <- sum(wt, na.rm = TRUE)
+      }
+    } else {
+      x[[name]] <- NROW(x)
+    }
+    return(default_dtx(x))
+  }
+  if (is.symbol(substitute(wt))) {
+    res <- inject(fcount(x, ..., w = !!substitute(wt), sort = sort_cat,
+      name = name, decreasing = decreasing, add = TRUE))
+  } else {
+    res <- fcount(x, ..., w = wt, sort = sort_cat,
+      name = name, decreasing = decreasing, add = TRUE)
+  }
+  # sort= argument of dplyr::add_count sorts the frequency column indeed, not the
+  # category column(s)
+  if (isTRUE(sort))
+    res <- res[order(res[[name]], decreasing = TRUE), ] # TODO: use data.table::setorder()
+  default_dtx(res)
+}, class = c("function", "speedy_fn"), comment = .src_speedy("collapse::fcount"))
+
+#' @export
+#' @rdname speedy_functions
+sadd_tally <- structure(function(x, wt = NULL, sort = FALSE, name = NULL,
+sort_cat = TRUE, decreasing = FALSE) {
+  # TODO: align arguments with dplyr::count, currently, it is .drop = TRUE
+  # but must implement .drop = FALSE too (shows 0 for levels that have no cases)
+  # TODO: allow pronouns .data and .env
+  if (is.null(name))
+    name <- "n" # Default value is N in collapse, but n in dplyr
+  # In case there are no groups defined, return just the number of rows
+  if (is.null(attr(x, "groups"))) {
+    n <- numeric(0)
+    if (!missing(wt)) {
+      swt <- substitute(wt)
+      if (is.symbol(swt)) {
+        x[[name]] <- sum(x[[as.character(swt)]], na.rm = TRUE)
+      } else {
+        if (length(wt) != NROW(x))
+          stop("'wt' must be same length as the number of rows in 'x', or the name of a column in 'x'")
+        x[[name]] <- sum(wt, na.rm = TRUE)
+      }
+    } else {
+      x[[name]] <- NROW(x)
+    }
+    return(default_dtx(x))
+  }
+  if (is.symbol(substitute(wt))) {
+    res <- inject(fcount(x, w = !!substitute(wt), sort = sort_cat,
+      name = name, decreasing = decreasing, add = TRUE))
+  } else {
+    res <- fcount(x, w = wt, sort = sort_cat,
+      name = name, decreasing = decreasing, add = TRUE)
+  }
+  # sort= argument of dplyr::add_tally sorts the frequency column indeed, not the
+  # category column(s)
+  if (isTRUE(sort))
+    res <- res[order(res[[name]], decreasing = TRUE), ] # TODO: use data.table::setorder() instead
+  default_dtx(res)
+}, class = c("function", "speedy_fn"), comment = .src_speedy("collapse::fcount"))
+
+
+# Verbs that are not reengineered yet -------------------------------------
 
 #' @export
 #' @rdname speedy_functions
@@ -406,278 +581,6 @@ sarrange <- structure(function(.data, ..., .by_group = FALSE) {
 
 #' @export
 #' @rdname speedy_functions
-scount <- structure(function(x, ..., wt = NULL, sort = FALSE, name = NULL,
-  decreasing = FALSE) {
-  # TODO: align arguments with dplyr::count, currently, it is .drop = TRUE
-  # but must implement .drop = FALSE too (shows 0 for levels that have no cases)
-  # TODO: allow pronouns .data and .env
-  if (is.null(name))
-    name <- "n" # Default value is N in collapse, but n in dplyr
-  # In case there are no groups defined, return just the number of rows
-  if (!...length() && is.null(attr(x, "groups"))) {
-    if (!missing(wt)) {
-      swt <- substitute(wt)
-      if (is.symbol(swt)) {
-        res <- data.frame(n = sum(x[[as.character(swt)]], na.rm = TRUE))
-      } else {
-        if (length(wt) != NROW(x))
-          stop("'wt' must be same length as the number of rows in 'x', or the name of a column in 'x'")
-        res <- data.frame(n = sum(wt, na.rm = TRUE))
-      }
-    } else {
-      res <- data.frame(n = NROW(x))
-    }
-    names(res) <- name
-    return(default_dtx(res))
-  }
-  if (is.symbol(substitute(wt))) {
-    res <- inject(fcount(x, ..., w = !!substitute(wt), sort = sort, name = name,
-      decreasing = decreasing, add = FALSE))
-  } else {
-    res <- fcount(x, ..., w = wt, sort = sort, name = name,
-      decreasing = decreasing, add = FALSE)
-  }
-  default_dtx(res)
-}, class = c("function", "speedy_fn"), comment = .src_speedy("collapse::fcount"))
-# Old version:
-#scount <- structure(function(x, ..., wt = NULL, sort = FALSE, name = NULL) {
-#  # For now, we use same function as txxx() counterpart... still must rework
-#  if (inherits(x, c("tbl_db", "dtplyr_step")))
-#    stop("You must collect results from a tidy function before using a speedy one.")
-#
-#  is_x_dtf <- is_dtf(x)
-#  is_x_dtt <- is_dtt(x)
-#  # Also if we have a GRP_by object from fgroup_by() or sgroup_by(), transform
-#  # it in,to regular group_by and restore the GRP_by after.
-#  if (inherits(x, "GRP_df")) {
-#    is_x_grp_df <- TRUE
-#    gvars <- fgroup_vars(x, return = "names")
-#    gvars <- lapply(gvars, as.name)
-#    # Must regroup with the regular dplyr::group_by()
-#    x <- fungroup(x)
-#    x <- do.call(group_by, c(list(.data = x), gvars))
-#  } else {
-#    is_x_grp_df <- FALSE
-#  }
-#  res <- count(x, ..., wt = wt, sort = sort, name = name)
-#  if (!is.data.frame(res))
-#    res <- collect(res)
-#  # Transform if needed
-#  if (is_x_dtf)
-#    res <- as_dtf(res)
-#  if (is_x_dtt)
-#    res <- as_dtt(res)
-#  if (is_x_grp_df)
-#    res <- do.call(fgroup_by, c(list(.X = res), gvars))
-#  res
-#}, class = c("function", "speedy_fn"), comment = .src_speedy("dplyr::count"))
-
-#' @export
-#' @rdname speedy_functions
-stally <- structure(function(x, wt = NULL, sort = FALSE, name = NULL,
-  decreasing = FALSE) {
-  # Same as scount(), but without ...; grouping must be done with sgroup_by()
-  if (is.null(name))
-    name <- "n" # Default value is N in collapse, but n in dplyr
-  # In case there are no groups defined, return just the number of rows
-  if (is.null(attr(x, "groups"))) {
-    if (!missing(wt)) {
-      swt <- substitute(wt)
-      if (is.symbol(swt)) {
-        res <- data.frame(n = sum(x[[as.character(swt)]], na.rm = TRUE))
-      } else {
-        if (length(wt) != NROW(x))
-          stop("'wt' must be same length as the number of rows in 'x', or the name of a column in 'x'")
-        res <- data.frame(n = sum(wt, na.rm = TRUE))
-      }
-    } else {
-      res <- data.frame(n = NROW(x))
-    }
-    names(res) <- name
-    return(default_dtx(res))
-  }
-  if (is.symbol(substitute(wt))) {
-    res <- inject(fcount(x, w = !!substitute(wt), sort = sort, name = name,
-      decreasing = decreasing, add = FALSE))
-  } else {
-    res <- fcount(x, w = wt, sort = sort, name = name,
-      decreasing = decreasing, add = FALSE)
-  }
-  default_dtx(res)
-}, class = c("function", "speedy_fn"), comment = .src_speedy("collapse::fcount"))
-# Old version
-#stally <- structure(function(x, wt = NULL, sort = FALSE, name = NULL) {
-#  # For now, we use same function as txxx() counterpart... still must rework
-#  if (inherits(x, c("tbl_db", "dtplyr_step")))
-#    stop("You must collect results from a tidy function before using a speedy one.")
-#
-#  is_x_dtf <- is_dtf(x)
-#  is_x_dtt <- is_dtt(x)
-#  # Also if we have a GRP_by object from fgroup_by() or sgroup_by(), transform
-#  # it in,to regular group_by and restore the GRP_by after.
-#  if (inherits(x, "GRP_df")) {
-#    is_x_grp_df <- TRUE
-#    gvars <- fgroup_vars(x, return = "names")
-#    gvars <- lapply(gvars, as.name)
-#    # Must regroup with the regular dplyr::group_by()
-#    x <- fungroup(x)
-#    x <- do.call(group_by, c(list(.data = x), gvars))
-#  } else {
-#    is_x_grp_df <- FALSE
-#  }
-#
-#  res <- do.call(tally, list(x = x, wt = wt, sort = sort, name = name))
-#
-#  if (!is.data.frame(res))
-#    res <- collect(res)
-#  # Transform if needed
-#  if (is_x_dtf)
-#    res <- as_dtf(res)
-#  if (is_x_dtt)
-#    res <- as_dtt(res)
-#  if (is_x_grp_df)
-#    res <- do.call(fgroup_by, c(list(.X = res), gvars))
-#  res
-#}, class = c("function", "speedy_fn"), comment = .src_speedy("dplyr::tally"))
-
-#' @export
-#' @rdname speedy_functions
-sadd_count <- structure(function(x, ..., wt = NULL, sort = FALSE, name = NULL,
-  decreasing = FALSE) {
-  # TODO: align arguments with dplyr::count, currently, it is .drop = TRUE
-  # but must implement .drop = FALSE too (shows 0 for levels that have no cases)
-  # TODO: allow pronouns .data and .env
-  if (is.null(name))
-    name <- "n" # Default value is N in collapse, but n in dplyr
-  # In case there are no groups defined, return just the number of rows
-  if (!...length() && is.null(attr(x, "groups"))) {
-    n <- numeric(0)
-    if (!missing(wt)) {
-      swt <- substitute(wt)
-      if (is.symbol(swt)) {
-        x[[name]] <- sum(x[[as.character(swt)]], na.rm = TRUE)
-      } else {
-        if (length(wt) != NROW(x))
-          stop("'wt' must be same length as the number of rows in 'x', or the name of a column in 'x'")
-        x[[name]] <- sum(wt, na.rm = TRUE)
-      }
-    } else {
-      x[[name]] <- NROW(x)
-    }
-    return(default_dtx(x))
-  }
-  if (is.symbol(substitute(wt))) {
-    res <- inject(fcount(x, ..., w = !!substitute(wt), sort = sort, name = name,
-      decreasing = decreasing, add = TRUE))
-  } else {
-    res <- fcount(x, ..., w = wt, sort = sort, name = name,
-      decreasing = decreasing, add = TRUE)
-  }
-  default_dtx(res)
-}, class = c("function", "speedy_fn"), comment = .src_speedy("collapse::fcount"))
-# Old version
-#sadd_count <- structure(function(x, ..., wt = NULL, sort = FALSE, name = NULL) {
-#  # For now, we use same function as txxx() counterpart... still must rework
-#  if (inherits(x, c("tbl_db", "dtplyr_step")))
-#    stop("You must collect results from a tidy function before using a speedy one.")
-#
-#  is_x_dtf <- is_dtf(x)
-#  is_x_dtt <- is_dtt(x)
-#  # Also if we have a GRP_by object from fgroup_by() or sgroup_by(), transform
-#  # it in,to regular group_by and restore the GRP_by after.
-#  if (inherits(x, "GRP_df")) {
-#    is_x_grp_df <- TRUE
-#    gvars <- fgroup_vars(x, return = "names")
-#    gvars <- lapply(gvars, as.name)
-#    # Must regroup with the regular dplyr::group_by()
-#    x <- fungroup(x)
-#    x <- do.call(group_by, c(list(.data = x), gvars))
-#  } else {
-#    is_x_grp_df <- FALSE
-#  }
-#  res <- add_count(x, ..., wt = wt, sort = sort, name = name)
-#  if (!is.data.frame(res))
-#    res <- collect(res)
-#  # Transform if needed
-#  if (is_x_dtf)
-#    res <- as_dtf(res)
-#  if (is_x_dtt)
-#    res <- as_dtt(res)
-#  if (is_x_grp_df)
-#    res <- do.call(fgroup_by, c(list(.X = res), gvars))
-#  res
-#}, class = c("function", "speedy_fn"), comment = .src_speedy("dplyr::add_count"))
-
-#' @export
-#' @rdname speedy_functions
-sadd_tally <- structure(function(x, wt = NULL, sort = FALSE, name = NULL,
-  decreasing = FALSE) {
-  # TODO: align arguments with dplyr::count, currently, it is .drop = TRUE
-  # but must implement .drop = FALSE too (shows 0 for levels that have no cases)
-  # TODO: allow pronouns .data and .env
-  if (is.null(name))
-    name <- "n" # Default value is N in collapse, but n in dplyr
-  # In case there are no groups defined, return just the number of rows
-  if (is.null(attr(x, "groups"))) {
-    n <- numeric(0)
-    if (!missing(wt)) {
-      swt <- substitute(wt)
-      if (is.symbol(swt)) {
-        x[[name]] <- sum(x[[as.character(swt)]], na.rm = TRUE)
-      } else {
-        if (length(wt) != NROW(x))
-          stop("'wt' must be same length as the number of rows in 'x', or the name of a column in 'x'")
-        x[[name]] <- sum(wt, na.rm = TRUE)
-      }
-    } else {
-      x[[name]] <- NROW(x)
-    }
-    return(default_dtx(x))
-  }
-  if (is.symbol(substitute(wt))) {
-    res <- inject(fcount(x, w = !!substitute(wt), sort = sort, name = name,
-      decreasing = decreasing, add = TRUE))
-  } else {
-    res <- fcount(x, w = wt, sort = sort, name = name,
-      decreasing = decreasing, add = TRUE)
-  }
-  default_dtx(res)
-}, class = c("function", "speedy_fn"), comment = .src_speedy("collapse::fcount"))
-# Old code...
-#sadd_tally <- structure(function(x, wt = NULL, sort = FALSE, name = NULL) {
-#  # For now, we use same function as txxx() counterpart... still must rework
-#  if (inherits(x, c("tbl_db", "dtplyr_step")))
-#    stop("You must collect results from a tidy function before using a speedy one.")
-#
-#  is_x_dtf <- is_dtf(x)
-#  is_x_dtt <- is_dtt(x)
-#  # Also if we have a GRP_by object from fgroup_by() or sgroup_by(), transform
-#  # it in,to regular group_by and restore the GRP_by after.
-#  if (inherits(x, "GRP_df")) {
-#    is_x_grp_df <- TRUE
-#    gvars <- fgroup_vars(x, return = "names")
-#    gvars <- lapply(gvars, as.name)
-#    # Must regroup with the regular dplyr::group_by()
-#    x <- fungroup(x)
-#    x <- do.call(group_by, c(list(.data = x), gvars))
-#  } else {
-#    is_x_grp_df <- FALSE
-#  }
-#  res <- do.call(add_tally, list(x = x, wt = wt, sort = sort, name = name))
-#  if (!is.data.frame(res))
-#    res <- collect(res)
-#  # Transform if needed
-#  if (is_x_dtf)
-#    res <- as_dtf(res)
-#  if (is_x_dtt)
-#    res <- as_dtt(res)
-#  if (is_x_grp_df)
-#    res <- do.call(fgroup_by, c(list(.X = res), gvars))
-#  res
-#}, class = c("function", "speedy_fn"), comment = .src_speedy("dplyr::add_tally"))
-
-#' @export
-#' @rdname speedy_functions
 spull <- structure(function(.data, var = -1, name = NULL, ...) {
   # For now, we use same function as txxx() counterpart... still must rework
   if (inherits(.data, c("tbl_db", "dtplyr_step")))
@@ -691,6 +594,9 @@ spull <- structure(function(.data, var = -1, name = NULL, ...) {
 #' @rdname speedy_functions
 sdistinct <- structure(function(.data, ..., .keep_all = FALSE) {
   # For now, we use same function as txxx() counterpart... still must rework
+  # Can use collapse::funique() by transforming the variables into a vector of
+  # names, dropping .data$ and if .env$... is used, add it as .env$... in the
+  # data frame, then use funique(), then drop or not unused variables
   if (inherits(.data, c("tbl_db", "dtplyr_step")))
     stop("You must collect results from a tidy function before using a speedy one.")
 
