@@ -1,6 +1,6 @@
 Package: svBase
 Type: Package
-Version: 1.3.0
+Version: 1.4.0
 Title: 'SciViews' - Functions for Base Objects like Data Frames
 Description: Functions to manipulated the three main classes of "data frames"
   for 'SciViews': data.frame, data.table and tibble. Allow to select the
