@@ -158,20 +158,52 @@ go to the help page of the non-"s" function with a message.</p>
 <span></span>
 <span><span class="fu">sbind_rows</span><span class="op">(</span><span class="va">...</span>, .id <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
 <span></span>
+<span><span class="fu">scount</span><span class="op">(</span></span>
+<span>  <span class="va">x</span>,</span>
+<span>  <span class="va">...</span>,</span>
+<span>  wt <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  sort <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  name <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  .drop <span class="op">=</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by_drop_default.html" class="external-link">group_by_drop_default</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>,</span>
+<span>  sort_cat <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  decreasing <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">stally</span><span class="op">(</span></span>
+<span>  <span class="va">x</span>,</span>
+<span>  wt <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  sort <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  name <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  sort_cat <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  decreasing <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">sadd_count</span><span class="op">(</span></span>
+<span>  <span class="va">x</span>,</span>
+<span>  <span class="va">...</span>,</span>
+<span>  wt <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  sort <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  name <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  .drop <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  sort_cat <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  decreasing <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">sadd_tally</span><span class="op">(</span></span>
+<span>  <span class="va">x</span>,</span>
+<span>  wt <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  sort <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  name <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  sort_cat <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  decreasing <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span>
+<span></span>
 <span><span class="fu">sbind_cols</span><span class="op">(</span></span>
 <span>  <span class="va">...</span>,</span>
 <span>  .name_repair <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"unique"</span>, <span class="st">"universal"</span>, <span class="st">"check_unique"</span>, <span class="st">"minimal"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">sarrange</span><span class="op">(</span><span class="va">.data</span>, <span class="va">...</span>, .by_group <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">scount</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, wt <span class="op">=</span> <span class="cn">NULL</span>, sort <span class="op">=</span> <span class="cn">FALSE</span>, name <span class="op">=</span> <span class="cn">NULL</span>, decreasing <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">stally</span><span class="op">(</span><span class="va">x</span>, wt <span class="op">=</span> <span class="cn">NULL</span>, sort <span class="op">=</span> <span class="cn">FALSE</span>, name <span class="op">=</span> <span class="cn">NULL</span>, decreasing <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">sadd_count</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, wt <span class="op">=</span> <span class="cn">NULL</span>, sort <span class="op">=</span> <span class="cn">FALSE</span>, name <span class="op">=</span> <span class="cn">NULL</span>, decreasing <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">sadd_tally</span><span class="op">(</span><span class="va">x</span>, wt <span class="op">=</span> <span class="cn">NULL</span>, sort <span class="op">=</span> <span class="cn">FALSE</span>, name <span class="op">=</span> <span class="cn">NULL</span>, decreasing <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">spull</span><span class="op">(</span><span class="va">.data</span>, var <span class="op">=</span> <span class="op">-</span><span class="fl">1</span>, name <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
@@ -269,16 +301,6 @@ functions, but it is not used here.</p></dd>
 other arguments are named, or numbers.</p></dd>
 
 
-<dt>.name_repair</dt>
-<dd><p>How should the name be "repaired" to avoid duplicate
-column names? See <code><a href="https://dplyr.tidyverse.org/reference/bind_cols.html" class="external-link">dplyr::bind_cols()</a></code> for more details.</p></dd>
-
-
-<dt>.by_group</dt>
-<dd><p>Logical. If <code>TRUE</code> rows are first arranger by the grouping
-variables in any. <code>FALSE</code> by default.</p></dd>
-
-
 <dt>wt</dt>
 <dd><p>Frequency weights. Can be <code>NULL</code> or a variable. Use data masking.</p></dd>
 
@@ -292,8 +314,26 @@ variables in any. <code>FALSE</code> by default.</p></dd>
 existing column must have this name, or an error is generated).4</p></dd>
 
 
+<dt>.drop</dt>
+<dd><p>Are levels with no observations dropped (<code>TRUE</code> by default).</p></dd>
+
+
+<dt>sort_cat</dt>
+<dd><p>Are levels sorted (<code>TRUE</code> by default).</p></dd>
+
+
 <dt>decreasing</dt>
 <dd><p>Is sorting done in decreasing order (<code>FALSE</code> by default)?</p></dd>
+
+
+<dt>.name_repair</dt>
+<dd><p>How should the name be "repaired" to avoid duplicate
+column names? See <code><a href="https://dplyr.tidyverse.org/reference/bind_cols.html" class="external-link">dplyr::bind_cols()</a></code> for more details.</p></dd>
+
+
+<dt>.by_group</dt>
+<dd><p>Logical. If <code>TRUE</code> rows are first arranger by the grouping
+variables in any. <code>FALSE</code> by default.</p></dd>
 
 
 <dt>var</dt>
