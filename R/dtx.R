@@ -51,7 +51,7 @@
 #'   l = sample(c(TRUE, FALSE), 5, replace = TRUE))
 #' class(dtx1) # data.table by default
 #'
-#' # With {svBase} data.table and data.frame objects have the same nice print as tibbles
+#' # With svBase data.table and data.frame objects have the same nice print as tibbles
 #' dtbl1
 #' dtf1
 #' dtt1

@@ -1,26 +1,26 @@
-#' Speedy functions (mainly from {collapse} and {data.table}) to manipulate data frames
+#' Speedy functions (mainly from collapse and data.table) to manipulate data frames
 #'
 #' @description The Tidyverse defines a coherent set of tools to manipulate
 #' data frames that use a non-standard evaluation and sometimes require extra
 #' care. These functions, like [mutate()] or [summarise()] are defined in the
-#' {dplyr} and {tidyr} packages. The {collapse} package proposes a couple of
-#' functions with similar interface, but with different and much faster code.
+#' \{dplyr\} and \{tidyr\} packages. The \{collapse\} package proposes a couple
+#' of functions with similar interface, but with different and much faster code.
 #' For instance, [fselect()] is similar to [select()], or [fsummarise()] is
 #' similar to [summarise()]. Not all functions are implemented, arguments and
 #' argument names differ, and the behavior may be very different, like
 #' [frename()] which uses `old_name = new_name`, while [rename()] uses
 #' `new_name = old_name`! The speedy functions all are prefixed with an "s",
-#' like [smutate()], and build on the work initiated in {collapse} to propose a
-#' series of paired functions with the tidy ones. So, [smutate()] and [mutate()]
-#' are "speedy" and 'tidy" counterparts and they are used in a very similar, if
-#' not identical way. This notation using a "s" prefix is there to draw the
-#' attention on their particularities. Their classes are **function** and
-#' **speedy_fn**. Avoid mixing tidy, speedy and non-tidy/speedy functions in the
-#' same pipeline.
+#' like [smutate()], and build on the work initiated in \{collapse\} to propose
+#' a series of paired functions with the tidy ones. So, [smutate()] and
+#' [mutate()] are "speedy" and 'tidy" counterparts and they are used in a very
+#' similar, if not identical way. This notation using a "s" prefix is there to
+#' draw the attention on their particularities. Their classes are **function**
+#' and **speedy_fn**. Avoid mixing tidy, speedy and non-tidy/speedy functions in
+#' the same pipeline.
 #' **This is a global page to present all the speedy functions in one place.**
 #' It is not meant to be a clear and detailed help page of all individual "s"
 #' functions. Please, refer to the corresponding help page of the non-"s" paired
-#' function for more details! You can use the {svMisc}'s `.?smutate` syntax to
+#' function for more details! You can use the \{svMisc\}'s `.?smutate` syntax to
 #' go to the help page of the non-"s" function with a message.
 #'
 #' @param .data A data frame (data.frame, data.table or tibble's tbl_df)
@@ -88,10 +88,10 @@
 #' [dplyr::summarise()]. You can use [fn()] instead, but then, you must give a
 #' variable name as argument. The [fn()] alternative can also be used in
 #' [summarise()] for homogeneous syntax between the two.
-#' From {dplyr}, the [slice()] and `slice_xxx()` functions are not added yet
-#' because they are not available for {dbplyr}. Also [anti_join()],
+#' From \{dplyr\}, the [slice()] and `slice_xxx()` functions are not added yet
+#' because they are not available for \{dbplyr\}. Also [anti_join()],
 #' [semi_join()] and [nest_join()] are not implemented yet.
-#' From {tidyr} [expand()], [chop()], [unchop()], [nest()], [unnest()],
+#' From \{tidyr\} [expand()], [chop()], [unchop()], [nest()], [unnest()],
 #' [unnest_longer()], [unnest_wider()], [hoist()], [pack()] and [unpack()] are
 #' not implemented yet.
 #'

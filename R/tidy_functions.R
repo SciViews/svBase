@@ -1,10 +1,10 @@
-#' Tidy functions (mainly from {dplyr} and {tidyr}) to manipulate data frames
+#' Tidy functions (mainly from dplyr and tidyr) to manipulate data frames
 #'
 #' @description The Tidyverse defines a coherent set of tools to manipulate
 #' data frames that use a non-standard evaluation and sometimes require extra
 #' care. These functions, like [mutate()] or [summarise()] are defined in the
-#' {dplyr} and {tidyr} packages. When using variants, like {dtplyr} for
-#' **data.frame** objects, or {dbplyr} to work with external databases,
+#' \{dplyr\} and \{tidyr\} packages. When using variants, like \{dtplyr\} for
+#' **data.frame** objects, or \{dbplyr\} to work with external databases,
 #' successive commands in a pipeline are pooled together but not computed. One
 #' has to [collect()] the result to get its final form. Most of the tidy
 #' functions that have their "speedy" counterpart prefixed with "s" are listed
@@ -54,14 +54,14 @@
 #' are `"used"`, `"unused"`, or `"none"` (see [mutate()]).
 #'
 #' @note The help page here is very basic and it aims mainly to list all the
-#' tidy functions. For more complete help, see the {dplyr} or {tidyr} packages.
-#' #' From {dplyr}, the [slice()] and `slice_xxx()` functions are not added yet
-#' because they are not available for {dbplyr}. Also [anti_join()],
+#' tidy functions. For more complete help, see the \{dplyr\} or \{tidyr\}
+#' packages. From \{dplyr\}, the [slice()] and `slice_xxx()` functions are not
+#' added yet because they are not available for \{dbplyr\}. Also [anti_join()],
 #' [semi_join()] and [nest_join()] are not implemented yet.
-#' From {dplyr}, the [slice()] and `slice_xxx()` functions are not added yet
-#' because they are not available for {dbplyr}. Also [anti_join()],
+#' From \{dplyr\}, the [slice()] and `slice_xxx()` functions are not added yet
+#' because they are not available for \{dbplyr\}. Also [anti_join()],
 #' [semi_join()] and [nest_join()] are not implemented yet.
-#' From {tidyr} [expand()], [chop()], [unchop()], [nest()], [unnest()],
+#' From \{tidyr\} [expand()], [chop()], [unchop()], [nest()], [unnest()],
 #' [unnest_longer()], [unnest_wider()], [hoist()], [pack()] and [unpack()] are
 #' not implemented yet.
 #'

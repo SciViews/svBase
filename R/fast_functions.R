@@ -1,10 +1,10 @@
-#' Fast (flexible and friendly) statistical functions (mainly from {collapse}) for matrix-like and data frame objects
+#' Fast (flexible and friendly) statistical functions (mainly from collapse) for matrix-like and data frame objects
 #'
 #' @description The fast statistical function, or fast-flexible-friendly
 #' statistical functions are prefixed with "f". These vectorized functions
 #' supersede the no-f functions, bringing the capacity to work smoothly on
 #' matrix-like and data frame objects. Most of them are defined in the
-#' {collapse} package
+#' \{collapse\} package
 #' For instance, base [mean()] operates on a vector, but not on a data frame. A
 #' matrix is recognized as a vector and a single mean is returned. On, the
 #' contrary, [fmean()] calculates one mean per column. It does the same for a
@@ -20,14 +20,11 @@
 #' while it is `FALSE` by default for [mean()].
 #' These are generic functions with methods for **matrix**, **data.frame**,
 #' **grouped_df** and a **default** method used for simple numeric vectors. Most
-#' of them are defined in the {collapse} package, but there are a couple more
+#' of them are defined in the \{collapse\} package, but there are a couple more
 #' here, together with an alternate syntax to replace `TRA=` with `%_f%`.
 #'
 #' @param x A numeric vector, matrix, data frame or grouped data frame (class
 #'   'grouped_df').
-# @param n For `fnth()`, the element to return using a single integer index
-#   such that 1 < `n` < `NROW(x)`, or a probability such as 0 < `n` < 1.
-#@param prob For `fquantile()`, the probability using a single scalar 0 < `n` < 1.
 #' @param ... Further arguments passed to the method, like `w=`, a numeric
 #'   vector of (non-negative) weights that may contain missing values, or
 #'   `TRA=`, a quoted operator indicating the transformation to perform:
@@ -38,9 +35,9 @@
 #'   multiply, `"%%"` to take the modulus (remainder from division by the
 #'   statistic) and `"-%%"` to subtract modulus ('i.e., to floor the data by the
 #'   statistic), see [collapse::TRA()]. Also `na.rm=`, a logical indicating if
-#'   we skip missing values in `x`if `TRUE`(by default). If `FALSE` for any
+#'   we skip missing values in `x` if `TRUE`(by default). If `FALSE` for any
 #'   missing data in `x`, `NA`is returned. For details and other arguments,
-#'   see the corresponding help page in, the {collapse} package.
+#'   see the corresponding help page in the collapse package.
 #' @param expr The expression to evaluate as RHS of the `%__f%` operators.
 #'
 #' @note The page [collapse::fast-statistical-functions] gives more details.

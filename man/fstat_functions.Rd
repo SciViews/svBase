@@ -15,7 +15,7 @@
 \alias{\%*f\%}
 \alias{\%modf\%}
 \alias{\%-modf\%}
-\title{Fast (flexible and friendly) statistical functions (mainly from {collapse}) for matrix-like and data frame objects}
+\title{Fast (flexible and friendly) statistical functions (mainly from collapse) for matrix-like and data frame objects}
 \usage{
 list_fstat_functions()
 
@@ -57,9 +57,9 @@ to divide, \code{"\%"} to divide and multiply by 100 (percent), \code{"*"} to
 multiply, \code{"\%\%"} to take the modulus (remainder from division by the
 statistic) and \code{"-\%\%"} to subtract modulus ('i.e., to floor the data by the
 statistic), see \code{\link[collapse:TRA]{collapse::TRA()}}. Also \verb{na.rm=}, a logical indicating if
-we skip missing values in \code{x}if \code{TRUE}(by default). If \code{FALSE} for any
+we skip missing values in \code{x} if \code{TRUE}(by default). If \code{FALSE} for any
 missing data in \code{x}, \code{NA}is returned. For details and other arguments,
-see the corresponding help page in, the {collapse} package.}
+see the corresponding help page in the collapse package.}
 
 \item{expr}{The expression to evaluate as RHS of the \verb{\%__f\%} operators.}
 }
@@ -73,7 +73,7 @@ The fast statistical function, or fast-flexible-friendly
 statistical functions are prefixed with "f". These vectorized functions
 supersede the no-f functions, bringing the capacity to work smoothly on
 matrix-like and data frame objects. Most of them are defined in the
-{collapse} package
+\{collapse\} package
 For instance, base \code{\link[=mean]{mean()}} operates on a vector, but not on a data frame. A
 matrix is recognized as a vector and a single mean is returned. On, the
 contrary, \code{\link[=fmean]{fmean()}} calculates one mean per column. It does the same for a
@@ -89,7 +89,7 @@ Another particularity is the \verb{na.rm=} argument that is \code{TRUE} by defau
 while it is \code{FALSE} by default for \code{\link[=mean]{mean()}}.
 These are generic functions with methods for \strong{matrix}, \strong{data.frame},
 \strong{grouped_df} and a \strong{default} method used for simple numeric vectors. Most
-of them are defined in the {collapse} package, but there are a couple more
+of them are defined in the \{collapse\} package, but there are a couple more
 here, together with an alternate syntax to replace \verb{TRA=} with \verb{\%_f\%}.
 }
 \note{

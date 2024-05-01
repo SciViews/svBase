@@ -30,18 +30,18 @@ return \code{x}.
 \description{
 These alternate assignment operators can be used to perform
 multiple assignment (also known as destructuring assignment). These are
-imported from the {zeallot} package (see the corresponding help page at \link[zeallot:operator]{zeallot::operator} for complete description). They also performs a \code{\link[dplyr:compute]{dplyr::collect()}} allowing to get results from dplyr extensions like {dtplyr} for data.tables, or {dbplyr} for databases. Finally these two assignment operators also make sure that the preferred data frame object is returned by using \code{\link[=default_dtx]{default_dtx()}}.
+imported from the \{zeallot\} package (see the corresponding help page at \link[zeallot:operator]{zeallot::operator} for complete description). They also performs a \code{\link[dplyr:compute]{dplyr::collect()}} allowing to get results from dplyr extensions like \{dtplyr\} for data.tables, or \{dbplyr\} for databases. Finally these two assignment operators also make sure that the preferred data frame object is returned by using \code{\link[=default_dtx]{default_dtx()}}.
 }
 \details{
 These assignation operator are overloaded to get interesting
-properties in the context of {tidyverse} pipelines and to make sure to always
+properties in the context of \{tidyverse\} pipelines and to make sure to always
 return our preferred data frame object (data.frame, data.table, or tibble).
 Thus, before being assigned, \code{value} is modified by calling
 \code{\link[dplyr:compute]{dplyr::collect()}} on it and by applying \code{\link[=default_dtx]{default_dtx()}}.
 }
 \examples{
 # The alternate assignment operator performs three steps:
-# 1) Collect results from {dbplyr} or {dtplyr}
+# 1) Collect results from dbplyr or dtplyr
 library(dplyr)
 library(data.table)
 library(dtplyr)
@@ -81,7 +81,7 @@ res \%<-\% dtf
 class(res) # A data.table by default
 # but it can be changed with options("SciViews.as_dtx)
 
-# 3) If the {zeallot} syntax is used, make multiple assignment
+# 3) If the zeallot syntax is used, make multiple assignment
 c(X, Y) \%<-\% dtf # Variables of dtf assigned to different names
 X
 Y

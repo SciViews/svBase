@@ -38,7 +38,7 @@
 \alias{sseparate_rows}
 \alias{sfill}
 \alias{sextract}
-\title{Speedy functions (mainly from {collapse} and {data.table}) to manipulate data frames}
+\title{Speedy functions (mainly from collapse and data.table) to manipulate data frames}
 \usage{
 list_speedy_functions()
 
@@ -269,24 +269,24 @@ indication of the return values.
 The Tidyverse defines a coherent set of tools to manipulate
 data frames that use a non-standard evaluation and sometimes require extra
 care. These functions, like \code{\link[=mutate]{mutate()}} or \code{\link[=summarise]{summarise()}} are defined in the
-{dplyr} and {tidyr} packages. The {collapse} package proposes a couple of
-functions with similar interface, but with different and much faster code.
+\{dplyr\} and \{tidyr\} packages. The \{collapse\} package proposes a couple
+of functions with similar interface, but with different and much faster code.
 For instance, \code{\link[=fselect]{fselect()}} is similar to \code{\link[=select]{select()}}, or \code{\link[=fsummarise]{fsummarise()}} is
 similar to \code{\link[=summarise]{summarise()}}. Not all functions are implemented, arguments and
 argument names differ, and the behavior may be very different, like
 \code{\link[=frename]{frename()}} which uses \code{old_name = new_name}, while \code{\link[=rename]{rename()}} uses
 \code{new_name = old_name}! The speedy functions all are prefixed with an "s",
-like \code{\link[=smutate]{smutate()}}, and build on the work initiated in {collapse} to propose a
-series of paired functions with the tidy ones. So, \code{\link[=smutate]{smutate()}} and \code{\link[=mutate]{mutate()}}
-are "speedy" and 'tidy" counterparts and they are used in a very similar, if
-not identical way. This notation using a "s" prefix is there to draw the
-attention on their particularities. Their classes are \strong{function} and
-\strong{speedy_fn}. Avoid mixing tidy, speedy and non-tidy/speedy functions in the
-same pipeline.
+like \code{\link[=smutate]{smutate()}}, and build on the work initiated in \{collapse\} to propose
+a series of paired functions with the tidy ones. So, \code{\link[=smutate]{smutate()}} and
+\code{\link[=mutate]{mutate()}} are "speedy" and 'tidy" counterparts and they are used in a very
+similar, if not identical way. This notation using a "s" prefix is there to
+draw the attention on their particularities. Their classes are \strong{function}
+and \strong{speedy_fn}. Avoid mixing tidy, speedy and non-tidy/speedy functions in
+the same pipeline.
 \strong{This is a global page to present all the speedy functions in one place.}
 It is not meant to be a clear and detailed help page of all individual "s"
 functions. Please, refer to the corresponding help page of the non-"s" paired
-function for more details! You can use the {svMisc}'s \code{.?smutate} syntax to
+function for more details! You can use the \{svMisc\}'s \code{.?smutate} syntax to
 go to the help page of the non-"s" function with a message.
 }
 \note{
@@ -294,10 +294,10 @@ The \code{\link[=ssummarise]{ssummarise()}} function does not support \code{n()}
 \code{\link[dplyr:summarise]{dplyr::summarise()}}. You can use \code{\link[=fn]{fn()}} instead, but then, you must give a
 variable name as argument. The \code{\link[=fn]{fn()}} alternative can also be used in
 \code{\link[=summarise]{summarise()}} for homogeneous syntax between the two.
-From {dplyr}, the \code{\link[=slice]{slice()}} and \code{slice_xxx()} functions are not added yet
-because they are not available for {dbplyr}. Also \code{\link[=anti_join]{anti_join()}},
+From \{dplyr\}, the \code{\link[=slice]{slice()}} and \code{slice_xxx()} functions are not added yet
+because they are not available for \{dbplyr\}. Also \code{\link[=anti_join]{anti_join()}},
 \code{\link[=semi_join]{semi_join()}} and \code{\link[=nest_join]{nest_join()}} are not implemented yet.
-From {tidyr} \code{\link[=expand]{expand()}}, \code{\link[=chop]{chop()}}, \code{\link[=unchop]{unchop()}}, \code{\link[=nest]{nest()}}, \code{\link[=unnest]{unnest()}},
+From \{tidyr\} \code{\link[=expand]{expand()}}, \code{\link[=chop]{chop()}}, \code{\link[=unchop]{unchop()}}, \code{\link[=nest]{nest()}}, \code{\link[=unnest]{unnest()}},
 \code{\link[=unnest_longer]{unnest_longer()}}, \code{\link[=unnest_wider]{unnest_wider()}}, \code{\link[=hoist]{hoist()}}, \code{\link[=pack]{pack()}} and \code{\link[=unpack]{unpack()}} are
 not implemented yet.
 }

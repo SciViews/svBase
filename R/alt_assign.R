@@ -2,7 +2,7 @@
 #'
 #' @description These alternate assignment operators can be used to perform
 #' multiple assignment (also known as destructuring assignment). These are
-#' imported from the {zeallot} package (see the corresponding help page at [zeallot::operator] for complete description). They also performs a [dplyr::collect()] allowing to get results from dplyr extensions like {dtplyr} for data.tables, or {dbplyr} for databases. Finally these two assignment operators also make sure that the preferred data frame object is returned by using [default_dtx()].
+#' imported from the \{zeallot\} package (see the corresponding help page at [zeallot::operator] for complete description). They also performs a [dplyr::collect()] allowing to get results from dplyr extensions like \{dtplyr\} for data.tables, or \{dbplyr\} for databases. Finally these two assignment operators also make sure that the preferred data frame object is returned by using [default_dtx()].
 #' @param value The object to be assigned.
 #' @param x A name, or a name structure for multiple (deconstructing)
 #'  assignment, or any object that does not have a specific [dplyr::collect[])
@@ -12,7 +12,7 @@
 #'   return `x`.
 #'
 #' @details These assignation operator are overloaded to get interesting
-#' properties in the context of {tidyverse} pipelines and to make sure to always
+#' properties in the context of \{tidyverse\} pipelines and to make sure to always
 #' return our preferred data frame object (data.frame, data.table, or tibble).
 #' Thus, before being assigned, `value` is modified by calling
 #' [dplyr::collect()] on it and by applying [default_dtx()].
@@ -22,7 +22,7 @@
 #'
 #' @examples
 #' # The alternate assignment operator performs three steps:
-#' # 1) Collect results from {dbplyr} or {dtplyr}
+#' # 1) Collect results from dbplyr or dtplyr
 #' library(dplyr)
 #' library(data.table)
 #' library(dtplyr)
@@ -62,7 +62,7 @@
 #' class(res) # A data.table by default
 #' # but it can be changed with options("SciViews.as_dtx)
 #'
-#' # 3) If the {zeallot} syntax is used, make multiple assignment
+#' # 3) If the zeallot syntax is used, make multiple assignment
 #' c(X, Y) %<-% dtf # Variables of dtf assigned to different names
 #' X
 #' Y

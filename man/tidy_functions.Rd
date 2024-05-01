@@ -6,7 +6,7 @@
 \alias{filter_ungroup}
 \alias{mutate_ungroup}
 \alias{transmute_ungroup}
-\title{Tidy functions (mainly from {dplyr} and {tidyr}) to manipulate data frames}
+\title{Tidy functions (mainly from dplyr and tidyr) to manipulate data frames}
 \usage{
 list_tidy_functions()
 
@@ -36,8 +36,8 @@ all the tidy(verse) functions that have their speedy "s" counterpart, see
 The Tidyverse defines a coherent set of tools to manipulate
 data frames that use a non-standard evaluation and sometimes require extra
 care. These functions, like \code{\link[=mutate]{mutate()}} or \code{\link[=summarise]{summarise()}} are defined in the
-{dplyr} and {tidyr} packages. When using variants, like {dtplyr} for
-\strong{data.frame} objects, or {dbplyr} to work with external databases,
+\{dplyr\} and \{tidyr\} packages. When using variants, like \{dtplyr\} for
+\strong{data.frame} objects, or \{dbplyr\} to work with external databases,
 successive commands in a pipeline are pooled together but not computed. One
 has to \code{\link[=collect]{collect()}} the result to get its final form. Most of the tidy
 functions that have their "speedy" counterpart prefixed with "s" are listed
@@ -82,14 +82,14 @@ plus the functions defined here under.
 }
 \note{
 The help page here is very basic and it aims mainly to list all the
-tidy functions. For more complete help, see the {dplyr} or {tidyr} packages.
-#' From {dplyr}, the \code{\link[=slice]{slice()}} and \code{slice_xxx()} functions are not added yet
-because they are not available for {dbplyr}. Also \code{\link[=anti_join]{anti_join()}},
+tidy functions. For more complete help, see the \{dplyr\} or \{tidyr\}
+packages. From \{dplyr\}, the \code{\link[=slice]{slice()}} and \code{slice_xxx()} functions are not
+added yet because they are not available for \{dbplyr\}. Also \code{\link[=anti_join]{anti_join()}},
 \code{\link[=semi_join]{semi_join()}} and \code{\link[=nest_join]{nest_join()}} are not implemented yet.
-From {dplyr}, the \code{\link[=slice]{slice()}} and \code{slice_xxx()} functions are not added yet
-because they are not available for {dbplyr}. Also \code{\link[=anti_join]{anti_join()}},
+From \{dplyr\}, the \code{\link[=slice]{slice()}} and \code{slice_xxx()} functions are not added yet
+because they are not available for \{dbplyr\}. Also \code{\link[=anti_join]{anti_join()}},
 \code{\link[=semi_join]{semi_join()}} and \code{\link[=nest_join]{nest_join()}} are not implemented yet.
-From {tidyr} \code{\link[=expand]{expand()}}, \code{\link[=chop]{chop()}}, \code{\link[=unchop]{unchop()}}, \code{\link[=nest]{nest()}}, \code{\link[=unnest]{unnest()}},
+From \{tidyr\} \code{\link[=expand]{expand()}}, \code{\link[=chop]{chop()}}, \code{\link[=unchop]{unchop()}}, \code{\link[=nest]{nest()}}, \code{\link[=unnest]{unnest()}},
 \code{\link[=unnest_longer]{unnest_longer()}}, \code{\link[=unnest_wider]{unnest_wider()}}, \code{\link[=hoist]{hoist()}}, \code{\link[=pack]{pack()}} and \code{\link[=unpack]{unpack()}} are
 not implemented yet.
 }

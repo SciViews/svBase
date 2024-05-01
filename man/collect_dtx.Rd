@@ -16,7 +16,7 @@ collect_dtt(x, ...)
 collect_dtbl(x, ...)
 }
 \arguments{
-\item{x}{A data.frame, data.table, tibble or a lazy data frame (dtplyr_step, tbl_sql, ...).}
+\item{x}{A data.frame, data.table, tibble or a lazy data frame (dtplyr_step, tbl_sql...).}
 
 \item{...}{Arguments passed on to methods for \code{\link[dplyr:compute]{dplyr::collect()}}.}
 }
@@ -24,10 +24,10 @@ collect_dtbl(x, ...)
 A data frame (data.frame, data.table or tibble's tbl_df), the default version for \code{\link[=collect_dtx]{collect_dtx()}}.
 }
 \description{
-When {dplyr} or {tidyr} verbs are applied to a \strong{data.table} or a database connection, they do not output data frames but objects like \strong{dtplyr_step} or \strong{tbl_sql} that are called lazy data frames. The actual process is triggered by using \code{\link[=as_dtx]{as_dtx()}}, or more explicitly with \code{\link[dplyr:compute]{dplyr::collect()}} which coerces the result to a \strong{tibble}. If you want the default {svBase} data frame object instead, use \code{\link[=collect_dtx]{collect_dtx()}}, or if you want a specific object, use one of the other variants.
+When \{dplyr\} or \{tidyr\} verbs are applied to a \strong{data.table} or a database connection, they do not output data frames but objects like \strong{dtplyr_step} or \strong{tbl_sql} that are called lazy data frames. The actual process is triggered by using \code{\link[=as_dtx]{as_dtx()}}, or more explicitly with \code{\link[dplyr:compute]{dplyr::collect()}} which coerces the result to a \strong{tibble}. If you want the default {svBase} data frame object instead, use \code{\link[=collect_dtx]{collect_dtx()}}, or if you want a specific object, use one of the other variants.
 }
 \examples{
-# Assuming the default data frame for {svBase} is a data.table
+# Assuming the default data frame for svBase is a data.table
 mtcars_dtt <- as_dtt(mtcars)
 library(dplyr)
 library(dtplyr)
@@ -39,6 +39,6 @@ mtcars |> select(mpg:disp) |> class()
 mtcars_dtt |> select(mpg:disp) |> class()
 # A tibble, always!
 mtcars_dtt |> lazy_dt() |> select(mpg:disp) |> collect() |> class()
-# The data frame object you want, default one specified for {svBase}
+# The data frame object you want, default one specified for svBase
 mtcars_dtt |> lazy_dt() |> select(mpg:disp) |> collect_dtx() |> class()
 }
