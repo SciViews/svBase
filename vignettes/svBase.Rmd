@@ -1,21 +1,20 @@
 ---
-title: "svBase - Functions for Base Objects like Data Frames"
-author: "Philippe Grosjean (phgrosjean@sciviews.org)"
+title: "Base Objects like Data Frames for 'SciViews::R'"
+author: "Philippe Grosjean"
 date: "`r Sys.Date()`"
 output:
   rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 3
     fig_caption: yes
 vignette: >
-  %\VignetteIndexEntry{svBase - Functions for Base Objects like Data Frames}
+  %\VignetteIndexEntry{Base Objects like Data Frames for 'SciViews::R'}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r setup, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
-)
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
 ```
 
 The {svBase} allows to rationalize the use of the three main "data frames" objects in R: **data.frame**, **data.table** and **tbl_df**.

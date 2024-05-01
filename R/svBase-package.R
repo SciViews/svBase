@@ -1,5 +1,6 @@
-#' @details
-#' The {svBase} package sets up the way data frames (with objects like R base's **data.frame**, **data.table** and tibble **tbl_df**) are managed in SciViews. The user can select the class of object it uses by default and many other SciViews functions return that format. Also conversion from one to the other is smoothed, including for the management of **data.frame**'s row names or **data.table**'s keys. Also homogeneous ways to create a data frame or to print it are also provided.
+#' Base Objects like Data Frames for 'SciViews::R'
+#'
+#' The \{svBase\} package sets up the way data frames (with objects like R base's **data.frame**, **data.table** and tibble **tbl_df**) are managed in SciViews::R. The user can select the class of object it uses by default and many other SciViews::R functions return that format. Conversion from one to the other is made easier, including for the management of **data.frame**'s row names or **data.table**'s keys. Also homogeneous ways to create a data frame or to print it are also provided.
 #'
 #' @section Important functions:
 #'
@@ -9,9 +10,10 @@
 #' `getOption("SciViews.as_dtx", default = as_dtt)` to specify which function to
 #' use to convert into the preferred format.
 #'
-#' @keywords internal
-"_PACKAGE"
+#' @docType package
+#' @name svBase-package
 
+## usethis namespace: start
 #' @importFrom data.table as.data.table haskey key rbindlist setDT setkeyv
 #' @importFrom tibble as_tibble tibble tribble
 #' @importFrom dplyr across add_count add_tally arrange bind_cols collect count distinct filter full_join group_by inner_join left_join mutate pull rename rename_with right_join select summarise tally transmute ungroup
@@ -20,8 +22,5 @@
 #' @importFrom rlang inject
 # @importFrom pillar tbl_sum
 #' @import zeallot
-# The following block is used by usethis to automatically manage
-# roxygen namespace tags. Modify with care!
-## usethis namespace: start
 ## usethis namespace: end
 NULL
