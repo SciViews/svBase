@@ -51,11 +51,12 @@ plus the functions defined here under.
   gtag('js', new Date());
 
   gtag('config', 'UA-462421-8');
-</script>--></head><body data-spy="scroll" data-target="#toc">
+</script>--></head><body>
+    <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
     
 
-    <div class="container template-reference-topic">
-      <header><!-- preloader start --><div class="preloader">
+    <!-- preloader start -->
+<div class="preloader">
   <img src="../preloader.gif" alt="loading..."></div>
 <!-- preloader end -->
 
@@ -86,18 +87,18 @@ plus the functions defined here under.
           <input type="text" class="form-control-global search-form-input" name="q" id="q" placeholder="Search..." required><input type="hidden" name="sitesearch" value="https://www.sciviews.org"></div>
       </form>
       <!-- end svPkgdown global site search with Google -->
-      <ul class="nav navbar-nav navbar-right"><li>
-  <a href="../articles/svBase.html">Get started</a>
+      <ul class="nav navbar-nav navbar-right"><li class="nav-item">
+  <a class="nav-link" href="../articles/svBase.html">Get started</a>
 </li>
-<li>
-  <a href="../reference/index.html">Reference</a>
+<li class="active nav-item">
+  <a class="nav-link" href="../reference/index.html">Reference</a>
 </li>
-<li>
-  <a href="../news/index.html">Changelog</a>
+<li class="nav-item">
+  <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-        <li>
-  <a href="https://github.com/SciViews/svBase/" class="external-link">
-    <span class="fab fa-github fa-lg"></span>
+        <li class="nav-item">
+  <a class="external-link nav-link" href="https://github.com/SciViews/svBase/" aria-label="github">
+    <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -110,17 +111,15 @@ plus the functions defined here under.
   </div>
 </div><!--/.navbar -->
 
-      
-
-      </header><div class="row">
-  <div class="col-md-9 contents">
-    <div class="page-header">
-    <h1>Tidy functions (mainly from dplyr and tidyr) to manipulate data frames</h1>
-    <small class="dont-index">Source: <a href="https://github.com/SciViews/svBase/blob/HEAD/R/tidy_functions.R" class="external-link"><code>R/tidy_functions.R</code></a></small>
-    <div class="hidden name"><code>tidy_functions.Rd</code></div>
+    <div class="container template-reference-topic">
+<div class="row">
+  <main id="main" class="col-md-9"><div class="page-header">
+      <img src="../logo.png" class="logo" alt=""><h1>Tidy functions (mainly from dplyr and tidyr) to manipulate data frames</h1>
+      <small class="dont-index">Source: <a href="https://github.com/SciViews/svBase/blob/HEAD/R/tidy_functions.R" class="external-link"><code>R/tidy_functions.R</code></a></small>
+      <div class="d-none name"><code>tidy_functions.Rd</code></div>
     </div>
 
-    <div class="ref-description">
+    <div class="ref-description section level2">
     <p>The Tidyverse defines a coherent set of tools to manipulate
 data frames that use a non-standard evaluation and sometimes require extra
 care. These functions, like <code><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate()</a></code> or <code><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise()</a></code> are defined in the
@@ -166,7 +165,8 @@ functions):</p><ul><li><p><code>group_by(.data, ...)</code></p></li>
 plus the functions defined here under.</p></li>
 </ul></div>
 
-    <div id="ref-usage">
+    <div class="section level2">
+    <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">list_tidy_functions</span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">filter_ungroup</span><span class="op">(</span><span class="va">.data</span>, <span class="va">...</span><span class="op">)</span></span>
@@ -176,8 +176,8 @@ plus the functions defined here under.</p></li>
 <span><span class="fu">transmute_ungroup</span><span class="op">(</span><span class="va">.data</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
-    <div id="arguments">
-    <h2>Arguments</h2>
+    <div class="section level2">
+    <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>.data</dt>
 <dd><p>A data frame, data frame extension (e.g. a tibble), or a lazy
 data frame (e.g. from dbplyr or dtplyr). See <code><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate()</a></code> for more details.</p></dd>
@@ -193,8 +193,8 @@ the time, not evaluated in a standard way (cf. the tidyverse approach).</p></dd>
 are <code>"used"</code>, <code>"unused"</code>, or <code>"none"</code> (see <code><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate()</a></code>).</p></dd>
 
 </dl></div>
-    <div id="value">
-    <h2>Value</h2>
+    <div class="section level2">
+    <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     
 
 <p>See corresponding "non-t" function for the full help page with
@@ -202,8 +202,8 @@ indication of the return values. <code>list_tidy_functions()</code> returns a li
 all the tidy(verse) functions that have their speedy "s" counterpart, see
 <a href="speedy_functions.html">speedy_functions</a>.</p>
     </div>
-    <div id="note">
-    <h2>Note</h2>
+    <div class="section level2">
+    <h2 id="note">Note<a class="anchor" aria-label="anchor" href="#note"></a></h2>
     <p>The help page here is very basic and it aims mainly to list all the
 tidy functions. For more complete help, see the dplyr or tidyr packages.
 #' From dplyr, the <code><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice()</a></code> and <code>slice_xxx()</code> functions are not added yet
@@ -216,26 +216,23 @@ From tidyr <code>expand()</code>, <code>chop()</code>, <code>unchop()</code>, <c
 <code>unnest_longer()</code>, <code>unnest_wider()</code>, <code>hoist()</code>, <code>pack()</code> and <code>unpack()</code> are
 not implemented yet.</p>
     </div>
-    <div id="see-also">
-    <h2>See also</h2>
+    <div class="section level2">
+    <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="https://sebkrantz.github.io/collapse/reference/select_replace_vars.html" class="external-link">collapse::num_vars()</a></code> to easily keep only numeric columns from a
 data frame, <code><a href="https://sebkrantz.github.io/collapse/reference/fscale.html" class="external-link">collapse::fscale()</a></code> for scaling and centering matrix-like objects and data frames.</p></div>
     </div>
 
-    <div id="ref-examples">
-    <h2>Examples</h2>
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># TODO...</span></span></span>
 <span class="r-in"></span>
 </code></pre></div>
     </div>
-  </div>
-  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
-    <nav id="toc" data-toggle="toc" class="sticky-top"><h2 data-toc-skip>Contents</h2>
-    </nav></div>
-</div>
+  </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
+    </nav></aside></div>
 
 
-      <footer><!-- footer --><!--<footer class="bg-secondary">--><div class="bg-secondary full-width">
+    <footer><!-- footer --><!--<footer class="bg-secondary">--><div class="bg-secondary full-width">
     <div class="py-100 border-bottom" style="border-color: #454547 !important">
         <div class="container">
             <div class="row">
@@ -348,10 +345,9 @@ data frame, <code><a href="https://sebkrantz.github.io/collapse/reference/fscale
 <!--</footer>-->
 <!-- /footer -->
 
-      </footer></div>
+    </footer></div>
 
   
-
 
   
 

@@ -8,11 +8,12 @@ to enter small tables in R, but do not abuse of it!"><meta property="og:image" c
   gtag('js', new Date());
 
   gtag('config', 'UA-462421-8');
-</script>--></head><body data-spy="scroll" data-target="#toc">
+</script>--></head><body>
+    <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
     
 
-    <div class="container template-reference-topic">
-      <header><!-- preloader start --><div class="preloader">
+    <!-- preloader start -->
+<div class="preloader">
   <img src="../preloader.gif" alt="loading..."></div>
 <!-- preloader end -->
 
@@ -43,18 +44,18 @@ to enter small tables in R, but do not abuse of it!"><meta property="og:image" c
           <input type="text" class="form-control-global search-form-input" name="q" id="q" placeholder="Search..." required><input type="hidden" name="sitesearch" value="https://www.sciviews.org"></div>
       </form>
       <!-- end svPkgdown global site search with Google -->
-      <ul class="nav navbar-nav navbar-right"><li>
-  <a href="../articles/svBase.html">Get started</a>
+      <ul class="nav navbar-nav navbar-right"><li class="nav-item">
+  <a class="nav-link" href="../articles/svBase.html">Get started</a>
 </li>
-<li>
-  <a href="../reference/index.html">Reference</a>
+<li class="active nav-item">
+  <a class="nav-link" href="../reference/index.html">Reference</a>
 </li>
-<li>
-  <a href="../news/index.html">Changelog</a>
+<li class="nav-item">
+  <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-        <li>
-  <a href="https://github.com/SciViews/svBase/" class="external-link">
-    <span class="fab fa-github fa-lg"></span>
+        <li class="nav-item">
+  <a class="external-link nav-link" href="https://github.com/SciViews/svBase/" aria-label="github">
+    <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -67,23 +68,22 @@ to enter small tables in R, but do not abuse of it!"><meta property="og:image" c
   </div>
 </div><!--/.navbar -->
 
-      
-
-      </header><div class="row">
-  <div class="col-md-9 contents">
-    <div class="page-header">
-    <h1>Row-wise creation of a data frame</h1>
-    <small class="dont-index">Source: <a href="https://github.com/SciViews/svBase/blob/HEAD/R/dtx_rows.R" class="external-link"><code>R/dtx_rows.R</code></a></small>
-    <div class="hidden name"><code>dtx_rows.Rd</code></div>
+    <div class="container template-reference-topic">
+<div class="row">
+  <main id="main" class="col-md-9"><div class="page-header">
+      <img src="../logo.png" class="logo" alt=""><h1>Row-wise creation of a data frame</h1>
+      <small class="dont-index">Source: <a href="https://github.com/SciViews/svBase/blob/HEAD/R/dtx_rows.R" class="external-link"><code>R/dtx_rows.R</code></a></small>
+      <div class="d-none name"><code>dtx_rows.Rd</code></div>
     </div>
 
-    <div class="ref-description">
+    <div class="ref-description section level2">
     <p>The presentation of the data (see examples) is easier to read
 than with the traditional column-wise entry in <code><a href="dtx.html">dtx()</a></code>. This could be used
 to enter small tables in R, but do not abuse of it!</p>
     </div>
 
-    <div id="ref-usage">
+    <div class="section level2">
+    <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">dtx_rows</span><span class="op">(</span><span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">dtf_rows</span><span class="op">(</span><span class="va">...</span><span class="op">)</span></span>
@@ -93,8 +93,8 @@ to enter small tables in R, but do not abuse of it!</p>
 <span><span class="fu">dtbl_rows</span><span class="op">(</span><span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
-    <div id="arguments">
-    <h2>Arguments</h2>
+    <div class="section level2">
+    <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>...</dt>
 <dd><p>Specify the structure of the data frame by using formulas for
 variable names like <code>~x</code> for variable <code>x</code>. Then, use one argument per value
@@ -102,8 +102,8 @@ in the data frame. It is possible to unquote with <code>!!</code> and to
 unquote-splice with <code>!!!</code>.</p></dd>
 
 </dl></div>
-    <div id="value">
-    <h2>Value</h2>
+    <div class="section level2">
+    <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     
 
 <p>A data frame of class <strong>data.frame</strong> for <code>dtf_rows()</code>, <strong>data.table</strong></p>
@@ -113,8 +113,8 @@ unquote-splice with <code>!!!</code>.</p></dd>
 with <code>dtx_rows()</code>.</p>
     </div>
 
-    <div id="ref-examples">
-    <h2>Examples</h2>
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu">dtx_rows</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  <span class="op">~</span><span class="va">x</span>, <span class="op">~</span><span class="va">y</span>, <span class="op">~</span><span class="va">group</span>,</span></span>
 <span class="r-in"><span>   <span class="fl">1</span>,  <span class="fl">3</span>,    <span class="st">"A"</span>,</span></span>
@@ -122,20 +122,18 @@ with <code>dtx_rows()</code>.</p>
 <span class="r-in"><span>   <span class="fl">10</span>, <span class="fl">4</span>,    <span class="st">"B"</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">df</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     x y group</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1:  1 3     A</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2:  6 2     A</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3: 10 4     B</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        x     y  group</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    &lt;num&gt; &lt;num&gt; &lt;char&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1:     1     3      A</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2:     6     2      A</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3:    10     4      B</span>
 </code></pre></div>
     </div>
-  </div>
-  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
-    <nav id="toc" data-toggle="toc" class="sticky-top"><h2 data-toc-skip>Contents</h2>
-    </nav></div>
-</div>
+  </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
+    </nav></aside></div>
 
 
-      <footer><!-- footer --><!--<footer class="bg-secondary">--><div class="bg-secondary full-width">
+    <footer><!-- footer --><!--<footer class="bg-secondary">--><div class="bg-secondary full-width">
     <div class="py-100 border-bottom" style="border-color: #454547 !important">
         <div class="container">
             <div class="row">
@@ -248,10 +246,9 @@ with <code>dtx_rows()</code>.</p>
 <!--</footer>-->
 <!-- /footer -->
 
-      </footer></div>
+    </footer></div>
 
   
-
 
   
 

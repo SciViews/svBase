@@ -6,11 +6,12 @@
   gtag('js', new Date());
 
   gtag('config', 'UA-462421-8');
-</script>--></head><body data-spy="scroll" data-target="#toc">
+</script>--></head><body>
+    <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
     
 
-    <div class="container template-reference-index">
-      <header><!-- preloader start --><div class="preloader">
+    <!-- preloader start -->
+<div class="preloader">
   <img src="../preloader.gif" alt="loading..."></div>
 <!-- preloader end -->
 
@@ -41,18 +42,18 @@
           <input type="text" class="form-control-global search-form-input" name="q" id="q" placeholder="Search..." required><input type="hidden" name="sitesearch" value="https://www.sciviews.org"></div>
       </form>
       <!-- end svPkgdown global site search with Google -->
-      <ul class="nav navbar-nav navbar-right"><li>
-  <a href="../articles/svBase.html">Get started</a>
+      <ul class="nav navbar-nav navbar-right"><li class="nav-item">
+  <a class="nav-link" href="../articles/svBase.html">Get started</a>
 </li>
-<li>
-  <a href="../reference/index.html">Reference</a>
+<li class="active nav-item">
+  <a class="nav-link" href="../reference/index.html">Reference</a>
 </li>
-<li>
-  <a href="../news/index.html">Changelog</a>
+<li class="nav-item">
+  <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-        <li>
-  <a href="https://github.com/SciViews/svBase/" class="external-link">
-    <span class="fab fa-github fa-lg"></span>
+        <li class="nav-item">
+  <a class="external-link nav-link" href="https://github.com/SciViews/svBase/" aria-label="github">
+    <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -65,63 +66,78 @@
   </div>
 </div><!--/.navbar -->
 
-      
-
-      </header><div class="row">
-  <div class="contents col-md-9">
-    <div class="page-header">
-      <h1>Reference</h1>
+    <div class="container template-reference-index">
+<div class="row">
+  <main id="main" class="col-md-9"><div class="page-header">
+      <img src="../logo.png" class="logo" alt=""><h1>Function reference</h1>
     </div>
 
-    <table class="ref-index"><colgroup><col class="alias"><col class="title"></colgroup><tbody><tr><th colspan="2">
-          <h2 id="all-functions">All functions <a href="#all-functions" class="anchor" aria-hidden="true"></a></h2>
-          <p class="section-desc"></p>
-        </th>
-      </tr></tbody><tbody><tr><td>
-          <p><code><a href="alt_assign.html">`%-&gt;%`</a></code> <code><a href="alt_assign.html">`%&lt;-%`</a></code> <code><a href="alt_assign.html">collect(<i>&lt;default&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>Alternate assignment (multiple and/or collect results from dplyr)</p></td>
-      </tr><tr><td>
-          <p><code><a href="as_dtx.html">as_dtx()</a></code> <code><a href="as_dtx.html">as_dtf()</a></code> <code><a href="as_dtx.html">as_dtt()</a></code> <code><a href="as_dtx.html">as_dtbl()</a></code> <code><a href="as_dtx.html">default_dtx()</a></code> <code><a href="as_dtx.html">as.matrix(<i>&lt;tbl_df&gt;</i>)</a></code> <code><a href="as_dtx.html">as_matrix()</a></code> </p>
-        </td>
-        <td><p>Coerce objects into data.frames, data.tables, tibbles or matrices</p></td>
-      </tr><tr><td>
-          <p><code><a href="collect_dtx.html">collect_dtx()</a></code> <code><a href="collect_dtx.html">collect_dtf()</a></code> <code><a href="collect_dtx.html">collect_dtt()</a></code> <code><a href="collect_dtx.html">collect_dtbl()</a></code> </p>
-        </td>
-        <td><p>Force computation of a lazy tidyverse object</p></td>
-      </tr><tr><td>
-          <p><code><a href="dtx.html">dtx()</a></code> <code><a href="dtx.html">dtbl()</a></code> <code><a href="dtx.html">dtf()</a></code> <code><a href="dtx.html">dtt()</a></code> </p>
-        </td>
-        <td><p>Create a data frame (base's data.frame, data.table or tibble's tbl_df)</p></td>
-      </tr><tr><td>
-          <p><code><a href="dtx_rows.html">dtx_rows()</a></code> <code><a href="dtx_rows.html">dtf_rows()</a></code> <code><a href="dtx_rows.html">dtt_rows()</a></code> <code><a href="dtx_rows.html">dtbl_rows()</a></code> </p>
-        </td>
-        <td><p>Row-wise creation of a data frame</p></td>
-      </tr><tr><td>
-          <p><code><a href="fstat_functions.html">list_fstat_functions()</a></code> <code><a href="fstat_functions.html">fn()</a></code> <code><a href="fstat_functions.html">fna()</a></code> <code><a href="fstat_functions.html">`%replacef%`</a></code> <code><a href="fstat_functions.html">`%replace_fillf%`</a></code> <code><a href="fstat_functions.html">`%-f%`</a></code> <code><a href="fstat_functions.html">`%+f%`</a></code> <code><a href="fstat_functions.html">`%-+f%`</a></code> <code><a href="fstat_functions.html">`%/f%`</a></code> <code><a href="fstat_functions.html">`%/*100f%`</a></code> <code><a href="fstat_functions.html">`%*f%`</a></code> <code><a href="fstat_functions.html">`%modf%`</a></code> <code><a href="fstat_functions.html">`%-modf%`</a></code> </p>
-        </td>
-        <td><p>Fast (flexible and friendly) statistical functions (mainly from collapse) for matrix-like and data frame objects</p></td>
-      </tr><tr><td>
-          <p><code><a href="is_dtx.html">is_dtx()</a></code> <code><a href="is_dtx.html">is_dtf()</a></code> <code><a href="is_dtx.html">is_dtt()</a></code> <code><a href="is_dtx.html">is_dtbl()</a></code> </p>
-        </td>
-        <td><p>Test if the object is a data frame (data.frame, data.table or tibble)</p></td>
-      </tr><tr><td>
-          <p><code><a href="speedy_functions.html">list_speedy_functions()</a></code> <code><a href="speedy_functions.html">sgroup_by()</a></code> <code><a href="speedy_functions.html">sungroup()</a></code> <code><a href="speedy_functions.html">srename()</a></code> <code><a href="speedy_functions.html">srename_with()</a></code> <code><a href="speedy_functions.html">sfilter()</a></code> <code><a href="speedy_functions.html">sfilter_ungroup()</a></code> <code><a href="speedy_functions.html">sselect()</a></code> <code><a href="speedy_functions.html">smutate()</a></code> <code><a href="speedy_functions.html">smutate_ungroup()</a></code> <code><a href="speedy_functions.html">stransmute()</a></code> <code><a href="speedy_functions.html">stransmute_ungroup()</a></code> <code><a href="speedy_functions.html">ssummarise()</a></code> <code><a href="speedy_functions.html">sfull_join()</a></code> <code><a href="speedy_functions.html">sleft_join()</a></code> <code><a href="speedy_functions.html">sright_join()</a></code> <code><a href="speedy_functions.html">sinner_join()</a></code> <code><a href="speedy_functions.html">sbind_rows()</a></code> <code><a href="speedy_functions.html">scount()</a></code> <code><a href="speedy_functions.html">stally()</a></code> <code><a href="speedy_functions.html">sadd_count()</a></code> <code><a href="speedy_functions.html">sadd_tally()</a></code> <code><a href="speedy_functions.html">sbind_cols()</a></code> <code><a href="speedy_functions.html">sarrange()</a></code> <code><a href="speedy_functions.html">spull()</a></code> <code><a href="speedy_functions.html">sdistinct()</a></code> <code><a href="speedy_functions.html">sdrop_na()</a></code> <code><a href="speedy_functions.html">sreplace_na()</a></code> <code><a href="speedy_functions.html">spivot_longer()</a></code> <code><a href="speedy_functions.html">spivot_wider()</a></code> <code><a href="speedy_functions.html">suncount()</a></code> <code><a href="speedy_functions.html">sunite()</a></code> <code><a href="speedy_functions.html">sseparate()</a></code> <code><a href="speedy_functions.html">sseparate_rows()</a></code> <code><a href="speedy_functions.html">sfill()</a></code> <code><a href="speedy_functions.html">sextract()</a></code> </p>
-        </td>
-        <td><p>Speedy functions (mainly from collapse and data.table) to manipulate data frames</p></td>
-      </tr><tr><td>
-          <p><code><a href="tidy_functions.html">list_tidy_functions()</a></code> <code><a href="tidy_functions.html">filter_ungroup()</a></code> <code><a href="tidy_functions.html">mutate_ungroup()</a></code> <code><a href="tidy_functions.html">transmute_ungroup()</a></code> </p>
-        </td>
-        <td><p>Tidy functions (mainly from dplyr and tidyr) to manipulate data frames</p></td>
-      </tr></tbody></table></div>
+    <div class="section level2">
+      <h2 id="all-functions">All functions<a class="anchor" aria-label="anchor" href="#all-functions"></a></h2>
+      
+      
 
-  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
-    <nav id="toc" data-toggle="toc" class="sticky-top"><h2 data-toc-skip>Contents</h2>
-    </nav></div>
-</div>
+      
+    </div><div id="" class="section level2">
+      
+      
+      
+
+      <dl><dt>
+          
+          <code><a href="alt_assign.html">`%-&gt;%`</a></code> <code><a href="alt_assign.html">`%&lt;-%`</a></code> <code><a href="alt_assign.html">collect(<i>&lt;default&gt;</i>)</a></code> 
+        </dt>
+        <dd>Alternate assignment (multiple and/or collect results from dplyr)</dd>
+      </dl><dl><dt>
+          
+          <code><a href="as_dtx.html">as_dtx()</a></code> <code><a href="as_dtx.html">as_dtf()</a></code> <code><a href="as_dtx.html">as_dtt()</a></code> <code><a href="as_dtx.html">as_dtbl()</a></code> <code><a href="as_dtx.html">default_dtx()</a></code> <code><a href="as_dtx.html">as.matrix(<i>&lt;tbl_df&gt;</i>)</a></code> <code><a href="as_dtx.html">as_matrix()</a></code> 
+        </dt>
+        <dd>Coerce objects into data.frames, data.tables, tibbles or matrices</dd>
+      </dl><dl><dt>
+          
+          <code><a href="collect_dtx.html">collect_dtx()</a></code> <code><a href="collect_dtx.html">collect_dtf()</a></code> <code><a href="collect_dtx.html">collect_dtt()</a></code> <code><a href="collect_dtx.html">collect_dtbl()</a></code> 
+        </dt>
+        <dd>Force computation of a lazy tidyverse object</dd>
+      </dl><dl><dt>
+          
+          <code><a href="dtx.html">dtx()</a></code> <code><a href="dtx.html">dtbl()</a></code> <code><a href="dtx.html">dtf()</a></code> <code><a href="dtx.html">dtt()</a></code> 
+        </dt>
+        <dd>Create a data frame (base's data.frame, data.table or tibble's tbl_df)</dd>
+      </dl><dl><dt>
+          
+          <code><a href="dtx_rows.html">dtx_rows()</a></code> <code><a href="dtx_rows.html">dtf_rows()</a></code> <code><a href="dtx_rows.html">dtt_rows()</a></code> <code><a href="dtx_rows.html">dtbl_rows()</a></code> 
+        </dt>
+        <dd>Row-wise creation of a data frame</dd>
+      </dl><dl><dt>
+          
+          <code><a href="fstat_functions.html">list_fstat_functions()</a></code> <code><a href="fstat_functions.html">fn()</a></code> <code><a href="fstat_functions.html">fna()</a></code> <code><a href="fstat_functions.html">`%replacef%`</a></code> <code><a href="fstat_functions.html">`%replace_fillf%`</a></code> <code><a href="fstat_functions.html">`%-f%`</a></code> <code><a href="fstat_functions.html">`%+f%`</a></code> <code><a href="fstat_functions.html">`%-+f%`</a></code> <code><a href="fstat_functions.html">`%/f%`</a></code> <code><a href="fstat_functions.html">`%/*100f%`</a></code> <code><a href="fstat_functions.html">`%*f%`</a></code> <code><a href="fstat_functions.html">`%modf%`</a></code> <code><a href="fstat_functions.html">`%-modf%`</a></code> 
+        </dt>
+        <dd>Fast (flexible and friendly) statistical functions (mainly from collapse) for matrix-like and data frame objects</dd>
+      </dl><dl><dt>
+          
+          <code><a href="is_dtx.html">is_dtx()</a></code> <code><a href="is_dtx.html">is_dtf()</a></code> <code><a href="is_dtx.html">is_dtt()</a></code> <code><a href="is_dtx.html">is_dtbl()</a></code> 
+        </dt>
+        <dd>Test if the object is a data frame (data.frame, data.table or tibble)</dd>
+      </dl><dl><dt>
+          
+          <code><a href="speedy_functions.html">list_speedy_functions()</a></code> <code><a href="speedy_functions.html">sgroup_by()</a></code> <code><a href="speedy_functions.html">sungroup()</a></code> <code><a href="speedy_functions.html">srename()</a></code> <code><a href="speedy_functions.html">srename_with()</a></code> <code><a href="speedy_functions.html">sfilter()</a></code> <code><a href="speedy_functions.html">sfilter_ungroup()</a></code> <code><a href="speedy_functions.html">sselect()</a></code> <code><a href="speedy_functions.html">smutate()</a></code> <code><a href="speedy_functions.html">smutate_ungroup()</a></code> <code><a href="speedy_functions.html">stransmute()</a></code> <code><a href="speedy_functions.html">stransmute_ungroup()</a></code> <code><a href="speedy_functions.html">ssummarise()</a></code> <code><a href="speedy_functions.html">sfull_join()</a></code> <code><a href="speedy_functions.html">sleft_join()</a></code> <code><a href="speedy_functions.html">sright_join()</a></code> <code><a href="speedy_functions.html">sinner_join()</a></code> <code><a href="speedy_functions.html">sbind_rows()</a></code> <code><a href="speedy_functions.html">scount()</a></code> <code><a href="speedy_functions.html">stally()</a></code> <code><a href="speedy_functions.html">sadd_count()</a></code> <code><a href="speedy_functions.html">sadd_tally()</a></code> <code><a href="speedy_functions.html">sbind_cols()</a></code> <code><a href="speedy_functions.html">sarrange()</a></code> <code><a href="speedy_functions.html">spull()</a></code> <code><a href="speedy_functions.html">sdistinct()</a></code> <code><a href="speedy_functions.html">sdrop_na()</a></code> <code><a href="speedy_functions.html">sreplace_na()</a></code> <code><a href="speedy_functions.html">spivot_longer()</a></code> <code><a href="speedy_functions.html">spivot_wider()</a></code> <code><a href="speedy_functions.html">suncount()</a></code> <code><a href="speedy_functions.html">sunite()</a></code> <code><a href="speedy_functions.html">sseparate()</a></code> <code><a href="speedy_functions.html">sseparate_rows()</a></code> <code><a href="speedy_functions.html">sfill()</a></code> <code><a href="speedy_functions.html">sextract()</a></code> 
+        </dt>
+        <dd>Speedy functions (mainly from collapse and data.table) to manipulate data frames</dd>
+      </dl><dl><dt>
+          
+          <code><a href="svBase-package.html">svBase-package</a></code> 
+        </dt>
+        <dd>Base Objects like Data Frames for 'SciViews::R'</dd>
+      </dl><dl><dt>
+          
+          <code><a href="tidy_functions.html">list_tidy_functions()</a></code> <code><a href="tidy_functions.html">filter_ungroup()</a></code> <code><a href="tidy_functions.html">mutate_ungroup()</a></code> <code><a href="tidy_functions.html">transmute_ungroup()</a></code> 
+        </dt>
+        <dd>Tidy functions (mainly from dplyr and tidyr) to manipulate data frames</dd>
+      </dl></div>
+  </main></div>
 
 
-      <footer><!-- footer --><!--<footer class="bg-secondary">--><div class="bg-secondary full-width">
+    <footer><!-- footer --><!--<footer class="bg-secondary">--><div class="bg-secondary full-width">
     <div class="py-100 border-bottom" style="border-color: #454547 !important">
         <div class="container">
             <div class="row">
@@ -234,10 +250,9 @@
 <!--</footer>-->
 <!-- /footer -->
 
-      </footer></div>
+    </footer></div>
 
   
-
 
   
 
