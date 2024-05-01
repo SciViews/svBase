@@ -3,7 +3,7 @@
 statistical functions are prefixed with "f". These vectorized functions
 supersede the no-f functions, bringing the capacity to work smoothly on
 matrix-like and data frame objects. Most of them are defined in the
-collapse package
+{collapse} package
 For instance, base mean() operates on a vector, but not on a data frame. A
 matrix is recognized as a vector and a single mean is returned. On, the
 contrary, fmean() calculates one mean per column. It does the same for a
@@ -19,7 +19,7 @@ Another particularity is the na.rm= argument that is TRUE by default,
 while it is FALSE by default for mean().
 These are generic functions with methods for matrix, data.frame,
 grouped_df and a default method used for simple numeric vectors. Most
-of them are defined in the collapse package, but there are a couple more
+of them are defined in the {collapse} package, but there are a couple more
 here, together with an alternate syntax to replace TRA= with %_f%.'><meta property="og:image" content="https://www.sciviews.org/svBase/logo.png"><meta name="twitter:card" content="summary"><!-- Mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.6/MathJax.js" async integrity="sha256-nlrDrBTHxJJlDDX22AS33xYI1OJHnGMDhiYMSe2U0e0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.6/config/TeX-AMS-MML_HTMLorMML.js" async integrity="sha256-4zys9A4hMQmtq2EUL+JRoXc0NZi8jVJMzb8onewOaSQ=" crossorigin="anonymous"></script><!-- Global site tag (gtag.js) - Google Analytics --><!--<script async src="https://www.googletagmanager.com/gtag/js?id=UA-462421-8"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -100,7 +100,7 @@ here, together with an alternate syntax to replace TRA= with %_f%.'><meta proper
 statistical functions are prefixed with "f". These vectorized functions
 supersede the no-f functions, bringing the capacity to work smoothly on
 matrix-like and data frame objects. Most of them are defined in the
-collapse package
+{collapse} package
 For instance, base <code><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean()</a></code> operates on a vector, but not on a data frame. A
 matrix is recognized as a vector and a single mean is returned. On, the
 contrary, <code>fmean()</code> calculates one mean per column. It does the same for a
@@ -116,7 +116,7 @@ Another particularity is the <code>na.rm=</code> argument that is <code>TRUE</co
 while it is <code>FALSE</code> by default for <code><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean()</a></code>.
 These are generic functions with methods for <strong>matrix</strong>, <strong>data.frame</strong>,
 <strong>grouped_df</strong> and a <strong>default</strong> method used for simple numeric vectors. Most
-of them are defined in the collapse package, but there are a couple more
+of them are defined in the {collapse} package, but there are a couple more
 here, together with an alternate syntax to replace <code>TRA=</code> with <code>%_f%</code>.</p>
     </div>
 
@@ -167,9 +167,9 @@ to divide, <code>"%"</code> to divide and multiply by 100 (percent), <code>"*"</
 multiply, <code>"%%"</code> to take the modulus (remainder from division by the
 statistic) and <code>"-%%"</code> to subtract modulus ('i.e., to floor the data by the
 statistic), see <code><a href="https://sebkrantz.github.io/collapse/reference/TRA.html" class="external-link">collapse::TRA()</a></code>. Also <code>na.rm=</code>, a logical indicating if
-we skip missing values in <code>x</code>if <code>TRUE</code>(by default). If <code>FALSE</code> for any
+we skip missing values in <code>x</code> if <code>TRUE</code>(by default). If <code>FALSE</code> for any
 missing data in <code>x</code>, <code>NA</code>is returned. For details and other arguments,
-see the corresponding help page in, the collapse package.</p></dd>
+see the corresponding help page in the collapse package.</p></dd>
 
 
 <dt>expr</dt>
