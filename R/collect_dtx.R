@@ -1,6 +1,6 @@
 #' Force computation of a lazy tidyverse object
 #'
-#' @description When \{dplyr\} or \{tidyr\} verbs are applied to a **data.table** or a database connection, they do not output data frames but objects like **dtplyr_step** or **tbl_sql** that are called lazy data frames. The actual process is triggered by using [as_dtx()], or more explicitly with [dplyr::collect()] which coerces the result to a **tibble**. If you want the default {svBase} data frame object instead, use [collect_dtx()], or if you want a specific object, use one of the other variants.
+#' @description When \{dplyr\} or \{tidyr\} verbs are applied to a **data.table** or a database connection, they do not output data frames but objects like **dtplyr_step** or **tbl_sql** that are called lazy data frames. The actual process is triggered by using [as_dtx()], or more explicitly with [dplyr::collect()] which coerces the result to a **tibble**. If you want the default \{svBase\} data frame object instead, use [collect_dtx()], or if you want a specific object, use one of the other variants.
 #'
 #' @param x A data.frame, data.table, tibble or a lazy data frame (dtplyr_step, tbl_sql...).
 #' @param ... Arguments passed on to methods for [dplyr::collect()].
