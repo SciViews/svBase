@@ -60,10 +60,14 @@
 #' @param data A data frame, or for `replace_na()` a vector or a data frame.
 #' @param replace If `data` is a vector, a unique value to replace `NA`s,
 #' otherwise, a list of values, one per column of the data frame.
-#' @param cols A selection of the columns using tidy-select syntax, see[tidyr::pivot_longer()].
-#' @param names_to A character vector with the name or names of the columns for the names.
-#' @param values_to A string with the name of the column that receives the values.
-#' @param names_from The column or columns containing the names (use tidy selection and do not quote the names).
+#' @param cols A selection of the columns using tidy-select syntax,
+#'   see[tidyr::pivot_longer()].
+#' @param names_to A character vector with the name or names of the columns for
+#'   the names.
+#' @param values_to A string with the name of the column that receives the
+#'   values.
+#' @param names_from The column or columns containing the names (use tidy
+#'   selection and do not quote the names).
 #' @param values_from Idem for the column or columns that contain the values.
 #' @param weights A vector of weight to use to "uncount" `data`.
 #' @param .remove If `TRUE`, and `weights` is the name of a column, that column
@@ -113,7 +117,8 @@ list_speedy_functions <- function() {
     "stransmute_ungroup", "suncount", "sungroup", "sunite")
 }
 
-.src_speedy <- function(src, comment = "A speedy function, see ?speedy_functions.") {
+.src_speedy <- function(src,
+    comment = "A speedy function, see ?speedy_functions.") {
   attr(comment, "src") <- src
   comment
 }
@@ -121,10 +126,12 @@ list_speedy_functions <- function() {
 #' @export
 #' @rdname speedy_functions
 sgroup_by <- structure(function(.data, ...) {
-  # Different args names than fgroup_by() and not all arguments not in group_by()
+  # Different args names than fgroup_by()
+  # and not all arguments not in group_by()
   # TODO: accept somethinf like this: sgroup_by(df, across(...)).
   fgroup_by(.data, ...)
-}, class = c("function", "speedy_fn"), comment = .src_speedy("collapse::fgroup_by"))
+}, class = c("function", "speedy_fn"),
+  comment = .src_speedy("collapse::fgroup_by"))
 
 #' @export
 #' @rdname speedy_functions
@@ -132,7 +139,8 @@ sungroup <- structure(function(.data, ...) {
   # Different args names (x= instead of X=), but we use .data= as for the other
   # tidy/speedy functions
   fungroup(.data, ...)
-}, class = c("function", "speedy_fn"), comment = .src_speedy("collapse::fungroup"))
+}, class = c("function", "speedy_fn"),
+  comment = .src_speedy("collapse::fungroup"))
 
 #' @export
 #' @rdname speedy_functions
@@ -171,14 +179,15 @@ srename_with <- structure(function(.data, .fn, .cols = everything(), ...) {
   if (!is.function(.fn))
     stop("Can only rename with a function for now, sorry.")
   frename(.data, .fn, ...) # cols= missing to apply to all columns
-}, class = c("function", "speedy_fn"), comment = .src_speedy("dplyr::rename_with"))
+}, class = c("function", "speedy_fn"),
+  comment = .src_speedy("dplyr::rename_with"))
 
 #' @export
 #' @rdname speedy_functions
 sfilter <- structure(function(.data, ...) {
   filters <- match.call()[-(1:2)]
   # fsubset() can use only one subset argument at a time. So, we run it
-  # multiple times on each argument to sfilter() to mimic tfilter()
+  # multiple times on each argument to sfilter() to mimic filter()
   for (i in 1:...length())
     .data <- do.call(fsubset, list(.x = .data, filters[[i]]))
   .data
@@ -195,7 +204,8 @@ sfilter_ungroup <- structure(function(.data, ...) {
 #' @rdname speedy_functions
 sselect <- structure(function(.data, ...) {
   fselect(.data, ..., return = "data") # Other return modes not supported (yet)
-}, class = c("function", "speedy_fn"), comment = .src_speedy("collapse::fselect"))
+}, class = c("function", "speedy_fn"),
+  comment = .src_speedy("collapse::fselect"))
 
 #' @export
 #' @rdname speedy_functions
@@ -204,7 +214,8 @@ smutate <- structure(function(.data, ..., .keep = "all") {
   },
   # TODO: Arguments .by, .before= and .after= not supported yet, but to be
   # implemented
-  class = c("function", "speedy_fn"), comment = .src_speedy("collapse::fmutate"))
+  class = c("function", "speedy_fn"),
+  comment = .src_speedy("collapse::fmutate"))
 
 #' @export
 #' @rdname speedy_functions
@@ -217,7 +228,8 @@ smutate_ungroup <- structure(function(.data, ..., .keep = "all") {
 #' @rdname speedy_functions
 stransmute <- structure(function(.data, ...) {
   fmutate(.data, ...)[, ...names()]
-}, class = c("function", "speedy_fn"), comment = .src_speedy("dplyr::transmute"))
+}, class = c("function", "speedy_fn"),
+  comment = .src_speedy("dplyr::transmute"))
 
 #' @export
 #' @rdname speedy_functions
@@ -232,7 +244,8 @@ ssummarise <- structure(function(.data, ...) {
   # keep.group_vars = FALSE not in dplyr::summarise()
   fsummarise(.data, ..., keep.group_vars = TRUE)
   # TODO: implement .by and align arguments
-}, class = c("function", "speedy_fn"), comment = .src_speedy("collapse::fsummarise"))
+}, class = c("function", "speedy_fn"),
+  comment = .src_speedy("collapse::fsummarise"))
 
 #' @export
 #' @rdname speedy_functions
@@ -253,7 +266,8 @@ copy = FALSE, ...) {
   if (is_x_dtbl)
     res <- as_dtbl(res)
   res
-}, class = c("function", "speedy_fn"), comment = .src_speedy("dplyr::full_join"))
+}, class = c("function", "speedy_fn"),
+  comment = .src_speedy("dplyr::full_join"))
 
 #' @export
 #' @rdname speedy_functions
@@ -274,7 +288,8 @@ copy = FALSE, ...) {
   if (is_x_dtbl)
     res <- as_dtbl(res)
   res
-}, class = c("function", "speedy_fn"), comment = .src_speedy("dplyr::left_join"))
+}, class = c("function", "speedy_fn"),
+  comment = .src_speedy("dplyr::left_join"))
 
 #' @export
 #' @rdname speedy_functions
@@ -295,7 +310,8 @@ copy = FALSE, ...) {
   if (is_x_dtbl)
     res <- as_dtbl(res)
   res
-}, class = c("function", "speedy_fn"), comment = .src_speedy("dplyr::right_join"))
+}, class = c("function", "speedy_fn"),
+  comment = .src_speedy("dplyr::right_join"))
 
 #' @export
 #' @rdname speedy_functions
@@ -316,7 +332,8 @@ copy = FALSE, ...) {
   if (is_x_dtbl)
     res <- as_dtbl(res)
   res
-}, class = c("function", "speedy_fn"), comment = .src_speedy("dplyr::inner_join"))
+}, class = c("function", "speedy_fn"),
+  comment = .src_speedy("dplyr::inner_join"))
 
 #' @export
 #' @rdname speedy_functions
@@ -346,7 +363,8 @@ sbind_rows <- structure(function(..., .id = NULL) {
   if (is_x_dtbl)
     res <- as_dtbl(res)
   res
-}, class = c("function", "speedy_fn"), comment = .src_speedy("dplyr::bind_rows"))
+}, class = c("function", "speedy_fn"),
+  comment = .src_speedy("dplyr::bind_rows"))
 
 #' @export
 #' @rdname speedy_functions
@@ -392,9 +410,11 @@ scount <- structure(function(x, ..., wt = NULL, sort = FALSE, name = NULL,
   # sort= argument of dplyr::count sorts the frequency column indeed, not the
   # category column(s)
   if (isTRUE(sort))
-    res <- res[order(res[[name]], decreasing = TRUE), ] # TODO: use data.table::setorder() instead
+    res <- res[order(res[[name]], decreasing = TRUE), ]
+    # TODO: use data.table::setorder() instead
   default_dtx(res)
-}, class = c("function", "speedy_fn"), comment = .src_speedy("collapse::fcount"))
+}, class = c("function", "speedy_fn"),
+  comment = .src_speedy("collapse::fcount"))
 
 #' @export
 #' @rdname speedy_functions
@@ -430,9 +450,11 @@ sort_cat = TRUE, decreasing = FALSE) {
   # sort= argument of dplyr::tally()sorts the frequency column indeed, not the
   # category column(s)
   if (isTRUE(sort))
-    res <- res[order(res[[name]], decreasing = TRUE), ] # TODO: use data.table::setorder() instead
+    res <- res[order(res[[name]], decreasing = TRUE), ]
+  # TODO: use data.table::setorder() instead
   default_dtx(res)
-}, class = c("function", "speedy_fn"), comment = .src_speedy("collapse::fcount"))
+}, class = c("function", "speedy_fn"),
+  comment = .src_speedy("collapse::fcount"))
 
 #' @export
 #' @rdname speedy_functions
@@ -474,12 +496,14 @@ sadd_count <- structure(function(x, ..., wt = NULL, sort = FALSE, name = NULL,
     res <- fcount(x, ..., w = wt, sort = sort_cat,
       name = name, decreasing = decreasing, add = TRUE)
   }
-  # sort= argument of dplyr::add_count sorts the frequency column indeed, not the
-  # category column(s)
+  # sort= argument of dplyr::add_count sorts the frequency column indeed, not
+  # the category column(s)
   if (isTRUE(sort))
-    res <- res[order(res[[name]], decreasing = TRUE), ] # TODO: use data.table::setorder()
+    res <- res[order(res[[name]], decreasing = TRUE), ]
+  # TODO: use data.table::setorder()
   default_dtx(res)
-}, class = c("function", "speedy_fn"), comment = .src_speedy("collapse::fcount"))
+}, class = c("function", "speedy_fn"),
+  comment = .src_speedy("collapse::fcount"))
 
 #' @export
 #' @rdname speedy_functions
@@ -514,12 +538,14 @@ sort_cat = TRUE, decreasing = FALSE) {
     res <- fcount(x, w = wt, sort = sort_cat,
       name = name, decreasing = decreasing, add = TRUE)
   }
-  # sort= argument of dplyr::add_tally sorts the frequency column indeed, not the
-  # category column(s)
+  # sort= argument of dplyr::add_tally sorts the frequency column indeed, not
+  # the category column(s)
   if (isTRUE(sort))
-    res <- res[order(res[[name]], decreasing = TRUE), ] # TODO: use data.table::setorder() instead
+    res <- res[order(res[[name]], decreasing = TRUE), ]
+  # TODO: use data.table::setorder() instead
   default_dtx(res)
-}, class = c("function", "speedy_fn"), comment = .src_speedy("collapse::fcount"))
+}, class = c("function", "speedy_fn"),
+  comment = .src_speedy("collapse::fcount"))
 
 
 # Verbs that are not reengineered yet -------------------------------------
@@ -542,7 +568,8 @@ sbind_cols <- structure(function(...,
   if (is_x_dtt)
     res <- as_dtt(res)
   res
-}, class = c("function", "speedy_fn"), comment = .src_speedy("dplyr::bind_cols"))
+}, class = c("function", "speedy_fn"),
+  comment = .src_speedy("dplyr::bind_cols"))
 
 #' @export
 #' @rdname speedy_functions
@@ -679,7 +706,8 @@ sreplace_na <- structure(function(data, replace, ...) {
   if (is_x_grp_df)
     res <- do.call(fgroup_by, c(list(.X = res), gvars))
   res
-}, class = c("function", "speedy_fn"), comment = .src_speedy("tidyr::replace_na"))
+}, class = c("function", "speedy_fn"),
+  comment = .src_speedy("tidyr::replace_na"))
 
 #' @export
 #' @rdname speedy_functions
@@ -699,7 +727,8 @@ values_to = "value", ...) {
   if (is_x_dtt)
     res <- as_dtt(collect(res))
   res
-}, class = c("function", "speedy_fn"), comment = .src_speedy("tidyr::pivot_longer"))
+}, class = c("function", "speedy_fn"),
+  comment = .src_speedy("tidyr::pivot_longer"))
 
 # This is needed for R CMD check otherwise itwill complain
 name <- NULL
@@ -717,13 +746,15 @@ spivot_wider <- structure(function(data, names_from = name,
   is_x_dtf <- is_dtf(data)
   is_x_dtt <- is_dtt(data)
   res <- do.call(pivot_wider, list(data = fungroup(data),
-    names_from = substitute(names_from), values_from = substitute(values_from), ...))
+    names_from = substitute(names_from),
+    values_from = substitute(values_from), ...))
   if (is_x_dtf)
     res <- as_dtf(res)
   if (is_x_dtt)
     res <- as_dtt(collect(res))
   res
-}, class = c("function", "speedy_fn"), comment = .src_speedy("tidyr::pivot_wider"))
+}, class = c("function", "speedy_fn"),
+  comment = .src_speedy("tidyr::pivot_wider"))
 
 #' @export
 #' @rdname speedy_functions
@@ -732,7 +763,8 @@ suncount <- structure(function(data, weights, .remove = TRUE, .id = NULL) {
   if (inherits(data, c("tbl_db", "dtplyr_step")))
     stop("You must collect results from a tidy function before using a speedy one.")
 
-  # Sometimes groups are kept, sometimes not... for now, we do not care (we always ungroup).
+  # Sometimes groups are kept, sometimes not... for now, we do not care
+  # (we always ungroup).
   is_x_dtf <- is_dtf(data)
   is_x_dtt <- is_dtt(data)
   res <- do.call(uncount, list(data = fungroup(data),
@@ -752,7 +784,8 @@ na.rm = FALSE) {
   if (inherits(data, c("tbl_db", "dtplyr_step")))
     stop("You must collect results from a tidy function before using a speedy one.")
 
-  # Sometimes groups are kept, sometimes not... for now, we do not care (we always ungroup).
+  # Sometimes groups are kept, sometimes not... for now, we do not care
+  # (we always ungroup).
   is_x_dtf <- is_dtf(data)
   is_x_dtt <- is_dtt(data)
   res <- inject(unite(data = as_dtbl(fungroup(data)), col = !!substitute(col),
@@ -772,7 +805,8 @@ remove = TRUE, convert = FALSE, ...) {
   if (inherits(data, c("tbl_db", "dtplyr_step")))
     stop("You must collect results from a tidy function before using a speedy one.")
 
-  # Sometimes groups are kept, sometimes not... for now, we do not care (we always ungroup).
+  # Sometimes groups are kept, sometimes not... for now, we do not care
+  # (we always ungroup).
   is_x_dtf <- is_dtf(data)
   is_x_dtt <- is_dtt(data)
   res <- do.call(separate, list(data = as_dtbl(fungroup(data)),
@@ -793,7 +827,8 @@ convert = FALSE) {
   if (inherits(data, c("tbl_db", "dtplyr_step")))
     stop("You must collect results from a tidy function before using a speedy one.")
 
-  # Sometimes groups are kept, sometimes not... for now, we do not care (we always ungroup).
+  # Sometimes groups are kept, sometimes not... for now, we do not care
+  # (we always ungroup).
   is_x_dtf <- is_dtf(data)
   is_x_dtt <- is_dtt(data)
   res <- separate_rows(data = as_dtbl(fungroup(data)), ..., sep = sep,

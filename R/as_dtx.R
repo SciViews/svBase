@@ -94,8 +94,7 @@
 #' class(mtcars_grouped)
 #' mtcars2 <- as_dtbl(mtcars_grouped)
 #' class(mtcars2)
-as_dtx <- function(x, ..., rownames = NULL, keep.key = TRUE,
-  byref = FALSE) {
+as_dtx <- function(x, ..., rownames = NULL, keep.key = TRUE, byref = FALSE) {
   if (is.null(rownames))
     rownames <- getOption("SciViews.dtx.rownames", default = ".rownames")
   getOption("SciViews.as_dtx", default = as_dtt)(.ungroup_dtbl(x), ...,
@@ -104,8 +103,7 @@ as_dtx <- function(x, ..., rownames = NULL, keep.key = TRUE,
 
 #' @export
 #' @rdname as_dtx
-as_dtf <- function(x, ..., rownames = NULL, keep.key = TRUE,
-  byref = NULL) {
+as_dtf <- function(x, ..., rownames = NULL, keep.key = TRUE, byref = NULL) {
   if (is.null(rownames))
     rownames <- getOption("SciViews.dtx.rownames", default = ".rownames")
 
@@ -126,12 +124,11 @@ as_dtf <- function(x, ..., rownames = NULL, keep.key = TRUE,
 
 #' @export
 #' @rdname as_dtx
-as_dtt <- function(x, ..., rownames = NULL, keep.key = TRUE,
-  byref = FALSE) {
+as_dtt <- function(x, ..., rownames = NULL, keep.key = TRUE, byref = FALSE) {
   if (is.null(rownames))
     rownames <- getOption("SciViews.dtx.rownames", default = ".rownames")
   if (rownames %in% names(x) || all(rownames(x) == seq_len(nrow(x))))
-    rownames <- FALSE # Otherwise, rownames is duplicated or trivial ones are added
+    rownames <- FALSE # Otherwise, rownames duplicated or trivial ones added
   if (is.data.frame(x) && isTRUE(byref)) {
     if (isTRUE(keep.key)) {
       key <- attr(x, "key")
@@ -154,15 +151,14 @@ as_dtt <- function(x, ..., rownames = NULL, keep.key = TRUE,
 
 #' @export
 #' @rdname as_dtx
-as_dtbl <- function(x, ..., rownames = NULL, keep.key = TRUE,
-  byref = NULL) {
+as_dtbl <- function(x, ..., rownames = NULL, keep.key = TRUE, byref = NULL) {
   if (is.null(rownames))
     rownames <- getOption("SciViews.dtx.rownames", default = ".rownames")
   if (is.logical(rownames) && rownames == FALSE)
     rownames <- NULL # Not FALSE here, but NULL to drop rownames
   if (rownames %in% names(x) || all(rownames(x) == seq_len(nrow(x))))
-    rownames <- NULL # Otherwise, rownames is duplicated (not FALSE here, but NULL)
-  # Or trivial rownames are added
+    rownames <- NULL # Otherwise, rownames duplicated (not FALSE here, but NULL)
+  # or trivial rownames are added
   if (isTRUE(keep.key) && haskey(x)) {
     key <- key(x)
   } else {
@@ -176,7 +172,7 @@ as_dtbl <- function(x, ..., rownames = NULL, keep.key = TRUE,
 #' @export
 #' @rdname as_dtx
 default_dtx <- function(x, ..., rownames = NULL, keep.key = TRUE,
-  byref = FALSE) {
+    byref = FALSE) {
   if (is_dtx(x, strict = TRUE)) {
     # Convert
     if (is.null(rownames))
@@ -241,7 +237,8 @@ as_matrix <- function(x, rownames = NULL, ...) {
         nms <- names(units)
         # If units are between parentheses, eliminate them
         for (nm in nms)
-          attr(res[[xy[[nm]]]], "units") <- sub("^\\((.+)\\)$", "\\1", units[[nm]])
+          attr(res[[xy[[nm]]]], "units") <-
+            sub("^\\((.+)\\)$", "\\1", units[[nm]])
         attr(res, "units") <- NULL
       }
     }

@@ -1,6 +1,12 @@
 #' Base Objects like Data Frames for 'SciViews::R'
 #'
-#' The \{svBase\} package sets up the way data frames (with objects like R base's **data.frame**, **data.table** and tibble **tbl_df**) are managed in SciViews::R. The user can select the class of object it uses by default and many other SciViews::R functions return that format. Conversion from one to the other is made easier, including for the management of **data.frame**'s row names or **data.table**'s keys. Also homogeneous ways to create a data frame or to print it are also provided.
+#' The \{svBase\} package sets up the way data frames (with objects like R
+#' base's **data.frame**, **data.table** and tibble **tbl_df**) are managed in
+#' SciViews::R. The user can select the class of object it uses by default and
+#' many other SciViews::R functions return that format. Conversion from one to
+#' the other is made easier, including for the management of **data.frame**'s
+#' row names or **data.table**'s keys. Also homogeneous ways to create a data
+#' frame or to print it are also provided.
 #'
 #' @section Important functions:
 #'

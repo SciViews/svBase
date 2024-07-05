@@ -69,28 +69,28 @@
 #' # This is how you specify row names for dtf (data.frame)
 #' dtf(x = 1:3, y = 4:6, .rownames = letters[1:3])
 dtx <- function(...,
-.name_repair = c("check_unique", "unique", "universal", "minimal")) {
+    .name_repair = c("check_unique", "unique", "universal", "minimal")) {
   as_dtx(tibble(..., .name_repair = .name_repair))
 }
 
 #' @export
 #' @rdname dtx
 dtbl <- function(...,
-.name_repair = c("check_unique", "unique", "universal", "minimal")) {
+    .name_repair = c("check_unique", "unique", "universal", "minimal")) {
   tibble(..., .name_repair = .name_repair)
 }
 
 #' @export
 #' @rdname dtx
 dtf <- function(...,
-.name_repair = c("check_unique", "unique", "universal", "minimal")) {
+    .name_repair = c("check_unique", "unique", "universal", "minimal")) {
   as_dtf(tibble(..., .name_repair = .name_repair))
 }
 
 #' @export
 #' @rdname dtx
 dtt <- function(...,
-.name_repair = c("check_unique", "unique", "universal", "minimal")) {
+    .name_repair = c("check_unique", "unique", "universal", "minimal")) {
   setDT(tibble(..., .name_repair = .name_repair))
 }
 

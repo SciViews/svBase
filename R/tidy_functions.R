@@ -71,7 +71,8 @@
 #' [speedy_functions].
 #'
 #' @seealso [collapse::num_vars()] to easily keep only numeric columns from a
-#'   data frame, [collapse::fscale()] for scaling and centering matrix-like objects and data frames.
+#'   data frame, [collapse::fscale()] for scaling and centering matrix-like
+#'   objects and data frames.
 #'
 #' @export
 #' @name tidy_functions
