@@ -1,3 +1,7 @@
+# svBase 1.4.1
+
+-   The alternate assign operators `%<-%` and `%->%` implement differently the call to {zeallot} functions because they are completely refactored.
+
 # svBase 1.4.0
 
 -   `scount()`, `sadd_count()`, `tally()` and `add_tally()` are now based on `collapse::fcount()` with some changes to better match the arguments and behavior of the corresponding{dplyr} functions. However, much work was needed to align these speedy functions to the behavior of their tidy counterparts, in part because the tidy functions sort of the frequencies columns and the `collapse::fcount()` function that is used sorts on the categories labels... and it does not sort on it by default.

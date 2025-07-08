@@ -68,38 +68,53 @@
 #' Y
 #'
 #' # The %->% is meant to be used in pipelines, otherwise it does the same
-`%->%` <- zeallot::`%->%`
-body(`%->%`) <- bquote({
+# Old code that does not work with version 0.2.0 of zeallot (refactored)
+`%->%` <- function(value, x) {
   # Collect and possibly transform data frames
   val <- dplyr::collect(value)
   value <- svBase::default_dtx(val)
+  do.call(zeallot::`%->%`, list(value, substitute(x)), envir = parent.frame())
+}
+#`%->%` <- zeallot::`%->%`
+#body(`%->%`) <- bquote({
+#  # Collect and possibly transform data frames
+#  val <- dplyr::collect(value)
+#  value <- svBase::default_dtx(val)
+#
+#
+#  # This is the original code in zeallot::`%->%`
+#  tryCatch(multi_assign(substitute(x), value, parent.frame()),
+#    invalid_lhs = function(e) {
+#      stop("invalid `%->%` right-hand side, ", e$message, call. = FALSE)
+#    }, invalid_rhs = function(e) {
+#      stop("invalid `%->%` left-hand side, ", e$message, call. = FALSE)
+#    })
+#})
 
-  # This is the original code in zeallot::`%->%`
-  tryCatch(multi_assign(substitute(x), value, parent.frame()),
-    invalid_lhs = function(e) {
-      stop("invalid `%->%` right-hand side, ", e$message, call. = FALSE)
-    }, invalid_rhs = function(e) {
-      stop("invalid `%->%` left-hand side, ", e$message, call. = FALSE)
-    })
-})
 
 #' @export
 #' @rdname alt_assign
 #' @keywords NULL
-`%<-%` <- zeallot::`%<-%`
-body(`%<-%`) <- bquote({
+`%<-%` <- function(x, value) {
   # Collect and possibly transform data frames
   val <- dplyr::collect(value)
   value <- svBase::default_dtx(val)
-
-  # This is the original code in zeallot::`%<-%`
-  tryCatch(multi_assign(substitute(x), value, parent.frame()),
-    invalid_lhs = function(e) {
-      stop("invalid `%<-%` left-hand side, ", e$message, call. = FALSE)
-    }, invalid_rhs = function(e) {
-      stop("invalid `%<-%` right-hand side, ", e$message, call. = FALSE)
-    })
-})
+  do.call(zeallot::`%<-%`, list(substitute(x), value), envir = parent.frame())
+}
+#`%<-%` <- zeallot::`%<-%`
+#body(`%<-%`) <- bquote({
+#  # Collect and possibly transform data frames
+#  val <- dplyr::collect(value)
+#  value <- svBase::default_dtx(val)
+#
+#  # This is the original code in zeallot::`%<-%`
+#  tryCatch(multi_assign(substitute(x), value, parent.frame()),
+#    invalid_lhs = function(e) {
+#      stop("invalid `%<-%` left-hand side, ", e$message, call. = FALSE)
+#    }, invalid_rhs = function(e) {
+#      stop("invalid `%<-%` right-hand side, ", e$message, call. = FALSE)
+#    })
+#})
 
 #' @export
 #' @rdname alt_assign

@@ -2,10 +2,17 @@
 % Please edit documentation in R/svBase-package.R
 \docType{package}
 \name{svBase-package}
+\alias{svBase}
 \alias{svBase-package}
 \title{Base Objects like Data Frames for 'SciViews::R'}
 \description{
-The \{svBase\} package sets up the way data frames (with objects like R base's \strong{data.frame}, \strong{data.table} and tibble \strong{tbl_df}) are managed in SciViews::R. The user can select the class of object it uses by default and many other SciViews::R functions return that format. Conversion from one to the other is made easier, including for the management of \strong{data.frame}'s row names or \strong{data.table}'s keys. Also homogeneous ways to create a data frame or to print it are also provided.
+The \{svBase\} package sets up the way data frames (with objects like R
+base's \strong{data.frame}, \strong{data.table} and tibble \strong{tbl_df}) are managed in
+SciViews::R. The user can select the class of object it uses by default and
+many other SciViews::R functions return that format. Conversion from one to
+the other is made easier, including for the management of \strong{data.frame}'s
+row names or \strong{data.table}'s keys. Also homogeneous ways to create a data
+frame or to print it are also provided.
 }
 \section{Important functions}{
 
@@ -18,3 +25,16 @@ use to convert into the preferred format.
 }
 }
 
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/SciViews/svBase}
+  \item \url{https://www.sciviews.org/svBase/}
+  \item Report bugs at \url{https://github.com/SciViews/svBase/issues}
+}
+
+}
+\author{
+\strong{Maintainer}: Philippe Grosjean \email{phgrosjean@sciviews.org} (\href{https://orcid.org/0000-0002-2694-9471}{ORCID})
+
+}

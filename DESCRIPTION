@@ -1,6 +1,6 @@
 Package: svBase
 Type: Package
-Version: 1.4.0
+Version: 1.4.1
 Title: Base Objects like Data Frames for 'SciViews::R'
 Description: Functions to manipulated the three main classes of "data frames"
   for 'SciViews::R': data.frame, data.table and tibble. Allow to select the
@@ -34,7 +34,7 @@ License: MIT + file LICENSE
 URL: https://github.com/SciViews/svBase, https://www.sciviews.org/svBase/
 BugReports: https://github.com/SciViews/svBase/issues
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.2
 VignetteBuilder: knitr
 Encoding: UTF-8
 Language: en-US

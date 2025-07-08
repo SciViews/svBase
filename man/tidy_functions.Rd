@@ -98,5 +98,6 @@ not implemented yet.
 }
 \seealso{
 \code{\link[collapse:select_replace_vars]{collapse::num_vars()}} to easily keep only numeric columns from a
-data frame, \code{\link[collapse:fscale]{collapse::fscale()}} for scaling and centering matrix-like objects and data frames.
+data frame, \code{\link[collapse:fscale]{collapse::fscale()}} for scaling and centering matrix-like
+objects and data frames.
 }

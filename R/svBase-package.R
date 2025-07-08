@@ -15,9 +15,6 @@
 #' the creation of a data frame in one of the specified three formats. Use
 #' `getOption("SciViews.as_dtx", default = as_dtt)` to specify which function to
 #' use to convert into the preferred format.
-#'
-#' @docType package
-#' @name svBase-package
 
 ## usethis namespace: start
 #' @importFrom data.table as.data.table haskey key rbindlist setDT setkeyv
@@ -29,4 +26,4 @@
 # @importFrom pillar tbl_sum
 #' @import zeallot
 ## usethis namespace: end
-NULL
+"_PACKAGE"

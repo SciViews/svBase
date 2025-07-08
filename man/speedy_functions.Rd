@@ -224,13 +224,17 @@ variables in any. \code{FALSE} by default.}
 \item{replace}{If \code{data} is a vector, a unique value to replace \code{NA}s,
 otherwise, a list of values, one per column of the data frame.}
 
-\item{cols}{A selection of the columns using tidy-select syntax, see\code{\link[tidyr:pivot_longer]{tidyr::pivot_longer()}}.}
+\item{cols}{A selection of the columns using tidy-select syntax,
+see\code{\link[tidyr:pivot_longer]{tidyr::pivot_longer()}}.}
 
-\item{names_to}{A character vector with the name or names of the columns for the names.}
+\item{names_to}{A character vector with the name or names of the columns for
+the names.}
 
-\item{values_to}{A string with the name of the column that receives the values.}
+\item{values_to}{A string with the name of the column that receives the
+values.}
 
-\item{names_from}{The column or columns containing the names (use tidy selection and do not quote the names).}
+\item{names_from}{The column or columns containing the names (use tidy
+selection and do not quote the names).}
 
 \item{values_from}{Idem for the column or columns that contain the values.}
 
