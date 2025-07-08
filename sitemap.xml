@@ -1,66 +1,24 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://www.sciviews.org/svBase/404.html</loc>
-  </url>
-  <url>
-    <loc>https://www.sciviews.org/svBase/CODE_OF_CONDUCT.html</loc>
-  </url>
-  <url>
-    <loc>https://www.sciviews.org/svBase/LICENSE-text.html</loc>
-  </url>
-  <url>
-    <loc>https://www.sciviews.org/svBase/LICENSE.html</loc>
-  </url>
-  <url>
-    <loc>https://www.sciviews.org/svBase/TODO.html</loc>
-  </url>
-  <url>
-    <loc>https://www.sciviews.org/svBase/articles/index.html</loc>
-  </url>
-  <url>
-    <loc>https://www.sciviews.org/svBase/articles/svBase.html</loc>
-  </url>
-  <url>
-    <loc>https://www.sciviews.org/svBase/authors.html</loc>
-  </url>
-  <url>
-    <loc>https://www.sciviews.org/svBase/index.html</loc>
-  </url>
-  <url>
-    <loc>https://www.sciviews.org/svBase/news/index.html</loc>
-  </url>
-  <url>
-    <loc>https://www.sciviews.org/svBase/reference/alt_assign.html</loc>
-  </url>
-  <url>
-    <loc>https://www.sciviews.org/svBase/reference/as_dtx.html</loc>
-  </url>
-  <url>
-    <loc>https://www.sciviews.org/svBase/reference/collect_dtx.html</loc>
-  </url>
-  <url>
-    <loc>https://www.sciviews.org/svBase/reference/dtx.html</loc>
-  </url>
-  <url>
-    <loc>https://www.sciviews.org/svBase/reference/dtx_rows.html</loc>
-  </url>
-  <url>
-    <loc>https://www.sciviews.org/svBase/reference/fstat_functions.html</loc>
-  </url>
-  <url>
-    <loc>https://www.sciviews.org/svBase/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>https://www.sciviews.org/svBase/reference/is_dtx.html</loc>
-  </url>
-  <url>
-    <loc>https://www.sciviews.org/svBase/reference/speedy_functions.html</loc>
-  </url>
-  <url>
-    <loc>https://www.sciviews.org/svBase/reference/svBase-package.html</loc>
-  </url>
-  <url>
-    <loc>https://www.sciviews.org/svBase/reference/tidy_functions.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>https://www.sciviews.org/svBase/404.html</loc></url>
+<url><loc>https://www.sciviews.org/svBase/CODE_OF_CONDUCT.html</loc></url>
+<url><loc>https://www.sciviews.org/svBase/LICENSE-text.html</loc></url>
+<url><loc>https://www.sciviews.org/svBase/LICENSE.html</loc></url>
+<url><loc>https://www.sciviews.org/svBase/TODO.html</loc></url>
+<url><loc>https://www.sciviews.org/svBase/articles/index.html</loc></url>
+<url><loc>https://www.sciviews.org/svBase/articles/svBase.html</loc></url>
+<url><loc>https://www.sciviews.org/svBase/authors.html</loc></url>
+<url><loc>https://www.sciviews.org/svBase/index.html</loc></url>
+<url><loc>https://www.sciviews.org/svBase/news/index.html</loc></url>
+<url><loc>https://www.sciviews.org/svBase/reference/alt_assign.html</loc></url>
+<url><loc>https://www.sciviews.org/svBase/reference/as_dtx.html</loc></url>
+<url><loc>https://www.sciviews.org/svBase/reference/collect_dtx.html</loc></url>
+<url><loc>https://www.sciviews.org/svBase/reference/dtx.html</loc></url>
+<url><loc>https://www.sciviews.org/svBase/reference/dtx_rows.html</loc></url>
+<url><loc>https://www.sciviews.org/svBase/reference/fstat_functions.html</loc></url>
+<url><loc>https://www.sciviews.org/svBase/reference/index.html</loc></url>
+<url><loc>https://www.sciviews.org/svBase/reference/is_dtx.html</loc></url>
+<url><loc>https://www.sciviews.org/svBase/reference/speedy_functions.html</loc></url>
+<url><loc>https://www.sciviews.org/svBase/reference/svBase-package.html</loc></url>
+<url><loc>https://www.sciviews.org/svBase/reference/tidy_functions.html</loc></url>
 </urlset>
+
