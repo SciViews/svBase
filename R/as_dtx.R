@@ -1,8 +1,8 @@
-#' Coerce objects into data.frames, data.tables, tibbles or matrices
+#' Coerce objects into data.trames, data.frames, data.tables, tibbles or matrices
 #'
 #' @description Objects are coerced into the desired class. For [as_dtx()], the
 #' desired class is obtained from `getOption("SciViews.as_dtx")`, with a default
-#' value producing a data.table object. If the data are grouped with
+#' value producing a data.trame object. If the data are grouped with
 #' [dplyr::group_by()], the resulting data frame is also [dplyr::ungroup()]ed
 #' in the process.
 #'
@@ -10,11 +10,11 @@
 #' @param ... Further arguments passed to the methods (not used yet).
 #' @param rownames The name of the column with row names. If `NULL`, it is assessed from `getOptions("SciViews.dtx.rownames")`.
 #' @param row.names Same as `rownames`, but for base R functions.
-#' @param keep.key Do we keep the data.table key into a "key" attribute or do we restore `data.table`key from the attribute?
+#' @param keep.key Do we keep the data.table key into a "key" attribute or do we restore `data.table` or `data.trame` key from the attribute?
 #' @param byref If `TRUE`, the object is modified by reference when converted into a `data.table` (faster, but not conventional). This is `FALSE` by default, or `NULL` if the argument does not apply in the context.
 #' @param optional logical, If `TRUE`, setting row names and converting column names to syntactically correct names is optional.
 #'
-#' @return The coerced object. For `as_dtx()`, the coercion is determined from `getOption("SciViews.as_dtx")` which must return one of the three other `as_dt...()` functions (`as_dtt` by default). The `default_dtx()` does the same as `as_dtx()` if the object is a data.frame, a data.table, or a tibble, but it return the unmodified object for any other class (including subclassed data frames). This is a convenient function to force conversion only between those three objects classes.
+#' @return The coerced object. For `as_dtx()`, the coercion is determined from `getOption("SciViews.as_dtx")` which must return one of the four other `as_dt...()` functions (`as_dtrm` by default). The `default_dtx()` does the same as `as_dtx()` if the object is a data.trame, a data.frame, a data.table, or a tibble, but it return the unmodified object for any other class (including subclassed data frames). This is a convenient function to force conversion only between those four objects classes.
 #'
 #' @note
 #' Use [as_matrix()] instead of [base::as.matrix()]: it has different default
@@ -45,6 +45,9 @@
 #' # It also work for conversions data.frame <-> data.table
 #' (dtt2 <- as_dtt(dtf2))
 #' as_dtf(dtt2)
+#' # or data.frame <-> data.trame
+#' (dtrm2 <- as_dtrm(dtf2))
+#' as_dtf(dtrm2)
 #'
 #' # It does not work when converting a tibble or a data.table into a matrix
 #' # with as.matrix()
@@ -52,23 +55,24 @@
 #' # ... but as_matrix() does the job!
 #' as_matrix(dtbl2)
 #'
-#' # The name for row in dtt and dtbl is in:
+#' # The name for row in dtrm, dtt and dtbl is in:
 #' # (data.frame's row names are converted into a column with this name)
 #' getOption("SciViews.dtx.rownames", default = ".rownames")
 #'
-#' # Convert into the preferred data frame object (data.table by default)
+#' # Convert into the preferred data frame object (data.trame by default)
 #' (dtx2 <- as_dtx(dtf2))
 #' class(dtx2)
 #'
 #' # The default data frame object used:
-#' getOption("SciViews.as_dtx", default = as_dtt)
+#' getOption("SciViews.as_dtx", default = as_dtrm)
 #'
 #' # default_dtx() does the same as as_dtx(),
 #' # but it also does not change other objects
-#' # So, it is safe to use whaterver the object you pass to it
+#' # So, it is safe to use whatever the object you pass to it
 #' (dtx2 <- default_dtx(dtf2))
 #' class(dtx2)
-#' # Any other object than data.frame, data.table or tbl_df is not converted
+#' # Any other object than data.trame, data.frame, data.table or tbl_df
+#' # is not converted
 #' res <- default_dtx(1:5)
 #' class(res)
 #' # No conversion if the data frame is subclassed
@@ -97,8 +101,35 @@
 as_dtx <- function(x, ..., rownames = NULL, keep.key = TRUE, byref = FALSE) {
   if (is.null(rownames))
     rownames <- getOption("SciViews.dtx.rownames", default = ".rownames")
-  getOption("SciViews.as_dtx", default = as_dtt)(.ungroup_dtbl(x), ...,
+  getOption("SciViews.as_dtx", default = as_dtrm)(.ungroup_dtbl(x), ...,
     rownames = rownames, keep.key = keep.key, byref = byref)
+}
+
+#' @export
+#' @rdname as_dtx
+as_dtrm <- function(x, ..., rownames = NULL, keep.key = TRUE, byref = FALSE) {
+  if (is.null(rownames))
+    rownames <- getOption("SciViews.dtx.rownames", default = ".rownames")
+  if (rownames %in% names(x) || all(rownames(x) == seq_len(nrow(x))))
+    rownames <- FALSE # Otherwise, rownames duplicated or trivial ones added
+  if (is.data.frame(x) && isTRUE(byref)) {
+    if (isTRUE(keep.key)) {
+      key <- key(x)
+    } else {
+      key <- NULL
+    }
+    x <- .ungroup_dtbl(x)
+    setDT(x, keep.rownames = rownames, key = key)
+    setkeyv(x, key)
+  } else {
+    key <- key(x)
+    x <- as.data.table(.ungroup_dtbl(x), keep.rownames = rownames)
+    if (isTRUE(keep.key) && !is.null(key))
+      setkeyv(x, key)
+  }
+  rownames(x) <- NULL
+  setattr(x, 'class', c('data.trame', 'data.table', 'data.frame'))
+  x
 }
 
 #' @export
@@ -177,7 +208,7 @@ default_dtx <- function(x, ..., rownames = NULL, keep.key = TRUE,
     # Convert
     if (is.null(rownames))
       rownames <- getOption("SciViews.dtx.rownames", default = ".rownames")
-    getOption("SciViews.as_dtx", default = as_dtt)(.ungroup_dtbl(x), ...,
+    getOption("SciViews.as_dtx", default = as_dtrm)(.ungroup_dtbl(x), ...,
       rownames = rownames, keep.key = keep.key, byref = byref)
   } else {
     # Keep intact

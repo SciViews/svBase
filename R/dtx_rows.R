@@ -9,9 +9,9 @@
 #'   in the data frame. It is possible to unquote with `!!` and to
 #'   unquote-splice with `!!!`.
 #'
-#' @return A data frame of class **data.frame** for [dtf_rows()], **data.table**
-#' for [dtt_rows()], tibble **tbl_df** for [dtbl_rows()] and the default object
-#' with [dtx_rows()].
+#' @return A data frame of class **data.trame** for [dtrm_rows()],
+#' **data.frame** for [dtf_rows()], **data.table** for [dtt_rows()],
+#' tibble **tbl_df** for [dtbl_rows()] and the default object with [dtx_rows()].
 #'
 #' @export
 #'
@@ -25,6 +25,12 @@
 #' df
 dtx_rows <- function(...) {
   dtx(tribble(...))
+}
+
+#' @export
+#' @rdname dtx_rows
+dtrm_rows <- function(...) {
+  dtrm(tribble(...))
 }
 
 #' @export

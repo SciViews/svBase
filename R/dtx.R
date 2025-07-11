@@ -13,12 +13,21 @@
 #' names for the resulting data.frame object.
 #'
 #' @return
-#' A data frame as a **tbl_df** object for [dtbl()], a **data.frame** for
-#' [dtf()] and a **data.table** for [dtt()].
+#' A data frame as a **data.trame** object for [dtrm()], a **tbl_df** object
+#' for [dtbl()], a **data.frame** for [dtf()] or a **data.table** for [dtt()].
 #'
 #' @export
+#' @seealso [dtx_rows()], [is_dtx()], [collect_dtx()]
 #'
 #' @examples
+#' dtrm1 <- dtrm(
+#'   x = 1:5,
+#'   y = rnorm(5),
+#'   f = letters[1:5],
+#'   l = sample(c(TRUE, FALSE), 5, replace = TRUE)
+#' )
+#' class(dtrm1)
+#'
 #' dtbl1 <- dtbl(
 #'   x = 1:5,
 #'   y = rnorm(5),
@@ -43,26 +52,20 @@
 #' class(dtt1)
 #'
 #' # Using dtx(), one construct the preferred data frame object
-#' # (a data.table by default, can be changed with options(SciViews.as_dtx = ...))
+#' # (a data.trame by default, can be changed with options(SciViews.as_dtx = ...))
 #' dtx1 <- dtx(
 #'   x = 1:5,
 #'   y = rnorm(5),
 #'   f = letters[1:5],
 #'   l = sample(c(TRUE, FALSE), 5, replace = TRUE))
-#' class(dtx1) # data.table by default
+#' class(dtx1) # data.trame by default
 #'
-#' # With svBase data.table and data.frame objects have the same nice print as tibbles
-#' dtbl1
-#' dtf1
-#' dtt1
-#'
-#' # Use tribble() inside dtx() to easily create a data frame:
-#' library(tibble)
-#' dtx2 <- dtx(tribble(
+#' # Use dtx_rows() to easily create a data frame:
+#' dtx2 <- dtx_rows(
 #'   ~x, ~y, ~f,
 #'    1,  3, 'a',
 #'    2,  4, 'b'
-#' ))
+#' )
 #' dtx2
 #' class(dtx2)
 #'
@@ -72,6 +75,14 @@ dtx <- function(...,
     .name_repair = c("check_unique", "unique", "universal", "minimal")) {
   as_dtx(tibble(..., .name_repair = .name_repair))
 }
+
+#' @export
+#' @rdname dtx
+dtrm <- function(...,
+  .name_repair = c("check_unique", "unique", "universal", "minimal")) {
+  data.trame(..., .name_repair = .name_repair)
+}
+
 
 #' @export
 #' @rdname dtx

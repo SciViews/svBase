@@ -1,6 +1,6 @@
 Package: svBase
 Type: Package
-Version: 1.4.1
+Version: 1.5.0
 Title: Base Objects like Data Frames for 'SciViews::R'
 Description: Functions to manipulated the three main classes of "data frames"
   for 'SciViews::R': data.frame, data.table and tibble. Allow to select the
@@ -16,6 +16,7 @@ Depends:
 Imports:
     collapse (>= 2.0.12),
     data.table (>= 1.15.4),
+    data.trame (>= 0.9.0),
     dplyr (>= 1.1.4),
     rlang (>= 1.1.1),
     tibble (>= 3.2.1),

@@ -2,12 +2,15 @@
 % Please edit documentation in R/collect_dtx.R
 \name{collect_dtx}
 \alias{collect_dtx}
+\alias{collect_dtrm}
 \alias{collect_dtf}
 \alias{collect_dtt}
 \alias{collect_dtbl}
 \title{Force computation of a lazy tidyverse object}
 \usage{
 collect_dtx(x, ...)
+
+collect_dtrm(x, ...)
 
 collect_dtf(x, ...)
 

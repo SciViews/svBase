@@ -2,12 +2,15 @@
 % Please edit documentation in R/is_dtx.R
 \name{is_dtx}
 \alias{is_dtx}
+\alias{is_dtrm}
 \alias{is_dtf}
 \alias{is_dtt}
 \alias{is_dtbl}
 \title{Test if the object is a data frame (data.frame, data.table or tibble)}
 \usage{
 is_dtx(x, strict = TRUE)
+
+is_dtrm(x, strict = TRUE)
 
 is_dtf(x, strict = TRUE)
 
@@ -21,7 +24,7 @@ is_dtbl(x, strict = TRUE)
 \item{strict}{Should this be strictly the corresponding class \code{TRUE}, by default, or could it be subclassed too (\code{FALSE}). With \code{strict = TRUE}, the \strong{grouped_df} tibbles and \strong{grouped_ts} tsibbles are also considered (tibbles or tsibbles where \code{\link[dplyr:group_by]{dplyr::group_by()}} was applied).}
 }
 \value{
-These functions return \code{TRUE} if the object is of the correct class, otherwise they return \code{FALSE}. \code{is_dtx()} return \code{TRUE} if \code{x} is one of a data.frame, data.table or tibble.
+These functions return \code{TRUE} if the object is of the correct class, otherwise they return \code{FALSE}. \code{is_dtx()} return \code{TRUE} if \code{x} is one of a data.frame, data.table, tibble, or data.trame.
 }
 \description{
 Test if the object is a data frame (data.frame, data.table or tibble)
@@ -32,11 +35,14 @@ is_dtf(mtcars) # TRUE
 is_dtx(mtcars) # Also TRUE
 is_dtt(mtcars) # FALSE
 is_dtbl(mtcars) # FALSE
+is_dtrm(mtcars) # FALSE
 # but...
 is_dtt(as_dtt(mtcars)) # TRUE
 is_dtx(as_dtt(mtcars)) # TRUE
 is_dtbl(as_dtbl(mtcars)) # TRUE
 is_dtx(as_dtbl(mtcars)) # TRUE
+is_dtrm(as_dtrm(mtcars)) # TRUE
+is_dtx(as_dtrm(mtcars)) # TRUE
 is_dtx(as_dtbl(mtcars) |> dplyr::group_by(cyl)) # TRUE (special case)
 
 is_dtx("some string") # FALSE

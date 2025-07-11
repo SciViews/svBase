@@ -1,3 +1,7 @@
+# svBase 1.5.0
+
+-   There are now functions to create data.trame objects and the default output from `dtx()` or `as_dtx()` or `collect_dtx()` is now a data.trame, instead of a data.table.
+
 # svBase 1.4.1
 
 -   The alternate assign operators `%<-%` and `%->%` implement differently the call to {zeallot} functions because they are completely refactored.

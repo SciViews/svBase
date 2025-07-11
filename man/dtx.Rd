@@ -2,12 +2,15 @@
 % Please edit documentation in R/dtx.R
 \name{dtx}
 \alias{dtx}
+\alias{dtrm}
 \alias{dtbl}
 \alias{dtf}
 \alias{dtt}
 \title{Create a data frame (base's data.frame, data.table or tibble's tbl_df)}
 \usage{
 dtx(..., .name_repair = c("check_unique", "unique", "universal", "minimal"))
+
+dtrm(..., .name_repair = c("check_unique", "unique", "universal", "minimal"))
 
 dtbl(..., .name_repair = c("check_unique", "unique", "universal", "minimal"))
 
@@ -23,8 +26,8 @@ dtt(..., .name_repair = c("check_unique", "unique", "universal", "minimal"))
 \code{\link[=tibble]{tibble()}} for details.}
 }
 \value{
-A data frame as a \strong{tbl_df} object for \code{\link[=dtbl]{dtbl()}}, a \strong{data.frame} for
-\code{\link[=dtf]{dtf()}} and a \strong{data.table} for \code{\link[=dtt]{dtt()}}.
+A data frame as a \strong{data.trame} object for \code{\link[=dtrm]{dtrm()}}, a \strong{tbl_df} object
+for \code{\link[=dtbl]{dtbl()}}, a \strong{data.frame} for \code{\link[=dtf]{dtf()}} or a \strong{data.table} for \code{\link[=dtt]{dtt()}}.
 }
 \description{
 Create a data frame (base's data.frame, data.table or tibble's tbl_df)
@@ -38,6 +41,14 @@ names when the object is converted into a data.frame with \code{\link[=as_dtf]{a
 names for the resulting data.frame object.
 }
 \examples{
+dtrm1 <- dtrm(
+  x = 1:5,
+  y = rnorm(5),
+  f = letters[1:5],
+  l = sample(c(TRUE, FALSE), 5, replace = TRUE)
+)
+class(dtrm1)
+
 dtbl1 <- dtbl(
   x = 1:5,
   y = rnorm(5),
@@ -62,29 +73,26 @@ dtt1 <- dtt(
 class(dtt1)
 
 # Using dtx(), one construct the preferred data frame object
-# (a data.table by default, can be changed with options(SciViews.as_dtx = ...))
+# (a data.trame by default, can be changed with options(SciViews.as_dtx = ...))
 dtx1 <- dtx(
   x = 1:5,
   y = rnorm(5),
   f = letters[1:5],
   l = sample(c(TRUE, FALSE), 5, replace = TRUE))
-class(dtx1) # data.table by default
+class(dtx1) # data.trame by default
 
-# With svBase data.table and data.frame objects have the same nice print as tibbles
-dtbl1
-dtf1
-dtt1
-
-# Use tribble() inside dtx() to easily create a data frame:
-library(tibble)
-dtx2 <- dtx(tribble(
+# Use dtx_rows() to easily create a data frame:
+dtx2 <- dtx_rows(
   ~x, ~y, ~f,
    1,  3, 'a',
    2,  4, 'b'
-))
+)
 dtx2
 class(dtx2)
 
 # This is how you specify row names for dtf (data.frame)
 dtf(x = 1:3, y = 4:6, .rownames = letters[1:3])
+}
+\seealso{
+\code{\link[=dtx_rows]{dtx_rows()}}, \code{\link[=is_dtx]{is_dtx()}}, \code{\link[=collect_dtx]{collect_dtx()}}
 }

@@ -29,6 +29,12 @@ collect_dtx <- function(x, ...) {
 
 #' @export
 #' @rdname collect_dtx
+collect_dtrm <- function(x, ...) {
+  as_dtrm(collect(x, ...))
+}
+
+#' @export
+#' @rdname collect_dtx
 collect_dtf <- function(x, ...) {
   as_dtf(collect(x, ...))
 }

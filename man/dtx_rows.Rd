@@ -2,12 +2,15 @@
 % Please edit documentation in R/dtx_rows.R
 \name{dtx_rows}
 \alias{dtx_rows}
+\alias{dtrm_rows}
 \alias{dtf_rows}
 \alias{dtt_rows}
 \alias{dtbl_rows}
 \title{Row-wise creation of a data frame}
 \usage{
 dtx_rows(...)
+
+dtrm_rows(...)
 
 dtf_rows(...)
 
@@ -22,9 +25,9 @@ in the data frame. It is possible to unquote with \verb{!!} and to
 unquote-splice with \verb{!!!}.}
 }
 \value{
-A data frame of class \strong{data.frame} for \code{\link[=dtf_rows]{dtf_rows()}}, \strong{data.table}
-for \code{\link[=dtt_rows]{dtt_rows()}}, tibble \strong{tbl_df} for \code{\link[=dtbl_rows]{dtbl_rows()}} and the default object
-with \code{\link[=dtx_rows]{dtx_rows()}}.
+A data frame of class \strong{data.trame} for \code{\link[=dtrm_rows]{dtrm_rows()}},
+\strong{data.frame} for \code{\link[=dtf_rows]{dtf_rows()}}, \strong{data.table} for \code{\link[=dtt_rows]{dtt_rows()}},
+tibble \strong{tbl_df} for \code{\link[=dtbl_rows]{dtbl_rows()}} and the default object with \code{\link[=dtx_rows]{dtx_rows()}}.
 }
 \description{
 The presentation of the data (see examples) is easier to read
