@@ -59,7 +59,7 @@ imported from the {zeallot} package (see the corresponding help page at zeallot:
   </a>
 </li>
       </ul><div class="navbar-title">
-        <a class="navbar-brand" href="../index.html"><p class="h2">svBase <small>v1.4.1</small></p></a>
+        <a class="navbar-brand" href="../index.html"><p class="h2">svBase <small>v1.5.0</small></p></a>
       </div>
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
@@ -194,15 +194,16 @@ Thus, before being assigned, <code>value</code> is modified by calling
 <span class="r-in"><span>  <span class="va">res</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       x2            y</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    &lt;num&gt;        &lt;num&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1:     1  0.255317055</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2:     4 -2.437263611</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3:     9 -0.005571287</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4:    16  0.621552721</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5:    25  1.148411606</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A data.trame: [5 × 2]</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      x2        y</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>     1  0.255  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>     4 -<span style="color: #BB0000;">2.44</span>   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>     9 -<span style="color: #BB0000;">0.005</span><span style="color: #BB0000; text-decoration: underline;">57</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span>    16  0.622  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span>    25  1.15   </span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span> <span class="co"># res is the preferred data frame (data.table by default)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "data.table" "data.frame"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "data.trame" "data.frame"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># 2) Convert data frame in the chosen format using default_dtx()</span></span></span>
 <span class="r-in"><span><span class="va">dtf</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">5</span><span class="op">)</span><span class="op">)</span></span></span>
@@ -210,7 +211,7 @@ Thus, before being assigned, <code>value</code> is modified by calling
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "data.frame"</span>
 <span class="r-in"><span><span class="va">res</span> <span class="op">%&lt;-%</span> <span class="va">dtf</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span> <span class="co"># A data.table by default</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "data.table" "data.frame"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "data.trame" "data.frame"</span>
 <span class="r-in"><span><span class="co"># but it can be changed with options("SciViews.as_dtx)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># 3) If the zeallot syntax is used, make multiple assignment</span></span></span>

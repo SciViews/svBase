@@ -57,7 +57,7 @@
   </a>
 </li>
       </ul><div class="navbar-title">
-        <a class="navbar-brand" href="../index.html"><p class="h2">svBase <small>v1.4.1</small></p></a>
+        <a class="navbar-brand" href="../index.html"><p class="h2">svBase <small>v1.5.0</small></p></a>
       </div>
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
@@ -81,6 +81,8 @@
 
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">collect_dtx</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">collect_dtrm</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">collect_dtf</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
@@ -126,7 +128,7 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "tbl_df"     "tbl"        "data.frame"</span>
 <span class="r-in"><span><span class="co"># The data frame object you want, default one specified for svBase</span></span></span>
 <span class="r-in"><span><span class="va">mtcars_dtt</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dtplyr.tidyverse.org/reference/lazy_dt.html" class="external-link">lazy_dt</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">mpg</span><span class="op">:</span><span class="va">disp</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu">collect_dtx</span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "data.table" "data.frame"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "data.trame" "data.frame"</span>
 </code></pre></div>
     </div>
   </div>

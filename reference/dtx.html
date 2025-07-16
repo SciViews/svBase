@@ -57,7 +57,7 @@
   </a>
 </li>
       </ul><div class="navbar-title">
-        <a class="navbar-brand" href="../index.html"><p class="h2">svBase <small>v1.4.1</small></p></a>
+        <a class="navbar-brand" href="../index.html"><p class="h2">svBase <small>v1.5.0</small></p></a>
       </div>
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
@@ -82,6 +82,8 @@
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">dtx</span><span class="op">(</span><span class="va">...</span>, .name_repair <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"check_unique"</span>, <span class="st">"unique"</span>, <span class="st">"universal"</span>, <span class="st">"minimal"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
+<span><span class="fu">dtrm</span><span class="op">(</span><span class="va">...</span>, .name_repair <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"check_unique"</span>, <span class="st">"unique"</span>, <span class="st">"universal"</span>, <span class="st">"minimal"</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
 <span><span class="fu">dtbl</span><span class="op">(</span><span class="va">...</span>, .name_repair <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"check_unique"</span>, <span class="st">"unique"</span>, <span class="st">"universal"</span>, <span class="st">"minimal"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">dtf</span><span class="op">(</span><span class="va">...</span>, .name_repair <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"check_unique"</span>, <span class="st">"unique"</span>, <span class="st">"universal"</span>, <span class="st">"minimal"</span><span class="op">)</span><span class="op">)</span></span>
@@ -105,8 +107,8 @@
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A data frame as a <strong>tbl_df</strong> object for <code>dtbl()</code>, a <strong>data.frame</strong> for
-<code>dtf()</code> and a <strong>data.table</strong> for <code>dtt()</code>.</p>
+    <p>A data frame as a <strong>data.trame</strong> object for <code>dtrm()</code>, a <strong>tbl_df</strong> object
+for <code>dtbl()</code>, a <strong>data.frame</strong> for <code>dtf()</code> or a <strong>data.table</strong> for <code>dtt()</code>.</p>
     </div>
     <div id="note">
     <h2>Note</h2>
@@ -117,10 +119,23 @@ names when the object is converted into a data.frame with <code><a href="as_dtx.
 <code>dtf()</code>, just create a column of this name and it is directly used as row
 names for the resulting data.frame object.</p>
     </div>
+    <div id="see-also">
+    <h2>See also</h2>
+    <div class="dont-index"><p><code><a href="dtx_rows.html">dtx_rows()</a></code>, <code><a href="is_dtx.html">is_dtx()</a></code>, <code><a href="collect_dtx.html">collect_dtx()</a></code></p></div>
+    </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">dtbl1</span> <span class="op">&lt;-</span> <span class="fu">dtbl</span><span class="op">(</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">dtrm1</span> <span class="op">&lt;-</span> <span class="fu">dtrm</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  x <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">5</span>,</span></span>
+<span class="r-in"><span>  y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">5</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  f <span class="op">=</span> <span class="va">letters</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span>,</span></span>
+<span class="r-in"><span>  l <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">TRUE</span>, <span class="cn">FALSE</span><span class="op">)</span>, <span class="fl">5</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">dtrm1</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "data.trame" "data.frame"</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">dtbl1</span> <span class="op">&lt;-</span> <span class="fu">dtbl</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  x <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">5</span>,</span></span>
 <span class="r-in"><span>  y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">5</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  f <span class="op">=</span> <span class="va">letters</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span>,</span></span>
@@ -147,55 +162,29 @@ names for the resulting data.frame object.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "data.table" "data.frame"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Using dtx(), one construct the preferred data frame object</span></span></span>
-<span class="r-in"><span><span class="co"># (a data.table by default, can be changed with options(SciViews.as_dtx = ...))</span></span></span>
+<span class="r-in"><span><span class="co"># (a data.trame by default, can be changed with options(SciViews.as_dtx = ...))</span></span></span>
 <span class="r-in"><span><span class="va">dtx1</span> <span class="op">&lt;-</span> <span class="fu">dtx</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  x <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">5</span>,</span></span>
 <span class="r-in"><span>  y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">5</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  f <span class="op">=</span> <span class="va">letters</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span>,</span></span>
 <span class="r-in"><span>  l <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">TRUE</span>, <span class="cn">FALSE</span><span class="op">)</span>, <span class="fl">5</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">dtx1</span><span class="op">)</span> <span class="co"># data.table by default</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "data.table" "data.frame"</span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">dtx1</span><span class="op">)</span> <span class="co"># data.trame by default</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "data.trame" "data.frame"</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># With svBase data.table and data.frame objects have the same nice print as tibbles</span></span></span>
-<span class="r-in"><span><span class="va">dtbl1</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 5 × 4</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       x      y f     l    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>     1  0.413 a     FALSE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>     2  0.724 b     TRUE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>     3  2.35  c     TRUE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span>     4 -<span style="color: #BB0000;">0.281</span> d     FALSE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span>     5 -<span style="color: #BB0000;">0.481</span> e     FALSE</span>
-<span class="r-in"><span><span class="va">dtf1</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   x          y f     l</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 1 -1.5123997 a FALSE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2 2  0.9353632 b  TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3 3  0.1764886 c FALSE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4 4  0.2436855 d FALSE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5 5  1.6235489 e FALSE</span>
-<span class="r-in"><span><span class="va">dtt1</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>        x           y      f      l</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    &lt;int&gt;       &lt;num&gt; &lt;char&gt; &lt;lgcl&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1:     1 -0.08536101      a   TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2:     2 -2.05240389      b   TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3:     3  0.15074825      c  FALSE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4:     4 -0.29287274      d  FALSE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5:     5  0.25499759      e   TRUE</span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Use tribble() inside dtx() to easily create a data frame:</span></span></span>
-<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tibble.tidyverse.org/" class="external-link">tibble</a></span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">dtx2</span> <span class="op">&lt;-</span> <span class="fu">dtx</span><span class="op">(</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tribble.html" class="external-link">tribble</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span><span class="co"># Use dtx_rows() to easily create a data frame:</span></span></span>
+<span class="r-in"><span><span class="va">dtx2</span> <span class="op">&lt;-</span> <span class="fu"><a href="dtx_rows.html">dtx_rows</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>  <span class="op">~</span><span class="va">x</span>, <span class="op">~</span><span class="va">y</span>, <span class="op">~</span><span class="va">f</span>,</span></span>
 <span class="r-in"><span>   <span class="fl">1</span>,  <span class="fl">3</span>, <span class="st">'a'</span>,</span></span>
 <span class="r-in"><span>   <span class="fl">2</span>,  <span class="fl">4</span>, <span class="st">'b'</span></span></span>
-<span class="r-in"><span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">dtx2</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>        x     y      f</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    &lt;num&gt; &lt;num&gt; &lt;char&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1:     1     3      a</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2:     2     4      b</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A data.trame: [2 × 3]</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       x     y f    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>     1     3 a    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>     2     4 b    </span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">dtx2</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "data.table" "data.frame"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "data.trame" "data.frame"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># This is how you specify row names for dtf (data.frame)</span></span></span>
 <span class="r-in"><span><span class="fu">dtf</span><span class="op">(</span>x <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">3</span>, y <span class="op">=</span> <span class="fl">4</span><span class="op">:</span><span class="fl">6</span>, .rownames <span class="op">=</span> <span class="va">letters</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">]</span><span class="op">)</span></span></span>

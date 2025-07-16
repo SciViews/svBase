@@ -57,7 +57,7 @@
   </a>
 </li>
       </ul><div class="navbar-title">
-        <a class="navbar-brand" href="../index.html"><p class="h2">svBase <small>v1.4.1</small></p></a>
+        <a class="navbar-brand" href="../index.html"><p class="h2">svBase <small>v1.5.0</small></p></a>
       </div>
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
@@ -82,6 +82,8 @@
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">is_dtx</span><span class="op">(</span><span class="va">x</span>, strict <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
+<span><span class="fu">is_dtrm</span><span class="op">(</span><span class="va">x</span>, strict <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
 <span><span class="fu">is_dtf</span><span class="op">(</span><span class="va">x</span>, strict <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">is_dtt</span><span class="op">(</span><span class="va">x</span>, strict <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
@@ -103,7 +105,7 @@
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>These functions return <code>TRUE</code> if the object is of the correct class, otherwise they return <code>FALSE</code>. <code>is_dtx()</code> return <code>TRUE</code> if <code>x</code> is one of a data.frame, data.table or tibble.</p>
+    <p>These functions return <code>TRUE</code> if the object is of the correct class, otherwise they return <code>FALSE</code>. <code>is_dtx()</code> return <code>TRUE</code> if <code>x</code> is one of a data.frame, data.table, tibble, or data.trame.</p>
     </div>
 
     <div id="ref-examples">
@@ -117,6 +119,8 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] FALSE</span>
 <span class="r-in"><span><span class="fu">is_dtbl</span><span class="op">(</span><span class="va">mtcars</span><span class="op">)</span> <span class="co"># FALSE</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] FALSE</span>
+<span class="r-in"><span><span class="fu">is_dtrm</span><span class="op">(</span><span class="va">mtcars</span><span class="op">)</span> <span class="co"># FALSE</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] FALSE</span>
 <span class="r-in"><span><span class="co"># but...</span></span></span>
 <span class="r-in"><span><span class="fu">is_dtt</span><span class="op">(</span><span class="fu"><a href="as_dtx.html">as_dtt</a></span><span class="op">(</span><span class="va">mtcars</span><span class="op">)</span><span class="op">)</span> <span class="co"># TRUE</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
@@ -125,6 +129,10 @@
 <span class="r-in"><span><span class="fu">is_dtbl</span><span class="op">(</span><span class="fu"><a href="as_dtx.html">as_dtbl</a></span><span class="op">(</span><span class="va">mtcars</span><span class="op">)</span><span class="op">)</span> <span class="co"># TRUE</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-in"><span><span class="fu">is_dtx</span><span class="op">(</span><span class="fu"><a href="as_dtx.html">as_dtbl</a></span><span class="op">(</span><span class="va">mtcars</span><span class="op">)</span><span class="op">)</span> <span class="co"># TRUE</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
+<span class="r-in"><span><span class="fu">is_dtrm</span><span class="op">(</span><span class="fu"><a href="as_dtx.html">as_dtrm</a></span><span class="op">(</span><span class="va">mtcars</span><span class="op">)</span><span class="op">)</span> <span class="co"># TRUE</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
+<span class="r-in"><span><span class="fu">is_dtx</span><span class="op">(</span><span class="fu"><a href="as_dtx.html">as_dtrm</a></span><span class="op">(</span><span class="va">mtcars</span><span class="op">)</span><span class="op">)</span> <span class="co"># TRUE</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-in"><span><span class="fu">is_dtx</span><span class="op">(</span><span class="fu"><a href="as_dtx.html">as_dtbl</a></span><span class="op">(</span><span class="va">mtcars</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">cyl</span><span class="op">)</span><span class="op">)</span> <span class="co"># TRUE (special case)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
