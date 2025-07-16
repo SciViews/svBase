@@ -1,4 +1,4 @@
-#' Test if the object is a data frame (data.frame, data.table or tibble)
+#' Test if the object is a data frame (data.trame, data.frame, data.table or tibble)
 #'
 #' @param x An object
 #' @param strict Should this be strictly the corresponding class `TRUE`, by default, or could it be subclassed too (`FALSE`). With `strict = TRUE`, the **grouped_df** tibbles and **grouped_ts** tsibbles are also considered (tibbles or tsibbles where [dplyr::group_by()] was applied).

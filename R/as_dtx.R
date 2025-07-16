@@ -11,7 +11,7 @@
 #' @param rownames The name of the column with row names. If `NULL`, it is assessed from `getOptions("SciViews.dtx.rownames")`.
 #' @param row.names Same as `rownames`, but for base R functions.
 #' @param keep.key Do we keep the data.table key into a "key" attribute or do we restore `data.table` or `data.trame` key from the attribute?
-#' @param byref If `TRUE`, the object is modified by reference when converted into a `data.table` (faster, but not conventional). This is `FALSE` by default, or `NULL` if the argument does not apply in the context.
+#' @param byref If `TRUE`, the object is modified by reference when converted into a `data.table` or a `data.trame` (faster, but not conventional). This is `FALSE` by default, or `NULL` if the argument does not apply in the context.
 #' @param optional logical, If `TRUE`, setting row names and converting column names to syntactically correct names is optional.
 #'
 #' @return The coerced object. For `as_dtx()`, the coercion is determined from `getOption("SciViews.as_dtx")` which must return one of the four other `as_dt...()` functions (`as_dtrm` by default). The `default_dtx()` does the same as `as_dtx()` if the object is a data.trame, a data.frame, a data.table, or a tibble, but it return the unmodified object for any other class (including subclassed data frames). This is a convenient function to force conversion only between those four objects classes.
@@ -112,23 +112,25 @@ as_dtrm <- function(x, ..., rownames = NULL, keep.key = TRUE, byref = FALSE) {
     rownames <- getOption("SciViews.dtx.rownames", default = ".rownames")
   if (rownames %in% names(x) || all(rownames(x) == seq_len(nrow(x))))
     rownames <- FALSE # Otherwise, rownames duplicated or trivial ones added
-  if (is.data.frame(x) && isTRUE(byref)) {
-    if (isTRUE(keep.key)) {
-      key <- key(x)
-    } else {
-      key <- NULL
-    }
+
+  if (isTRUE(keep.key)) {
+    key <- key(x)
+    if (is.null(key))
+      key <- attr(x, "key")
+  } else {
+    key <- NULL
+  }
+
+  if (is.list(x) && isTRUE(byref)) {
     x <- .ungroup_dtbl(x)
     setDT(x, keep.rownames = rownames, key = key)
-    setkeyv(x, key)
   } else {
-    key <- key(x)
     x <- as.data.table(.ungroup_dtbl(x), keep.rownames = rownames)
-    if (isTRUE(keep.key) && !is.null(key))
-      setkeyv(x, key)
+    setkeyv(x, key)
   }
+  setattr(x, 'key', NULL)
   rownames(x) <- NULL
-  setattr(x, 'class', c('data.trame', 'data.table', 'data.frame'))
+  setattr(x, 'class', c('data.trame', 'data.frame'))
   x
 }
 
@@ -138,6 +140,14 @@ as_dtf <- function(x, ..., rownames = NULL, keep.key = TRUE, byref = NULL) {
   if (is.null(rownames))
     rownames <- getOption("SciViews.dtx.rownames", default = ".rownames")
 
+  if (isTRUE(keep.key)) {
+    key <- key(x)
+    if (is.null(key))
+      key <- attr(x, "key")
+  } else {
+    key <- NULL
+  }
+
   dtf <- as.data.frame(.ungroup_dtbl(x), ...)
 
   # If there is a column named as rownames, convert it into row names
@@ -146,9 +156,7 @@ as_dtf <- function(x, ..., rownames = NULL, keep.key = TRUE, byref = NULL) {
     dtf[[rownames]] <- NULL
   }
 
-  # Possibly get data.table keys
-  if (isTRUE(keep.key) && haskey(x))
-    attr(dtf, "key") <- key(x)
+  setattr(dtf, 'key', key)
 
   dtf
 }
@@ -160,22 +168,24 @@ as_dtt <- function(x, ..., rownames = NULL, keep.key = TRUE, byref = FALSE) {
     rownames <- getOption("SciViews.dtx.rownames", default = ".rownames")
   if (rownames %in% names(x) || all(rownames(x) == seq_len(nrow(x))))
     rownames <- FALSE # Otherwise, rownames duplicated or trivial ones added
-  if (is.data.frame(x) && isTRUE(byref)) {
-    if (isTRUE(keep.key)) {
+
+  if (isTRUE(keep.key)) {
+    key <- key(x)
+    if (is.null(key))
       key <- attr(x, "key")
-    } else {
-      key <- NULL
-    }
+  } else {
+    key <- NULL
+  }
+
+  if (is.list(x) && isTRUE(byref)) {
     x <- .ungroup_dtbl(x)
     setDT(x, keep.rownames = rownames, key = key)
-    attr(x, "key") <- NULL
   } else {
     key <- attr(x, "key")
     x <- as.data.table(.ungroup_dtbl(x), keep.rownames = rownames)
-    if (isTRUE(keep.key) && !is.null(key))
-      setkeyv(x, key)
-    attr(x, "key") <- NULL
+    setkeyv(x, key)
   }
+  setattr(x, 'key', NULL)
   rownames(x) <- NULL
   x
 }
@@ -190,13 +200,19 @@ as_dtbl <- function(x, ..., rownames = NULL, keep.key = TRUE, byref = NULL) {
   if (rownames %in% names(x) || all(rownames(x) == seq_len(nrow(x))))
     rownames <- NULL # Otherwise, rownames duplicated (not FALSE here, but NULL)
   # or trivial rownames are added
-  if (isTRUE(keep.key) && haskey(x)) {
+
+  if (isTRUE(keep.key)) {
     key <- key(x)
+    if (is.null(key))
+      key <- attr(x, "key")
   } else {
     key <- NULL
   }
+
   dtbl <- as_tibble(.ungroup_dtbl(x), ..., rownames = rownames)
-  attr(dtbl, "key") <- key
+
+  setattr(dtbl, "key", key)
+
   dtbl
 }
 

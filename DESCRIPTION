@@ -30,7 +30,8 @@ Suggests:
     spelling (>= 2.2.1),
     testthat (>= 3.0.0)
 Remotes:
-    SciViews/svMisc
+    SciViews/svMisc,
+    SciViews/data.trame
 License: MIT + file LICENSE
 URL: https://github.com/SciViews/svBase, https://www.sciviews.org/svBase/
 BugReports: https://github.com/SciViews/svBase/issues
