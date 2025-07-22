@@ -157,6 +157,7 @@ as_dtf <- function(x, ..., rownames = NULL, keep.key = TRUE, byref = NULL) {
   }
 
   setattr(dtf, 'key', key)
+  setattr(dtf, '.internal.selfref', NULL)
 
   dtf
 }
@@ -212,6 +213,7 @@ as_dtbl <- function(x, ..., rownames = NULL, keep.key = TRUE, byref = NULL) {
   dtbl <- as_tibble(.ungroup_dtbl(x), ..., rownames = rownames)
 
   setattr(dtbl, "key", key)
+  setattr(dtf, '.internal.selfref', NULL)
 
   dtbl
 }
