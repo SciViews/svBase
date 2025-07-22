@@ -6,7 +6,7 @@
 \alias{dtbl}
 \alias{dtf}
 \alias{dtt}
-\title{Create a data frame (base's data.frame, data.table or tibble's tbl_df)}
+\title{Create a data frame (data.trame, base's data.frame, data.table or tibble's tbl_df)}
 \usage{
 dtx(..., .name_repair = c("check_unique", "unique", "universal", "minimal"))
 
@@ -30,13 +30,13 @@ A data frame as a \strong{data.trame} object for \code{\link[=dtrm]{dtrm()}}, a 
 for \code{\link[=dtbl]{dtbl()}}, a \strong{data.frame} for \code{\link[=dtf]{dtf()}} or a \strong{data.table} for \code{\link[=dtt]{dtt()}}.
 }
 \description{
-Create a data frame (base's data.frame, data.table or tibble's tbl_df)
+Create a data frame (data.trame, base's data.frame, data.table or tibble's tbl_df)
 }
 \note{
-data.table and tibble's tbl_df do no use row names. However, you can
-add a column named \code{.rownames}(by default), or the name that is in
-\code{getOption("SciViews.dtx.rownames")} and it will be automatically set as row
-names when the object is converted into a data.frame with \code{\link[=as_dtf]{as_dtf()}}. For
+data.trame, data.table and tibble's tbl_df do no use row names.
+However, you can add a column named \code{.rownames}(by default), or the name that
+is in \code{getOption("SciViews.dtx.rownames")} and it will be automatically set as
+row names when the object is converted into a data.frame with \code{\link[=as_dtf]{as_dtf()}}. For
 \code{\link[=dtf]{dtf()}}, just create a column of this name and it is directly used as row
 names for the resulting data.frame object.
 }

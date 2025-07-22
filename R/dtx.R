@@ -1,4 +1,4 @@
-#' Create a data frame (dta.trame, base's data.frame, data.table or tibble's tbl_df)
+#' Create a data frame (data.trame, base's data.frame, data.table or tibble's tbl_df)
 #'
 #' @param ... A set of name-value pairs. The content of the data frame. See
 #' [tibble()] for more details on the way dynamic-dots are processed.

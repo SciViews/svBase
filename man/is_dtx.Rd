@@ -6,7 +6,7 @@
 \alias{is_dtf}
 \alias{is_dtt}
 \alias{is_dtbl}
-\title{Test if the object is a data frame (data.frame, data.table or tibble)}
+\title{Test if the object is a data frame (data.trame, data.frame, data.table or tibble)}
 \usage{
 is_dtx(x, strict = TRUE)
 
@@ -27,7 +27,7 @@ is_dtbl(x, strict = TRUE)
 These functions return \code{TRUE} if the object is of the correct class, otherwise they return \code{FALSE}. \code{is_dtx()} return \code{TRUE} if \code{x} is one of a data.frame, data.table, tibble, or data.trame.
 }
 \description{
-Test if the object is a data frame (data.frame, data.table or tibble)
+Test if the object is a data frame (data.trame, data.frame, data.table or tibble)
 }
 \examples{
 # data(mtcars)

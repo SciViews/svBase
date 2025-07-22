@@ -36,7 +36,7 @@ as_matrix(x, rownames = NULL, ...)
 
 \item{keep.key}{Do we keep the data.table key into a "key" attribute or do we restore \code{data.table} or \code{data.trame} key from the attribute?}
 
-\item{byref}{If \code{TRUE}, the object is modified by reference when converted into a \code{data.table} (faster, but not conventional). This is \code{FALSE} by default, or \code{NULL} if the argument does not apply in the context.}
+\item{byref}{If \code{TRUE}, the object is modified by reference when converted into a \code{data.table} or a \code{data.trame} (faster, but not conventional). This is \code{FALSE} by default, or \code{NULL} if the argument does not apply in the context.}
 
 \item{row.names}{Same as \code{rownames}, but for base R functions.}
 
