@@ -1,3 +1,9 @@
+# svBase 1.5.1
+
+-   The `call_inject_first_arg()` and `is_call_fn()` functions are added to implement the "dot-data" functions (functions with an optional first argument `data = (.)`).
+
+-   First implementation of the SciViews functions (ending with an underscore `_` and with standard evaluation of their arguments, except in formulas).
+
 # svBase 1.5.0
 
 -   There are now functions to create data.trame objects and the default output from `dtx()` or `as_dtx()` or `collect_dtx()` is now a data.trame, instead of a data.table.

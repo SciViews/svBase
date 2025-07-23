@@ -20,10 +20,11 @@
 #' @importFrom data.table as.data.table haskey key rbindlist setattr setDT setkeyv
 #' @importFrom data.trame as.data.trame data.trame
 #' @importFrom tibble as_tibble tibble tribble
+#' @importFrom svMisc assign_temp
 #' @importFrom dplyr across add_count add_tally arrange bind_cols collect count distinct filter full_join group_by inner_join left_join mutate pull rename rename_with right_join select summarise tally transmute ungroup
 #' @importFrom tidyr drop_na extract fill pivot_longer pivot_wider replace_na separate separate_rows uncount unite
 #' @importFrom collapse fcount fnobs fselect fsummarise fmutate frename fsubset fgroup_by fgroup_vars fungroup replace_NA
-#' @importFrom rlang inject
+#' @importFrom rlang abort caller_env check_dots_empty0 eval_bare f_lhs f_rhs inject is_formula warn
 # @importFrom pillar tbl_sum
 #' @import zeallot
 ## usethis namespace: end
