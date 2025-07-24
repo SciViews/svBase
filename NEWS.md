@@ -1,8 +1,6 @@
 # svBase 1.5.1
 
--   The `call_inject_first_arg()` and `is_call_fn()` functions are added to implement the "dot-data" functions (functions with an optional first argument `data = (.)`).
-
--   First implementation of the SciViews functions (ending with an underscore `_` and with standard evaluation of their arguments, except in formulas).
+-   First implementation of the SciViews functions (ending with an underscore `_` and with standard evaluation of their arguments, except in formulas and with implicit data-dot).
 
 # svBase 1.5.0
 

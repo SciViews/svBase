@@ -54,7 +54,7 @@ filter_(data = (.), ...)
 
 filter_ungroup_(data = (.), ...)
 
-select_(data, ...)
+select_(data = (.), ...)
 
 mutate_(.data, ..., .keep = "all")
 

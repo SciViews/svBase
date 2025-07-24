@@ -118,15 +118,12 @@ group_by_ <- structure(function(.data, ...) {
 #' @export
 #' @rdname sciviews_functions
 ungroup_ <- structure(function(data = (.), ...) {
+  if (!is.data.frame(data))
+    return(eval_data_dot(sys.call(), abort_msg =
+      gettext("Argument 'data' must be a 'data.frame'.")))
+
   check_dots_empty0(...) # ... must be empty
-  if (!is.data.frame(data)) {
-    # Try to inject data = . as first argument and recall
-    with_data_dot <- call_inject_first_arg(sys.call())
-    if (!is.null(with_data_dot))
-      return(eval_bare(with_data_dot, parent.frame()))
-    # or...
-    abort("Argument 'data' must be a 'data.frame'.")
-  }
+
   fungroup(data)
 }, class = c("function", "sciviews_fn"),
   comment = .src_sciviews("collapse::fungroup"))
@@ -174,14 +171,9 @@ rename_with_ <- structure(function(.data, .fn, .cols = everything(), ...) {
 #' @export
 #' @rdname sciviews_functions
 filter_ <- structure(function(data = (.), ...) {
-  if (!is.data.frame(data)) {
-    # Try to inject data = . as first argument and recall
-    with_data_dot <- call_inject_first_arg(sys.call())
-    if (!is.null(with_data_dot))
-      return(eval_bare(with_data_dot, parent.frame()))
-    # or...
-    abort("Argument 'data' must be a 'data.frame'.")
-  }
+  if (!is.data.frame(data))
+    return(eval_data_dot(sys.call(), abort_msg =
+        gettext("Argument 'data' must be a 'data.frame'.")))
 
   filters <- match.call()[-(1:2)]
   # fsubset() can use only one subset argument at a time. So, we run it
@@ -193,8 +185,7 @@ filter_ <- structure(function(data = (.), ...) {
         abort("Argument 'i' must be a formula with no lhs")
       data <- do.call('fsubset', list(.x = data, f_rhs(filter)))
     } else {# Not a formula -> should be an index
-      # TODO: proper error message in case it is not a valid index
-      data <- data[filter, , drop = FALSE]
+      data <- ss(data, eval(filter, envir = parent.frame()))
     }
   }
   data
@@ -203,30 +194,34 @@ filter_ <- structure(function(data = (.), ...) {
 #' @export
 #' @rdname sciviews_functions
 filter_ungroup_ <- structure(function(data = (.), ...) {
-  if (!is.data.frame(data)) {
-    # Try to inject data = . as first argument and recall
-    with_data_dot <- call_inject_first_arg(sys.call())
-    if (!is.null(with_data_dot))
-      return(eval_bare(with_data_dot, parent.frame()))
-    # or...
-    abort("Argument 'data' must be a 'data.frame'.")
+  if (!is.data.frame(data))
+    return(eval_data_dot(sys.call(), abort_msg =
+      gettext("Argument 'data' must be a 'data.frame'.")))
+
+  filters <- match.call()[-(1:2)]
+  # fsubset() can use only one subset argument at a time. So, we run it
+  # multiple times on each argument to filter_() to mimic filter()
+  for (i in 1:...length()) {
+    filter <- filters[[i]]
+    if (is_formula(filter)) {
+      if (!is_formula(filter, lhs = FALSE)) # Check for lhs
+        abort("Argument 'i' must be a formula with no lhs")
+      data <- do.call('fsubset', list(.x = data, f_rhs(filter)))
+    } else {# Not a formula -> should be an index
+      data <- ss(data, eval(filter, envir = parent.frame()))
+    }
   }
-
-  fungroup(filter_(data = data, ...))
+  fungroup(data)
 }, class = c("function", "sciviews_fn"), comment = .src_sciviews("dplyr::filter",
-  comment = "A SciViews function, see ?sciviews_functions, combining filter() and ungroup()."))
+  comment = "A SciViews function, see ?sciviews_functions, combining filter_() and ungroup_()."))
 
+# TODO: allow for a formula here, and should we use .data instead?
 #' @export
 #' @rdname sciviews_functions
-select_ <- structure(function(data, ...) {
-  if (!is.data.frame(data)) {
-    # Try to inject data = . as first argument and recall
-    with_data_dot <- call_inject_first_arg(sys.call())
-    if (!is.null(with_data_dot))
-      return(eval_bare(with_data_dot, parent.frame()))
-    # or...
-    abort("Argument 'data' must be a 'data.frame'.")
-  }
+select_ <- structure(function(data = (.), ...) {
+  if (!is.data.frame(data))
+    return(eval_data_dot(sys.call(), abort_msg =
+      gettext("Argument 'data' must be a 'data.frame'.")))
 
   fselect(data, ..., return = "data") # Other return modes not supported (yet)
 }, class = c("function", "sciviews_fn"),
