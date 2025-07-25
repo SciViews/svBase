@@ -88,17 +88,28 @@ speedy and SciViews functions in the same pipeline.</p>
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">list_sciviews_functions</span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">group_by_</span><span class="op">(</span><span class="va">.data</span>, <span class="va">...</span><span class="op">)</span></span>
+<span><span class="fu">group_by_</span><span class="op">(</span></span>
+<span>  .data <span class="op">=</span> <span class="op">(</span><span class="va">.</span><span class="op">)</span>,</span>
+<span>  <span class="va">...</span>,</span>
+<span>  .add <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  .drop <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  sort <span class="op">=</span> <span class="fu"><a href="https://sebkrantz.github.io/collapse/reference/collapse-options.html" class="external-link">get_collapse</a></span><span class="op">(</span><span class="st">"sort"</span><span class="op">)</span>,</span>
+<span>  decreasing <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  na.last <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  return.groups <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  return.order <span class="op">=</span> <span class="va">sort</span>,</span>
+<span>  method <span class="op">=</span> <span class="st">"auto"</span></span>
+<span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">ungroup_</span><span class="op">(</span>data <span class="op">=</span> <span class="op">(</span><span class="va">.</span><span class="op">)</span>, <span class="va">...</span><span class="op">)</span></span>
+<span><span class="fu">ungroup_</span><span class="op">(</span>.data <span class="op">=</span> <span class="op">(</span><span class="va">.</span><span class="op">)</span>, <span class="va">...</span>, na.last <span class="op">=</span> <span class="cn">TRUE</span>, method <span class="op">=</span> <span class="st">"auto"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">rename_</span><span class="op">(</span><span class="va">.data</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">rename_with_</span><span class="op">(</span><span class="va">.data</span>, <span class="va">.fn</span>, .cols <span class="op">=</span> <span class="fu"><a href="https://tidyselect.r-lib.org/reference/everything.html" class="external-link">everything</a></span><span class="op">(</span><span class="op">)</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">filter_</span><span class="op">(</span>data <span class="op">=</span> <span class="op">(</span><span class="va">.</span><span class="op">)</span>, <span class="va">...</span><span class="op">)</span></span>
+<span><span class="fu">filter_</span><span class="op">(</span>.data <span class="op">=</span> <span class="op">(</span><span class="va">.</span><span class="op">)</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">filter_ungroup_</span><span class="op">(</span>data <span class="op">=</span> <span class="op">(</span><span class="va">.</span><span class="op">)</span>, <span class="va">...</span><span class="op">)</span></span>
+<span><span class="fu">filter_ungroup_</span><span class="op">(</span>.data <span class="op">=</span> <span class="op">(</span><span class="va">.</span><span class="op">)</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">select_</span><span class="op">(</span>data <span class="op">=</span> <span class="op">(</span><span class="va">.</span><span class="op">)</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
@@ -110,7 +121,23 @@ speedy and SciViews functions in the same pipeline.</p>
 <span></span>
 <span><span class="fu">transmute_ungroup_</span><span class="op">(</span><span class="va">.data</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">summarise_</span><span class="op">(</span><span class="va">.data</span>, <span class="va">...</span><span class="op">)</span></span>
+<span><span class="fu">summarise_</span><span class="op">(</span></span>
+<span>  <span class="va">.data</span>,</span>
+<span>  <span class="va">...</span>,</span>
+<span>  .by <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  .groups <span class="op">=</span> <span class="st">"drop_last"</span>,</span>
+<span>  keep.group_vars <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  .cols <span class="op">=</span> <span class="cn">NULL</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">reframe_</span><span class="op">(</span></span>
+<span>  <span class="va">.data</span>,</span>
+<span>  <span class="va">...</span>,</span>
+<span>  .by <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  .groups <span class="op">=</span> <span class="st">"drop"</span>,</span>
+<span>  keep.group_vars <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  .cols <span class="op">=</span> <span class="cn">NULL</span></span>
+<span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">full_join_</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, by <span class="op">=</span> <span class="cn">NULL</span>, suffix <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">".x"</span>, <span class="st">".y"</span><span class="op">)</span>, copy <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
@@ -223,8 +250,41 @@ speedy and SciViews functions in the same pipeline.</p>
 the time, not evaluated in a standard way (cf. the tidyverse approach).</p></dd>
 
 
-<dt id="arg-data">data<a class="anchor" aria-label="anchor" href="#arg-data"></a></dt>
-<dd><p>A data frame, or for <code><a href="https://sebkrantz.github.io/collapse/reference/recode-replace.html" class="external-link">replace_na()</a></code> a vector or a data frame.</p></dd>
+<dt id="arg--add">.add<a class="anchor" aria-label="anchor" href="#arg--add"></a></dt>
+<dd><p>If <code>TRUE</code>, the grouping variables are added to the existing ones.</p></dd>
+
+
+<dt id="arg--drop">.drop<a class="anchor" aria-label="anchor" href="#arg--drop"></a></dt>
+<dd><p>Are levels with no observations dropped (<code>TRUE</code> by default).</p></dd>
+
+
+<dt id="arg-sort">sort<a class="anchor" aria-label="anchor" href="#arg-sort"></a></dt>
+<dd><p>If <code>TRUE</code> largest group will be shown on top.</p></dd>
+
+
+<dt id="arg-decreasing">decreasing<a class="anchor" aria-label="anchor" href="#arg-decreasing"></a></dt>
+<dd><p>Is sorting done in decreasing order (<code>FALSE</code> by default)?</p></dd>
+
+
+<dt id="arg-na-last">na.last<a class="anchor" aria-label="anchor" href="#arg-na-last"></a></dt>
+<dd><p>How to treat missing values in groups? Assign them to the last
+group by default (<code>TRUE</code>).</p></dd>
+
+
+<dt id="arg-return-groups">return.groups<a class="anchor" aria-label="anchor" href="#arg-return-groups"></a></dt>
+<dd><p>If <code>TRUE</code>, the grouping variables are returned in the GRP
+object (default).</p></dd>
+
+
+<dt id="arg-return-order">return.order<a class="anchor" aria-label="anchor" href="#arg-return-order"></a></dt>
+<dd><p>If <code>TRUE</code>, the order of the grouping variables is
+returned in the object (by default, same value as <code>sort=</code>).</p></dd>
+
+
+<dt id="arg-method">method<a class="anchor" aria-label="anchor" href="#arg-method"></a></dt>
+<dd><p>The algorithm to use for grouping:  <code>"radix"</code>, <code>"hash"</code>, or
+<code>"auto"</code> (by default). <code>"auto"</code> chose <code>"radix"</code> when <code>sort = TRUE</code> and
+<code>"hash"</code> otherwise.</p></dd>
 
 
 <dt id="arg--fn">.fn<a class="anchor" aria-label="anchor" href="#arg--fn"></a></dt>
@@ -237,9 +297,29 @@ the moment, only all existing columns, which means <code>.cols = everything()</c
 is implemented</p></dd>
 
 
+<dt id="arg-data">data<a class="anchor" aria-label="anchor" href="#arg-data"></a></dt>
+<dd><p>A data frame, or for <code><a href="https://sebkrantz.github.io/collapse/reference/recode-replace.html" class="external-link">replace_na()</a></code> a vector or a data frame.</p></dd>
+
+
 <dt id="arg--keep">.keep<a class="anchor" aria-label="anchor" href="#arg--keep"></a></dt>
 <dd><p>Which columns to keep. The default is <code>"all"</code>, possible values
 are <code>"used"</code>, <code>"unused"</code>, or <code>"none"</code> (see <code><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate()</a></code>).</p></dd>
+
+
+<dt id="arg--by">.by<a class="anchor" aria-label="anchor" href="#arg--by"></a></dt>
+<dd><p>A list of names of the columns to use for grouping the data.</p></dd>
+
+
+<dt id="arg--groups">.groups<a class="anchor" aria-label="anchor" href="#arg--groups"></a></dt>
+<dd><p>How to treat the grouping variables in the result? Possible
+values are <code>"drop_last"</code> (default), <code>"drop"</code> (no grouping variables),
+<code>"keep"</code> (keep all grouping variables), or <code>"rowwise"</code> (not implemented
+yet).</p></dd>
+
+
+<dt id="arg-keep-group-vars">keep.group_vars<a class="anchor" aria-label="anchor" href="#arg-keep-group-vars"></a></dt>
+<dd><p>If <code>TRUE</code> (by default), the grouping variables are
+kept in the result.</p></dd>
 
 
 <dt id="arg-x">x<a class="anchor" aria-label="anchor" href="#arg-x"></a></dt>
@@ -275,25 +355,13 @@ other arguments are named, or numbers.</p></dd>
 <dd><p>Frequency weights. Can be <code>NULL</code> or a variable. Use data masking.</p></dd>
 
 
-<dt id="arg-sort">sort<a class="anchor" aria-label="anchor" href="#arg-sort"></a></dt>
-<dd><p>If <code>TRUE</code> largest group will be shown on top.</p></dd>
-
-
 <dt id="arg-name">name<a class="anchor" aria-label="anchor" href="#arg-name"></a></dt>
 <dd><p>The name of the new column in the output (<code>n</code> by default, and no
 existing column must have this name, or an error is generated).4</p></dd>
 
 
-<dt id="arg--drop">.drop<a class="anchor" aria-label="anchor" href="#arg--drop"></a></dt>
-<dd><p>Are levels with no observations dropped (<code>TRUE</code> by default).</p></dd>
-
-
 <dt id="arg-sort-cat">sort_cat<a class="anchor" aria-label="anchor" href="#arg-sort-cat"></a></dt>
 <dd><p>Are levels sorted (<code>TRUE</code> by default).</p></dd>
-
-
-<dt id="arg-decreasing">decreasing<a class="anchor" aria-label="anchor" href="#arg-decreasing"></a></dt>
-<dd><p>Is sorting done in decreasing order (<code>FALSE</code> by default)?</p></dd>
 
 
 <dt id="arg--name-repair">.name_repair<a class="anchor" aria-label="anchor" href="#arg--name-repair"></a></dt>
