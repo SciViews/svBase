@@ -2,6 +2,8 @@
 
 -   First implementation of the SciViews functions (ending with an underscore `_` and with standard evaluation of their arguments, except in formulas and with implicit data-dot).
 
+-   Functions `group_by_()`, `ungroup_()`, `summarise_()` are done. A first version of `reframe_()` that does not accept empty row or data frame returns is implemented.
+
 # svBase 1.5.0
 
 -   There are now functions to create data.trame objects and the default output from `dtx()` or `as_dtx()` or `collect_dtx()` is now a data.trame, instead of a data.table.
