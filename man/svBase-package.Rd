@@ -30,6 +30,7 @@ Useful links:
 \itemize{
   \item \url{https://github.com/SciViews/svBase}
   \item \url{https://www.sciviews.org/svBase/}
+  \item \url{https://sciviews.r-universe.dev/svBase}
   \item Report bugs at \url{https://github.com/SciViews/svBase/issues}
 }
 
