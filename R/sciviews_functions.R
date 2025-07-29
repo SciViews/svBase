@@ -9,13 +9,13 @@
 #' @param ... Arguments dependent to the context of the function and most of
 #'   the time, not evaluated in a standard way (cf. the tidyverse approach).
 #' @param .add If `TRUE`, the grouping variables are added to the existing ones.
-#' @param na.last How to treat missing values in groups? Assign them to the last
+#' @param .na.last How to treat missing values in groups? Assign them to the last
 #'   group by default (`TRUE`).
-#' @param return.groups If `TRUE`, the grouping variables are returned in the GRP
+#' @param .return.groups If `TRUE`, the grouping variables are returned in the GRP
 #'   object (default).
-#' @param return.order If `TRUE`, the order of the grouping variables is
+#' @param .return.order If `TRUE`, the order of the grouping variables is
 #'   returned in the object (by default, same value as `sort=`).
-#' @param method The algorithm to use for grouping:  `"radix"`, `"hash"`, or
+#' @param .method The algorithm to use for grouping:  `"radix"`, `"hash"`, or
 #'   `"auto"` (by default). `"auto"` chose `"radix"` when `sort = TRUE` and
 #'   `"hash"` otherwise.
 #' @param .by A list of names of the columns to use for grouping the data.
@@ -23,7 +23,7 @@
 #'   values are `"drop_last"` (default), `"drop"` (no grouping variables),
 #'   `"keep"` (keep all grouping variables), or `"rowwise"` (not implemented
 #'   yet).
-#' @param keep.group_vars If `TRUE` (by default), the grouping variables are
+#' @param .keep.group_vars If `TRUE` (by default), the grouping variables are
 #'   kept in the result.
 #' @param .fn A function to use.
 #' @param .cols The list of the column where to apply the transformation. For
@@ -47,10 +47,12 @@
 #' @param .by_group Logical. If `TRUE` rows are first arranger by the grouping
 #' variables in any. `FALSE` by default.
 #' @param wt Frequency weights. Can be `NULL` or a variable. Use data masking.
+#' @param .sort If `TRUE` groups are sorted.
 #' @param sort If `TRUE` largest group will be shown on top.
 #' @param .drop Are levels with no observations dropped (`TRUE` by default).
 #' @param sort_cat Are levels sorted (`TRUE` by default).
 #' @param decreasing Is sorting done in decreasing order (`FALSE` by default)?
+#' @param .decreasing Is sorting done in decreasing order (`FALSE` by default)?
 #' @param name The name of the new column in the output (`n` by default, and no
 #' existing column must have this name, or an error is generated).4
 #' @param var A variable specified as a name, a positive or a negative integer
@@ -109,11 +111,11 @@
 list_sciviews_functions <- function() {
   c("add_count_", "add_tally_", "arrange_", "bind_cols_", "bind_rows_",
     "count_", "distinct_", "drop_na_", "extract_", "fill_", "filter_",
-    "filter_ungroup_", "full_join_", "group_by_", "inner_join_", "left_join_",
-    "mutate_", "mutate_ungroup_", "pivot_longer_", "pivot_wider_", "pull_",
-    "reframe_", "rename_", "rename_with_", "replace_na_", "right_join_",
-    "select_", "separate_", "separate_rows_", "summarise_", "tally_",
-    "transmute_", "transmute_ungroup_", "uncount_", "ungroup_", "unite_")
+    "full_join_", "group_by_", "inner_join_", "left_join_", "mutate_",
+    "pivot_longer_", "pivot_wider_", "pull_", "reframe_", "rename_",
+    "rename_with_", "replace_na_", "right_join_", "select_", "separate_",
+    "separate_rows_", "summarise_", "tally_", "transmute_", "uncount_",
+    "ungroup_", "unite_")
 }
 
 .src_sciviews <- function(src,
@@ -122,14 +124,13 @@ list_sciviews_functions <- function() {
   comment
 }
 
-# TODO: accept something like this: group_by_(df, across_(...)).
-# TODO: decide for arguments if one use .arg, or arg (or both for dplyr args)
-#       there is no need to .arg here since we use formulas for NSE
+# TODO: default .drop as in dplytr::group_by()
+# TODO: what are those "computations" that one can give to group_by()? See doc
 #' @export
 #' @rdname sciviews_functions
 group_by_ <- structure(function(.data = (.), ..., .add = FALSE, .drop = TRUE,
-    sort = get_collapse("sort"), decreasing = FALSE, na.last = TRUE,
-    return.groups = TRUE, return.order = sort, method = "auto") {
+    .sort = get_collapse("sort"), .decreasing = FALSE, .na.last = TRUE,
+    .return.groups = TRUE, .return.order = .sort, .method = "auto") {
 
   # Implicit data-dot mechanism
   if (missing(.data) || !is.data.frame(.data))
@@ -139,7 +140,8 @@ group_by_ <- structure(function(.data = (.), ..., .add = FALSE, .drop = TRUE,
   # .drop = FALSE not implemented yet (should be possible, because converting
   # a grouped_df object into GRP gives the correct groups)
   if (!isTRUE(.drop))
-    abort(c("`.drop = FALSE` is not implemented yet in `group_by_()`, sorry.",
+    abort(gettext(
+      "`.drop = FALSE` is not implemented yet in `group_by_()`, sorry.",
       i = "Use `group_by(..., .drop = FALSE)` instead for now."))
 
   # Treat data.trames as data.tables
@@ -149,45 +151,104 @@ group_by_ <- structure(function(.data = (.), ..., .add = FALSE, .drop = TRUE,
     on.exit(let_data.table_to_data.trame(.data))
   }
 
-  # If a formula, get vars from it
-  if (is_formula(..1)) {
-    if (...length() > 1L)
-      abort("If you provide a formula, there can be only one item in ...")
-    if (!is_formula(..1, lhs = FALSE)) # Check for lhs absence
-      abort("The formula cannot have a lhs (must be like `~var1 + var2 + ...`)")
-    # Get the variable names from the formula
-    gvars <- all.vars(..1)
-    # Check that the formula is correct (something like `~var1 + var2`)
-    gnames <- all.names(..1)
-    # gnames should only contain '~' and '+' in addition to names
-    allowed <- c(gvars, '~', '+')
-    ckmatch(gnames, allowed,
-      "Incorrect formula operator(s) in `group_by_()` (must be like `~var1 + var2`):")
-
-  } else {# Not a formula
-    gvars <- c(...)
-    if (!is.character(gvars))
-      abort("You must provide the names (character) of the grouping variables to `group_by_()`.")
+  # If no grouping variables provided
+  if (missing(...)) {
+    if (isTRUE(.add)) {# Return unmodified .data
+      return(.data)
+    } else {# Return an ungrouped data frame
+      return(fungroup(.data))
+    }
   }
 
-  if (isTRUE(.add) && is_grouped_df(.data))
-    gvars <- unique(c(fgroup_vars(.data, return = "names"), gvars))
+  # If a formula, get vars from it
+  args <- formula_masking(...)
 
-  res <- group_by_vars(.data, by = gvars, sort = sort, decreasing = decreasing,
-    na.last = na.last, return.groups = return.groups,
-    return.order = return.order, method = method)
+  if (args$are_formulas) {
+    # TODO: implement .add = TRUE (-> add a formula in args$dots with current vars?)
+    res <- do.call(fgroup_by, c(args$dots, list(.X = .data, sort = force(.sort),
+      decreasing = force(.decreasing), na.last = force(.na.last),
+      return.groups = force(.return.groups),
+      return.order = force(.return.order), method = force(.method))))
+  } else {# Use groups_by_vars instead
+    gvars <- unlist(args$dots)
+    if (isTRUE(.add) && is_grouped_df(.data))
+      gvars <- unique(c(fgroup_vars(.data, return = "names"), gvars))
+    res <- group_by_vars(.data, by = gvars, sort = .sort,
+      decreasing = .decreasing, na.last = .na.last,
+      return.groups = .return.groups, return.order = .return.order,
+      method = .method)
+  }
+
   if (to_dtrm)
     let_data.table_to_data.trame(res)
   res
 }, class = c("function", "sciviews_fn"),
   comment = .src_sciviews("collapse::fgroup_by"))
 
+# An older implementation...
+# group_by_ <- structure(function(.data = (.), ..., .add = FALSE, .drop = TRUE,
+#   sort = get_collapse("sort"), decreasing = FALSE, na.last = TRUE,
+#   return.groups = TRUE, return.order = sort, method = "auto") {
+#
+#   # Implicit data-dot mechanism
+#   if (missing(.data) || !is.data.frame(.data))
+#     return(eval_data_dot(sys.call(), arg = '.data', abort_msg =
+#         gettext("`.data` must be a `data.frame`.")))
+#
+#   # .drop = FALSE not implemented yet (should be possible, because converting
+#   # a grouped_df object into GRP gives the correct groups)
+#   if (!isTRUE(.drop))
+#     abort(c("`.drop = FALSE` is not implemented yet in `group_by_()`, sorry.",
+#       i = "Use `group_by(..., .drop = FALSE)` instead for now."))
+#
+#   # Treat data.trames as data.tables
+#   to_dtrm <- is.data.trame(.data)
+#   if (to_dtrm) {
+#     let_data.trame_to_data.table(.data)
+#     on.exit(let_data.table_to_data.trame(.data))
+#   }
+#
+#   # If a formula, get vars from it
+#   if (is_formula(..1)) {
+#     if (...length() > 1L)
+#       abort("If you provide a formula, there can be only one item in ...")
+#     if (!is_formula(..1, lhs = FALSE)) # Check for lhs absence
+#       abort("The formula cannot have a lhs (must be like `~var1 + var2 + ...`)")
+#     # Get the variable names from the formula
+#     gvars <- all.vars(..1)
+#     # Check that the formula is correct (something like `~var1 + var2`)
+#     gnames <- all.names(..1)
+#     # gnames should only contain '~' and '+' in addition to names
+#     allowed <- c(gvars, '~', '+')
+#     ckmatch(gnames, allowed,
+#       "Incorrect formula operator(s) in `group_by_()` (must be like `~var1 + var2`):")
+#
+#   } else {# Not a formula
+#     gvars <- c(...)
+#     if (!is.character(gvars))
+#       abort("You must provide the names (character) of the grouping variables to `group_by_()`.")
+#   }
+#
+#   if (isTRUE(.add) && is_grouped_df(.data))
+#     gvars <- unique(c(fgroup_vars(.data, return = "names"), gvars))
+#
+#   res <- group_by_vars(.data, by = gvars, sort = sort, decreasing = decreasing,
+#     na.last = na.last, return.groups = return.groups,
+#     return.order = return.order, method = method)
+#   if (to_dtrm)
+#     let_data.table_to_data.trame(res)
+#   res
+# }, class = c("function", "sciviews_fn"),
+#   comment = .src_sciviews("collapse::fgroup_by"))
+
+
+
 # Note: only standard evaluation for ... for now
 # Note: in dplyr, it is ungroup(x, ...), but changed x here to .data
 #' @export
 #' @rdname sciviews_functions
-ungroup_ <- structure(function(.data = (.), ..., na.last = TRUE,
-    method = "auto") {
+ungroup_ <- structure(function(.data = (.), ..., .na.last = TRUE,
+    .method = "auto") {
 
   # Implicit data-dot mechanism
   if (missing(.data) || !is.data.frame(.data))
@@ -227,9 +288,9 @@ ungroup_ <- structure(function(.data = (.), ..., na.last = TRUE,
         return.groups <- !is.null(grp$groups)
         return.order <- !is.null(grp$order)
         res <- group_by_vars(.data, by = gvars, sort = sort,
-          decreasing = decreasing, na.last = na.last,
+          decreasing = decreasing, na.last = .na.last,
           return.groups = return.groups, return.order = return.order,
-          method = method)
+          method = .method)
         if (to_dtrm)
           let_data.table_to_data.trame(res)
         return(res)
@@ -253,43 +314,185 @@ ungroup_ <- structure(function(.data = (.), ..., na.last = TRUE,
 }, class = c("function", "sciviews_fn"),
   comment = .src_sciviews("collapse::fungroup"))
 
+# rename_() seems OK
 #' @export
 #' @rdname sciviews_functions
-rename_ <- structure(function(.data, ...) {
+rename_ <- structure(function(.data = (.), ...) {
+
+  # Implicit data-dot mechanism
+  if (missing(.data) || !is.data.frame(.data))
+    return(eval_data_dot(sys.call(), arg = '.data', abort_msg =
+        gettext("`.data` must be a `data.frame`.")))
+
+  # If no renaming arguments, return .data
+  if (missing(...))
+    return(.data)
+
+  # Treat data.trames as data.tables
+  to_dtrm <- is.data.trame(.data)
+  if (to_dtrm) {
+    let_data.trame_to_data.table(.data)
+    on.exit(let_data.table_to_data.trame(.data))
+  }
+
+  args <- formula_select(..., .must.be.named = TRUE)
+
   # collapse::frename() uses old_name = new_name, but dplyr::rename() uses
   # new_name = old_name -> make frename() compatible with dplyr::rename()
   # Also, the cols= argument with a function matches rename_with() instead.
-  if (missing(.data))
-    stop("You must provide .data")
-  new_names <- ...names()
-  if (any(new_names == ""))
-    stop("You must provide new_name = old_name (all named arguments)")
-  old_names <- as.character(match.call()[-(1:2)])
-  if (length(new_names) != length(old_names))
-    stop("Arguments and argument names do not match")
-  dots <- as.list(new_names)
-  dots <- lapply(dots, as.name)
-  names(dots) <- old_names
-  do.call(frename, c(list(.x = substitute(.data)), dots),
-    envir = parent.frame())
+  # Transform symbols into names and flatten the list
+  dots_flat <- unlist(lapply(args$dots, function(x) {
+    if (is.symbol(x)) {
+      as.character(x)
+    } else {
+      x
+    }
+  }))
+  if (is.list(dots_flat))
+    abort(gettext(
+      "Incorrect renaming inputs.",
+      i = "Use `new_name = <old_name>` with `<old_name>` as a single character or symbol."))
+  # If values are numbers, these are indices -> replace then by names
+  # (because frename() cannot use indices)
+  # Otherwise, invert names and values
+
+  if (is.numeric(dots_flat)) {
+    # Apparently, dplyr::rename() ignore both 0 and negative indices
+    dots_flat <- dots_flat[dots_flat > 0] # Keep only positive indices
+    dots_inv <- names(dots_flat)
+    names(dots_inv) <- names(.data)[dots_flat]
+  } else {
+    dots_inv <- names(dots_flat)
+    names(dots_inv) <- dots_flat
+  }
+
+  # Check that all old names are in .data
+  # Remember: we have now old_name = "new_name" in dots_inv
+  missing_cols <- setdiff(names(dots_inv), names(.data))
+  if (length(missing_cols))
+    abort(c(gettext("Can't rename columns that don't exist."),
+      x = gettextf("Column `%s` doesn't exist.", missing_cols[1])))
+
+  res <- do.call(frename, c(list(.x = .data, .nse = FALSE), dots_inv),
+    envir = args$env)
+  if (to_dtrm)
+    let_data.table_to_data.trame(res)
+  res
 }, class = c("function", "sciviews_fn"), comment = .src_sciviews("dplyr::rename"))
 
-everything_ <- function() {
-  stop("This should not be called directly, see ?mutate_with.")
-}
+#everything_ <- function() {
+#  stop("This should not be called directly, see ?mutate_with.")
+#}
 
+# The equivalent of rename_with() "feature complete", but as slow as the dplyr version
 #' @export
 #' @rdname sciviews_functions
-rename_with_ <- structure(function(.data, .fn, .cols = everything(), ...) {
-  # The equivalent of rename_with(),
-  # but currently supporting only .cols = everything()
+rename_with_ <- structure(function(.data = (.), .fn,
+    .cols = ~everything(), ...) {
 
-  # For now, only manage the case of .cols = everything()
-  if (deparse(substitute(.cols)) != "everything()")
-    stop("Only supporting .cols = everything() for now, sorry.")
+  # Implicit data-dot mechanism
+  if (missing(.data) || !is.data.frame(.data))
+    return(eval_data_dot(sys.call(), arg = '.data', abort_msg =
+        gettext("`.data` must be a `data.frame`.")))
+
+  # Special case .cols = ~everything()
+  if (length(.cols) == 2L && substitute(.cols) == quote(~everything())) {
+    .cols <- NULL
+  } else {# Selection of some columns
+    if (is_formula(.cols))
+      .cols <- eval_select(f_rhs(.cols), .data)
+    if (any(is.na(.cols)))
+      abort(gettext("Selections can't have missing values."))
+    if (is.character(.cols)) {
+      all_cols <- seq_along(.data)
+      names(all_cols) <- names(.data)
+      .cols2 <- .cols
+      .cols <- all_cols[.cols]
+      if (anyNA(.cols))
+        abort(c(
+          gettext("Can't select columns that don't exist."),
+          gettextf("Column `%s` doesn't exist.", .cols2[is.na(.cols)][1])))
+    } else if (is.numeric(.cols)) {
+      wrong_cols <- abs(.cols) > length(.data)
+      if (any(wrong_cols)) {
+        msg1 <- if (sum(wrong_cols) == 1L) {
+          gettextf("Location %d doesn't exist.",
+            as.integer(abs(.cols[wrong_cols])))
+        } else {
+          gettextf("Locations %s don't exist.",
+            paste(abs(.cols[wrong_cols]), collapse = ", "))
+        }
+        ncol_data <- ncol(.data)
+        msg2 <- if (ncol_data == 1L) {
+            gettext("There is only one column.")
+        } else {
+          gettextf("There are only %d columns.", ncol_data)
+          }
+        abort(c(
+          gettext("Can't select columns past the end."),
+          i = msg1, i = msg2))
+      }
+    } else if (is.logical(.cols)) {
+      if (length(.cols) != ncol(.data))
+        abort(gettextf("Logical selection must match columns (%d).",
+          ncol(.data)))
+      setv(.cols, NA, FALSE) # NA are considered as FALSE here
+    } else if (anyNA(.cols)) {
+      abort(gettext("Selections can't have missing values."))
+    }
+    if (!length(.cols)) # No column to rename, return .data
+      return(.data)
+  }
+
+  if (missing(.fn))
+    abort(gettext("Argument `.fn` is missing, with no default."))
+  if (is_formula(.fn)) {
+    if (is_formula(.fn, lhs = FALSE)) { # Check for lhs absence
+      # The convention being to use `.x` for the argument, we put names in .x
+      # and the execute the call on it
+      .call <- f_rhs(.fn)
+      if (is.null(.cols)) {# Change all columns
+        .x <- c(names(.data)) # c() to make sure to have a copy!
+        names(.data) <- eval(.call)
+      } else {# Change only a selection
+        .x <- names(.data)[.cols]
+        names(.data)[.cols] <- eval(.call)
+      }
+      return(.data)
+    } else {
+      abort(gettext(
+        "Can't convert `.fn`, a two-sided formula, to a function."))
+    }
+  }
+
+  # Now, we are supposed to get the name of a function...
+  .fn_type <- typeof(.fn)
+  if (length(.fn) != 1L)
+    abort(gettextf("Can't convert `.fn`, a %s vector, to a function.",
+      .fn_type))
+  if (is.character(.fn))
+    .fn <- get0(.fn, envir = parent.frame(), mode = 'function')
   if (!is.function(.fn))
-    stop("Can only rename with a function for now, sorry.")
-  frename(.data, .fn, ...) # cols= missing to apply to all columns
+    abort(gettextf("Can't convert `.fn`, a %s vector, to a function.",
+      .fn_type))
+
+  # Treat data.trames as data.tables
+  to_dtrm <- is.data.trame(.data)
+  if (to_dtrm) {
+    let_data.trame_to_data.table(.data)
+    on.exit(let_data.table_to_data.trame(.data))
+  }
+
+  if (is.null(.cols)) {# Special case .cols = ~everything()
+    # cols= missing to apply to all columns
+    res <- frename(.data, .fn, ..., .nse = FALSE)
+  } else {
+    args <- formula_select(.cols)
+    res <- frename(.data, .fn, ..., cols = .cols, .nse = FALSE)
+  }
+    if (to_dtrm)
+      let_data.table_to_data.trame(res)
+    res
 }, class = c("function", "sciviews_fn"),
   comment = .src_sciviews("dplyr::rename_with"))
 
@@ -320,66 +523,62 @@ filter_ <- structure(function(.data = (.), ...) {
 }, class = c("function", "sciviews_fn"),
   comment = .src_sciviews("dplyr::filter"))
 
+# TODO: allow for a formula here
+# Do we need to transform temporarily data.trame into data.table here?
 #' @export
 #' @rdname sciviews_functions
-filter_ungroup_ <- structure(function(.data = (.), ...) {
+select_ <- structure(function(.data = (.), ...) {
 
   # Implicit data-dot mechanism
   if (missing(.data) || !is.data.frame(.data))
     return(eval_data_dot(sys.call(), arg = '.data', abort_msg =
       gettext("`.data` must be a `data.frame`.")))
 
-  filters <- match.call()[-(1:2)]
-  # fsubset() can use only one subset argument at a time. So, we run it
-  # multiple times on each argument to filter_() to mimic filter()
-  for (i in 1:...length()) {
-    filter <- filters[[i]]
-    if (is_formula(filter)) {
-      if (!is_formula(filter, lhs = FALSE)) # Check for lhs
-        abort("If a formula is provided, it cannot have a left member (lhs).")
-      .data <- do.call(fsubset, list(.x = .data, f_rhs(filter)))
-    } else {# Not a formula -> should be an index
-      .data <- ss(.data, eval(filter, envir = parent.frame()))
-    }
+  # Treat data.trames as data.tables
+  to_dtrm <- is.data.trame(.data)
+  if (to_dtrm) {
+    let_data.trame_to_data.table(.data)
+    on.exit(let_data.table_to_data.trame(.data))
   }
-  let_data.trame_to_data.table(.data)
-  res <- fungroup(.data)
-  let_data.table_to_data.trame(res)
+
+  # If no selection is provided
+  if (missing(...)) # Return a data frame with zero columns
+    return(.data[0L, , drop = FALSE])
+
+  # Process dots to args
+  args <- formula_select(..., .fast.allowed.funs = c(":", "-", "c"))
+  if (!args$fastselect) {
+    #message(gettextf("Using tidyselect with `%s`",
+    #  paste(args$dots, collapse = ", ")))
+    eval_select2 <- function(..., data)
+      eval_select(expr(c(...)), data = data)
+    loc <- do.call(eval_select2, c(args$dots, list(data = .data)))
+    if (to_dtrm)
+      let_data.table_to_data.trame(.data)
+    res <- .data[, loc, drop = FALSE]
+    names(res) <- names(loc)
+
+  } else {# fastselect with collapse
+    # Other return modes not supported (yet)
+    res <- do.call(fselect, c(list(.x = .data, return = "data"), args$dots),
+      envir = args$env)
+    if (to_dtrm)
+      let_data.table_to_data.trame(res)
+  }
+
   res
-}, class = c("function", "sciviews_fn"), comment = .src_sciviews("dplyr::filter",
-  comment = "A SciViews function, see ?sciviews_functions, combining filter_() and ungroup_()."))
-
-# TODO: allow for a formula here
-# Do we need to transform temporarily data.trame into data.table here?
-#' @export
-#' @rdname sciviews_functions
-select_ <- structure(function(data = (.), ...) {
-
-  # Implicit data-dot mechanism
-  if (missing(data) || !is.data.frame(data))
-    return(eval_data_dot(sys.call(), abort_msg =
-      gettext("`data` must be a `data.frame`.")))
-
-  fselect(data, ..., return = "data") # Other return modes not supported (yet)
 }, class = c("function", "sciviews_fn"),
   comment = .src_sciviews("collapse::fselect"))
 
 #' @export
 #' @rdname sciviews_functions
 mutate_ <- structure(function(.data, ..., .keep = "all") {
-    fmutate(.data, ..., .keep = .keep)
-  },
-  # TODO: Arguments .by, .before= and .after= not supported yet, but to be
-  # implemented
+  fmutate(.data, ..., .keep = .keep)
+},
+# TODO: Arguments .by, .before= and .after= not supported yet, but to be
+# implemented
   class = c("function", "sciviews_fn"),
   comment = .src_sciviews("collapse::fmutate"))
-
-#' @export
-#' @rdname sciviews_functions
-mutate_ungroup_ <- structure(function(.data, ..., .keep = "all") {
-  fungroup(fmutate(.data, ..., .keep = .keep))
-}, class = c("function", "sciviews_fn"), comment = .src_sciviews("dplyr::mutate",
-  comment = "A SciViews function, see ?sciviews_functions, combining mutate() and ungroup()."))
 
 #' @export
 #' @rdname sciviews_functions
@@ -388,20 +587,15 @@ transmute_ <- structure(function(.data, ...) {
 }, class = c("function", "sciviews_fn"),
   comment = .src_sciviews("dplyr::transmute"))
 
-#' @export
-#' @rdname sciviews_functions
-transmute_ungroup_ <- structure(function(.data, ...) {
-  fungroup(fmutate(.data, ...)[, ...names()])
-}, class = c("function", "sciviews_fn"), comment = .src_sciviews("dplyr::transmute",
-  comment = "A SciViews function, see ?sciviews_functions, combining transmute() and ungroup()."))
-
 # On the contrary to summarise() we always do not warn if summarise() returns
 # several rows (but reframe_() is there too)
 # Also, .group = "rowwise" is not implemented here
+# TODO: across_() that constructs a list of formulas
+# TODO: n_() that gets the number of items in the group
 #' @export
 #' @rdname sciviews_functions
-summarise_ <- structure(function(.data, ..., .by = NULL, .groups = "drop_last",
-    keep.group_vars = TRUE, .cols = NULL) {
+summarise_ <- structure(function(.data = (.), ..., .by = NULL,
+    .groups = "drop_last", .keep.group_vars = TRUE, .cols = NULL) {
 
   # Implicit data-dot mechanism
   if (missing(.data) || !is.data.frame(.data))
@@ -432,10 +626,10 @@ summarise_ <- structure(function(.data, ..., .by = NULL, .groups = "drop_last",
     on.exit(let_data.table_to_data.trame(.data))
   }
 
+  # Case missing(...)
   # We only allow standard evaluation,... or formulas. They cannot be mixed and
   # standard evaluation is NOT possible for grouped data.
-  largs <- ...length()
-  if (largs == 0L) {# Nothing provided
+  if (missing(...)) {
     # If data is grouped, we return the number of observations par level
     if (is_grouped) {
       # We return only the grouping variables, like summarise() does
@@ -459,82 +653,32 @@ summarise_ <- structure(function(.data, ..., .by = NULL, .groups = "drop_last",
     }
   }
 
-  # Default environment where to run fsummarise()
-  env <- parent.frame()
+  # Process dots with formula-masking
+  no_se_msg <- gettext(
+    "Standard evaluation is not supported for grouped data frames.")
+  args <- formula_masking(..., .make.names = TRUE, .no.se = is_grouped,
+    .no.se.msg = no_se_msg)
 
-  # Process ...
-  # If we have a list of formulas, use it instead of ...
-  if (is.list(..1) && is_formula(..1[[1]])) {
-    if (...length() > 1L)
-      abort("If you provide a list of formulas, there can be only one item in ...")
-    dots <- ..1
-    first_item <- ..1[[1]]
-
-  } else {# Use the regular ...
-    dots <- list(...)
-    first_item <- ..1
-  }
-
-  if (is_formula(first_item)) {# Everything is supposed to be formulas
-    # The environment where to evaluate is extracted from the first formula
-    env <- f_env(first_item)
-
-    # Extract expressions from the rhs of the formulas
-    # Formulas are converted into expressions in extracting the right-hand side
-    # (and if there are left-hand side, they become the name)
-    f_to_expr <- function(x) {
-      if (is_formula(x)) {
-        f_rhs(x)
-      } else {
-        abort(gettext("You cannot mix standard evaluation and formulas."))
-      }
-    }
-    args <- lapply(dots, f_to_expr)
-    # Possibly get names also from the formulas
-
-    names_args <- names(args)
-    if (is.null(names_args))
-      names_args <- rep("", largs)
-    for (i in 1:largs) {
-      lhs <- f_lhs(dots[[i]])
-      if (!is.null(lhs))
-        names_args[i] <- eval_bare(lhs, env = env)
-
-      # fsummarise() does not support empty names!
-      # In this case, construct a label from rhs of the formula
-      if (names_args[i] == "")
-        names_args[i] <- f_name(dots[[i]])
-      names(args) <- names_args
-    }
-
-  } else {# Standard evaluation
-    if (is_grouped) # It does not work with grouped data!
-      abort(c("Standard evaluation is not supported for grouped data frames.",
-        i = "Use formulas instead."))
-
-    if (any(sapply(dots, is_formula)))
-      abort(gettext("You cannot mix standard evaluation and formulas."))
-
-    args <- lapply(dots, force) # Force SE of the arguments
-  }
-
-  # Manage.by=, grouping provided only for this summarise_()
-  # Note: dplyr::summarise() never sorts in this case!
+  # If .by is defined, use these groups, but do not keep them
   if (!missing(.by)) {
     if (is_grouped)
-      abort("Cant supply `.by` when `.data` is a grouped data frame.")
-    if (to_dtrm) {# This seems to be necessary... why?
-      let_data.table_to_data.trame(.data)
-      .data <- group_by_vars(.data, by = .by, sort = FALSE) # No sorting!
-      let_data.trame_to_data.table(.data)
-    } else {
-      .data <- group_by_vars(.data, by = .by, sort = FALSE) # No sorting!
-    }
+      abort(gettext("Can't supply `.by` when `.data` is a grouped data frame."))
+    if (!args$are_formulas)
+      abort(no_se_msg)
+    # Here, we need to take care of the object class, or we end up with a
+    # data.table in .data!
+    let_data.table_to_data.trame(.data)
+    .data <- group_by_vars(.data, by = .by, sort = FALSE)
+    let_data.trame_to_data.table(.data)
+    new_gvars <- character(0) # Don't keep these groups
+  } else {
+    .data <- .data
   }
 
-  res <- do.call(fsummarise, c(list(.data = .data), args,
-    list(keep.group_vars = keep.group_vars, .cols = .cols)), envir = env)
-  if (length(new_gvars)) # Set grouping without last one
+  res <- do.call(fsummarise, c(list(.data = .data), args$dots,
+    list(keep.group_vars = force(.keep.group_vars), .cols = force(.cols))),
+    envir = args$env)
+  if (length(new_gvars)) # (re)set grouping
     res <- group_by_vars(res, by = new_gvars)
   if (to_dtrm)
     let_data.table_to_data.trame(res)
@@ -548,11 +692,12 @@ summarise_ <- structure(function(.data, ..., .by = NULL, .groups = "drop_last",
 #' @export
 #' @rdname sciviews_functions
 reframe_ <- structure(function(.data, ..., .by = NULL, .groups = "drop",
-    keep.group_vars = TRUE, .cols = NULL) {
+    .keep.group_vars = TRUE, .cols = NULL) {
 
   # Call summarise_(.groups = "drop")
   if (.groups != "drop")
-    abort(c("`reframe_()` only accepts `.groups = \"drop\"`.",
+    abort(gettext(
+      "`reframe_()` only accepts `.groups = \"drop\"`.",
       i = "Use `summarise_()` instead."))
 
   call <- sys.call()

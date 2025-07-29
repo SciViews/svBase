@@ -8,12 +8,9 @@
 \alias{rename_}
 \alias{rename_with_}
 \alias{filter_}
-\alias{filter_ungroup_}
 \alias{select_}
 \alias{mutate_}
-\alias{mutate_ungroup_}
 \alias{transmute_}
-\alias{transmute_ungroup_}
 \alias{summarise_}
 \alias{reframe_}
 \alias{full_join_}
@@ -48,40 +45,34 @@ group_by_(
   ...,
   .add = FALSE,
   .drop = TRUE,
-  sort = get_collapse("sort"),
-  decreasing = FALSE,
-  na.last = TRUE,
-  return.groups = TRUE,
-  return.order = sort,
-  method = "auto"
+  .sort = get_collapse("sort"),
+  .decreasing = FALSE,
+  .na.last = TRUE,
+  .return.groups = TRUE,
+  .return.order = .sort,
+  .method = "auto"
 )
 
-ungroup_(.data = (.), ..., na.last = TRUE, method = "auto")
+ungroup_(.data = (.), ..., .na.last = TRUE, .method = "auto")
 
-rename_(.data, ...)
+rename_(.data = (.), ...)
 
-rename_with_(.data, .fn, .cols = everything(), ...)
+rename_with_(.data = (.), .fn, .cols = ~everything(), ...)
 
 filter_(.data = (.), ...)
 
-filter_ungroup_(.data = (.), ...)
-
-select_(data = (.), ...)
+select_(.data = (.), ...)
 
 mutate_(.data, ..., .keep = "all")
 
-mutate_ungroup_(.data, ..., .keep = "all")
-
 transmute_(.data, ...)
 
-transmute_ungroup_(.data, ...)
-
 summarise_(
-  .data,
+  .data = (.),
   ...,
   .by = NULL,
   .groups = "drop_last",
-  keep.group_vars = TRUE,
+  .keep.group_vars = TRUE,
   .cols = NULL
 )
 
@@ -90,7 +81,7 @@ reframe_(
   ...,
   .by = NULL,
   .groups = "drop",
-  keep.group_vars = TRUE,
+  .keep.group_vars = TRUE,
   .cols = NULL
 )
 
@@ -201,20 +192,20 @@ the time, not evaluated in a standard way (cf. the tidyverse approach).}
 
 \item{.drop}{Are levels with no observations dropped (\code{TRUE} by default).}
 
-\item{sort}{If \code{TRUE} largest group will be shown on top.}
+\item{.sort}{If \code{TRUE} groups are sorted.}
 
-\item{decreasing}{Is sorting done in decreasing order (\code{FALSE} by default)?}
+\item{.decreasing}{Is sorting done in decreasing order (\code{FALSE} by default)?}
 
-\item{na.last}{How to treat missing values in groups? Assign them to the last
+\item{.na.last}{How to treat missing values in groups? Assign them to the last
 group by default (\code{TRUE}).}
 
-\item{return.groups}{If \code{TRUE}, the grouping variables are returned in the GRP
+\item{.return.groups}{If \code{TRUE}, the grouping variables are returned in the GRP
 object (default).}
 
-\item{return.order}{If \code{TRUE}, the order of the grouping variables is
+\item{.return.order}{If \code{TRUE}, the order of the grouping variables is
 returned in the object (by default, same value as \verb{sort=}).}
 
-\item{method}{The algorithm to use for grouping:  \code{"radix"}, \code{"hash"}, or
+\item{.method}{The algorithm to use for grouping:  \code{"radix"}, \code{"hash"}, or
 \code{"auto"} (by default). \code{"auto"} chose \code{"radix"} when \code{sort = TRUE} and
 \code{"hash"} otherwise.}
 
@@ -223,8 +214,6 @@ returned in the object (by default, same value as \verb{sort=}).}
 \item{.cols}{The list of the column where to apply the transformation. For
 the moment, only all existing columns, which means \code{.cols = everything()}
 is implemented}
-
-\item{data}{A data frame, or for \code{replace_na()} a vector or a data frame.}
 
 \item{.keep}{Which columns to keep. The default is \code{"all"}, possible values
 are \code{"used"}, \code{"unused"}, or \code{"none"} (see \code{\link[=mutate]{mutate()}}).}
@@ -236,7 +225,7 @@ values are \code{"drop_last"} (default), \code{"drop"} (no grouping variables),
 \code{"keep"} (keep all grouping variables), or \code{"rowwise"} (not implemented
 yet).}
 
-\item{keep.group_vars}{If \code{TRUE} (by default), the grouping variables are
+\item{.keep.group_vars}{If \code{TRUE} (by default), the grouping variables are
 kept in the result.}
 
 \item{x}{A data frame (data.frame, data.table or tibble's tbl_df).}
@@ -258,10 +247,14 @@ other arguments are named, or numbers.}
 
 \item{wt}{Frequency weights. Can be \code{NULL} or a variable. Use data masking.}
 
+\item{sort}{If \code{TRUE} largest group will be shown on top.}
+
 \item{name}{The name of the new column in the output (\code{n} by default, and no
 existing column must have this name, or an error is generated).4}
 
 \item{sort_cat}{Are levels sorted (\code{TRUE} by default).}
+
+\item{decreasing}{Is sorting done in decreasing order (\code{FALSE} by default)?}
 
 \item{.name_repair}{How should the name be "repaired" to avoid duplicate
 column names? See \code{\link[dplyr:bind_cols]{dplyr::bind_cols()}} for more details.}
@@ -273,6 +266,8 @@ variables in any. \code{FALSE} by default.}
 (counting from the end). The default is \code{-1} and returns last variable.}
 
 \item{.keep_all}{If \code{TRUE} keep all variables in \code{.data}.}
+
+\item{data}{A data frame, or for \code{replace_na()} a vector or a data frame.}
 
 \item{replace}{If \code{data} is a vector, a unique value to replace \code{NA}s,
 otherwise, a list of values, one per column of the data frame.}
