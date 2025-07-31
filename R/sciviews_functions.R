@@ -150,9 +150,8 @@ group_by_ <- structure(function(.data = (.), ..., .add = FALSE, .drop = TRUE,
   # .drop = FALSE not implemented yet (should be possible, because converting
   # a grouped_df object into GRP gives the correct groups)
   if (!isTRUE(.drop))
-    abort(gettext(
-      "`.drop = FALSE` is not implemented yet in `group_by_()`, sorry.",
-      i = "Use `group_by(..., .drop = FALSE)` instead for now."))
+    stop("{.code .drop = FALSE} is not implemented yet in {.fun group_by_()}, sorry.",
+      i = "Use {.code group_by(..., .drop = FALSE)} instead for now.")
 
   # Treat data.trames as data.tables
   to_dtrm <- is.data.trame(.data)
@@ -277,14 +276,14 @@ ungroup_ <- structure(function(.data = (.), ..., .na.last = TRUE,
   if (...length()) {# Ungroup only certain data
     un_gvars <- c(...)
     if (!is.character(un_gvars))
-      abort("You must provide the names (character) of the grouping variables to `ungroup_()`.")
+      stop("incorrect names of the grouping variables.",
+        i = "provide the names as {.cls character} vectors like {.code \"name\"}.")
 
     # Provided variables must be in the dataset
     non_exist <- setdiff(un_gvars, names(.data))
     if (length(non_exist)) {
-      abort(c(
-        gettext("Can't select columns that don't exist."),
-        x = gettextf("Column `%s` doesn't exist.", non_exist[1])))
+      stop("Can't select columns that don't exist.",
+        x = "Column {.code {non_exist[1]}} doesn't exist.")
     }
 
     # Consider only variables that are actuelly in the grouping
@@ -533,9 +532,9 @@ filter_ <- structure(function(.data = (.), ..., .by = NULL, .preserve = FALSE) {
   # If .by is defined, use these groups, but do not keep them
   if (!missing(.by)) {
     if (is_grouped)
-      abort(gettext("Can't supply `.by` when `.data` is a grouped data frame."))
+      stop("Can't supply {.arg .by} when {.arg .data} is a grouped data frame.")
     if (!args$are_formulas)
-      abort(no_se_msg)
+      stop(no_se_msg)
     # Here, we need to take care of the object class, or we end up with a
     # data.table in .data!
     #let_data.table_to_data.trame(.data)
@@ -553,10 +552,9 @@ filter_ <- structure(function(.data = (.), ..., .by = NULL, .preserve = FALSE) {
     first_named <- whichv(dots_names, "", invert = TRUE)
     first_name <- dots_names[first_named]
     first_value <- expr_deparse(args$dots[[first_named]])
-    abort(c(gettext("We detected a named input.",
-      i = "This usually means that you've used `=` instead of `==`."),
-      gettextf("Did you mean `%s`?",
-        paste(first_name, first_value, sep = " = "))))
+    stop("We detected a named input.",
+      i = "This usually means that you've used {.code =} instead of {.code ==}.",
+      "Did you mean {.code {paste(first_name, first_value, sep = " = ")}}?")
   }
 
   res <- .data
@@ -667,10 +665,8 @@ summarise_ <- structure(function(.data = (.), ..., .by = NULL,
       drop_last = gvars[-length(gvars)],
       drop      = character(0),
       keep      = gvars,
-      rowwise   = abort(gettext(
-        "`.groups` must be 'drop_last', 'drop', or 'keep'. 'rowwise' is not supported.")),
-      abort(gettext(
-        "`.groups` must be 'drop_last', 'drop', or 'keep'."))
+      rowwise   = stop("{.arg .groups} must be {.code \"drop_last\"}, {.code \"drop\"}, or {.code \"keep\"}. {.code \"rowwise\"} is not supported."),
+      stop("{.arg .groups} must be {.code \"drop_last\"}, {.code \"drop\"}, or {.code \"keep\"}.")
     )
   } else {# No grouping variables
     new_gvars <- character(0)
@@ -719,7 +715,7 @@ summarise_ <- structure(function(.data = (.), ..., .by = NULL,
   # If .by is defined, use these groups, but do not keep them
   if (!missing(.by)) {
     if (is_grouped)
-      abort(gettext("Can't supply `.by` when `.data` is a grouped data frame."))
+      stop("can't supply {.arg .by} when {.arg .data} is a grouped data frame.")
     if (!args$are_formulas)
       abort(no_se_msg)
     # Here, we need to take care of the object class, or we end up with a
@@ -755,9 +751,8 @@ reframe_ <- structure(function(.data, ..., .by = NULL, .groups = "drop",
 
   # Call summarise_(.groups = "drop")
   if (.groups != "drop")
-    abort(gettext(
-      "`reframe_()` only accepts `.groups = \"drop\"`.",
-      i = "Use `summarise_()` instead."))
+    stop("{.fun reframe_()} only accepts {.code .groups = \"drop\"}.",
+      i = "Use {.fun summarise_()} instead.")
 
   call <- sys.call()
   call[[1]] <- as.symbol('summarise_') # Use summarise_() instead
