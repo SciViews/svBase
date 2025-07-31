@@ -88,6 +88,8 @@ speedy and SciViews functions in the same pipeline.</p>
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">list_sciviews_functions</span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
+<span><span class="fu">all_of</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
+<span></span>
 <span><span class="fu">group_by_</span><span class="op">(</span></span>
 <span>  .data <span class="op">=</span> <span class="op">(</span><span class="va">.</span><span class="op">)</span>,</span>
 <span>  <span class="va">...</span>,</span>
@@ -107,7 +109,7 @@ speedy and SciViews functions in the same pipeline.</p>
 <span></span>
 <span><span class="fu">rename_with_</span><span class="op">(</span>.data <span class="op">=</span> <span class="op">(</span><span class="va">.</span><span class="op">)</span>, <span class="va">.fn</span>, .cols <span class="op">=</span> <span class="op">~</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/everything.html" class="external-link">everything</a></span><span class="op">(</span><span class="op">)</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">filter_</span><span class="op">(</span>.data <span class="op">=</span> <span class="op">(</span><span class="va">.</span><span class="op">)</span>, <span class="va">...</span><span class="op">)</span></span>
+<span><span class="fu">filter_</span><span class="op">(</span>.data <span class="op">=</span> <span class="op">(</span><span class="va">.</span><span class="op">)</span>, <span class="va">...</span>, .by <span class="op">=</span> <span class="cn">NULL</span>, .preserve <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">select_</span><span class="op">(</span>.data <span class="op">=</span> <span class="op">(</span><span class="va">.</span><span class="op">)</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
@@ -235,7 +237,11 @@ speedy and SciViews functions in the same pipeline.</p>
     <h2>Arguments</h2>
 
 
-<dl><dt id="arg--data">.data<a class="anchor" aria-label="anchor" href="#arg--data"></a></dt>
+<dl><dt id="arg-x">x<a class="anchor" aria-label="anchor" href="#arg-x"></a></dt>
+<dd><p>A data frame (data.frame, data.table or tibble's tbl_df).</p></dd>
+
+
+<dt id="arg--data">.data<a class="anchor" aria-label="anchor" href="#arg--data"></a></dt>
 <dd><p>A data frame (data.frame, data.table or tibble's tbl_df)</p></dd>
 
 
@@ -291,13 +297,18 @@ the moment, only all existing columns, which means <code>.cols = everything()</c
 is implemented</p></dd>
 
 
+<dt id="arg--by">.by<a class="anchor" aria-label="anchor" href="#arg--by"></a></dt>
+<dd><p>A list of names of the columns to use for grouping the data.</p></dd>
+
+
+<dt id="arg--preserve">.preserve<a class="anchor" aria-label="anchor" href="#arg--preserve"></a></dt>
+<dd><p>When data is grouped, do we preserve grouping or recalculate
+it according to the new data frame obtained?</p></dd>
+
+
 <dt id="arg--keep">.keep<a class="anchor" aria-label="anchor" href="#arg--keep"></a></dt>
 <dd><p>Which columns to keep. The default is <code>"all"</code>, possible values
 are <code>"used"</code>, <code>"unused"</code>, or <code>"none"</code> (see <code><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate()</a></code>).</p></dd>
-
-
-<dt id="arg--by">.by<a class="anchor" aria-label="anchor" href="#arg--by"></a></dt>
-<dd><p>A list of names of the columns to use for grouping the data.</p></dd>
 
 
 <dt id="arg--groups">.groups<a class="anchor" aria-label="anchor" href="#arg--groups"></a></dt>
@@ -310,10 +321,6 @@ yet).</p></dd>
 <dt id="arg--keep-group-vars">.keep.group_vars<a class="anchor" aria-label="anchor" href="#arg--keep-group-vars"></a></dt>
 <dd><p>If <code>TRUE</code> (by default), the grouping variables are
 kept in the result.</p></dd>
-
-
-<dt id="arg-x">x<a class="anchor" aria-label="anchor" href="#arg-x"></a></dt>
-<dd><p>A data frame (data.frame, data.table or tibble's tbl_df).</p></dd>
 
 
 <dt id="arg-y">y<a class="anchor" aria-label="anchor" href="#arg-y"></a></dt>
