@@ -9,20 +9,23 @@
 # Need this for R CMD check to pass
 . <- NULL
 
+# We use our own stop_() and warning_(), but renamed
+stop <- svMisc::stop_
+warning <- svMisc::warning_
+
 # Process ... -> could be a list of formulas, formulas, or SE expressions
 formula_masking <- function(..., .max.args = NULL, .must.be.named = FALSE,
     .make.names = FALSE, .no.se = FALSE,
     .no.se.msg = gettext("Standard evaluation is not allowed."),
     .envir = parent.frame(2L), .frame = parent.frame()) {
 
+  .__top_call__. <- TRUE
   .make.names <- isTRUE(.make.names)
 
   # If we have a list of formulas, use it instead of ...
   if (is.list(..1) && is_formula(..1[[1]])) {
     if (...length() > 1L)
-      abort(gettext(
-        "If you provide a list of formulas, there can be only one item in ..."),
-        .frame = .frame)
+      stop("If you provide a list of formulas, you cannot provide more.")
     dots <- ..1
     first_item <- ..1[[1]]
     ldots <- length(dots)
@@ -36,12 +39,10 @@ formula_masking <- function(..., .max.args = NULL, .must.be.named = FALSE,
   # Check number or arguments
   if (!is.null(.max.args)) {
     if (!is.numeric(.max.args) || length(.max.args) != 1 || .max.args < 1)
-      abort(gettextf("`.max.args` must be a single positive integer, not %s.",
-        .max.args), .frame = .frame)
+      stop("{.arg .max.args} must be a single positive {.cls integer}, not {.max.args}.")
     # Check that the number of arguments is not too large
     if (ldots > .max.args)
-      abort(gettextf("You provided %d arguments, but max allowed is %s.",
-        ldots, .max.args), .frame = .frame)
+      stop("You provided {ldots} arguments, but max allowed is {.max.args}.")
   }
 
   are_formulas <- is_formula(first_item)
@@ -56,8 +57,7 @@ formula_masking <- function(..., .max.args = NULL, .must.be.named = FALSE,
       if (is_formula(x)) {
         f_rhs(x)
       } else {
-        abort(gettext("You cannot mix standard evaluation and formulas."),
-          .frame = .frame)
+        stop("You cannot mix standard evaluation and formulas.")
       }
     }
     if (ldots == 1) {
@@ -79,7 +79,7 @@ formula_masking <- function(..., .max.args = NULL, .must.be.named = FALSE,
 
       # Do we need everything named?
       if (isTRUE(.must.be.named) && anyv(names_args, ""))
-        abort(gettext("All inputs must be named."), .frame = .frame)
+        stop("All inputs must be named.")
 
       # Functions like fsummarise() do not support empty names!
       # In this case, construct a label from rhs of the formula
@@ -92,12 +92,10 @@ formula_masking <- function(..., .max.args = NULL, .must.be.named = FALSE,
 
   } else {# Standard evaluation
     if (isTRUE(.no.se))
-      abort(c(.no.se.msg, i = gettext("Use formulas instead.")),
-        .frame = .frame)
+      stop(.no.se.msg, i = "Use formulas instead.")
 
     if (any(sapply(dots, is_formula)))
-      abort(gettext("You cannot mix standard evaluation and formulas."),
-        .frame = .frame)
+      stop("You cannot mix standard evaluation and formulas.")
 
     # Not needed, already done!?
     #args <- lapply(dots, force) # Force SE of the arguments
@@ -115,6 +113,8 @@ formula_select <- function(..., .fast.allowed.funs = NULL,
     .max.args = NULL, .must.be.named = FALSE, .make.names = FALSE,
     .no.se = FALSE, .no.se.msg = gettext("Standard evaluation is not allowed."),
     .envir = parent.frame(2L), .frame = parent.frame()) {
+
+  .__top_call__. <- TRUE
 
   # Process the arguments with formula_masking()
   args <- formula_masking(..., .max.args = .max.args,

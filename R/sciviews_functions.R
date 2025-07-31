@@ -19,6 +19,8 @@
 #'   `"auto"` (by default). `"auto"` chose `"radix"` when `sort = TRUE` and
 #'   `"hash"` otherwise.
 #' @param .by A list of names of the columns to use for grouping the data.
+#' @param .preserve When data is grouped, do we preserve grouping or recalculate
+#'   it according to the new data frame obtained?
 #' @param .groups How to treat the grouping variables in the result? Possible
 #'   values are `"drop_last"` (default), `"drop"` (no grouping variables),
 #'   `"keep"` (keep all grouping variables), or `"rowwise"` (not implemented
@@ -124,6 +126,12 @@ list_sciviews_functions <- function() {
   comment
 }
 
+# Basically, all_of() does nothing, it is useless in SciViews functions,
+# but we define it here to be compatible with tidy-select and dplyr.
+#' @export
+#' @rdname sciviews_functions
+all_of <- function(x) x
+
 # TODO: default .drop as in dplytr::group_by()
 # TODO: what are those "computations" that one can give to group_by()? See doc
 #' @export
@@ -131,6 +139,8 @@ list_sciviews_functions <- function() {
 group_by_ <- structure(function(.data = (.), ..., .add = FALSE, .drop = TRUE,
     .sort = get_collapse("sort"), .decreasing = FALSE, .na.last = TRUE,
     .return.groups = TRUE, .return.order = .sort, .method = "auto") {
+
+  .__top_call__. <- TRUE
 
   # Implicit data-dot mechanism
   if (missing(.data) || !is.data.frame(.data))
@@ -250,6 +260,8 @@ group_by_ <- structure(function(.data = (.), ..., .add = FALSE, .drop = TRUE,
 ungroup_ <- structure(function(.data = (.), ..., .na.last = TRUE,
     .method = "auto") {
 
+  .__top_call__. <- TRUE
+
   # Implicit data-dot mechanism
   if (missing(.data) || !is.data.frame(.data))
     return(eval_data_dot(sys.call(), arg = '.data', abort_msg =
@@ -319,6 +331,8 @@ ungroup_ <- structure(function(.data = (.), ..., .na.last = TRUE,
 #' @rdname sciviews_functions
 rename_ <- structure(function(.data = (.), ...) {
 
+  .__top_call__. <- TRUE
+
   # Implicit data-dot mechanism
   if (missing(.data) || !is.data.frame(.data))
     return(eval_data_dot(sys.call(), arg = '.data', abort_msg =
@@ -349,9 +363,8 @@ rename_ <- structure(function(.data = (.), ...) {
     }
   }))
   if (is.list(dots_flat))
-    abort(gettext(
-      "Incorrect renaming inputs.",
-      i = "Use `new_name = <old_name>` with `<old_name>` as a single character or symbol."))
+    stop("Incorrect renaming inputs.",
+      i = "Use {.code new_name = <old_name>} with {.code <old_name>} as a single {.cls character} or {.cls symbol}.")
   # If values are numbers, these are indices -> replace then by names
   # (because frename() cannot use indices)
   # Otherwise, invert names and values
@@ -370,8 +383,8 @@ rename_ <- structure(function(.data = (.), ...) {
   # Remember: we have now old_name = "new_name" in dots_inv
   missing_cols <- setdiff(names(dots_inv), names(.data))
   if (length(missing_cols))
-    abort(c(gettext("Can't rename columns that don't exist."),
-      x = gettextf("Column `%s` doesn't exist.", missing_cols[1])))
+    stop("Can't rename columns that don't exist.",
+      x = "Column {.code {missing_cols[1]}} doesn't exist.")
 
   res <- do.call(frename, c(list(.x = .data, .nse = FALSE), dots_inv),
     envir = args$env)
@@ -390,6 +403,8 @@ rename_ <- structure(function(.data = (.), ...) {
 rename_with_ <- structure(function(.data = (.), .fn,
     .cols = ~everything(), ...) {
 
+  .__top_call__. <- TRUE
+
   # Implicit data-dot mechanism
   if (missing(.data) || !is.data.frame(.data))
     return(eval_data_dot(sys.call(), arg = '.data', abort_msg =
@@ -402,50 +417,36 @@ rename_with_ <- structure(function(.data = (.), .fn,
     if (is_formula(.cols))
       .cols <- eval_select(f_rhs(.cols), .data)
     if (any(is.na(.cols)))
-      abort(gettext("Selections can't have missing values."))
+      stop("Selections can't have missing values.")
     if (is.character(.cols)) {
       all_cols <- seq_along(.data)
       names(all_cols) <- names(.data)
       .cols2 <- .cols
       .cols <- all_cols[.cols]
       if (anyNA(.cols))
-        abort(c(
-          gettext("Can't select columns that don't exist."),
-          gettextf("Column `%s` doesn't exist.", .cols2[is.na(.cols)][1])))
+        stop("Can't select columns that don't exist.",
+          x = "Column {.code {(.cols2[is.na(.cols)][1])}} doesn't exist.")
     } else if (is.numeric(.cols)) {
-      wrong_cols <- abs(.cols) > length(.data)
-      if (any(wrong_cols)) {
-        msg1 <- if (sum(wrong_cols) == 1L) {
-          gettextf("Location %d doesn't exist.",
-            as.integer(abs(.cols[wrong_cols])))
-        } else {
-          gettextf("Locations %s don't exist.",
-            paste(abs(.cols[wrong_cols]), collapse = ", "))
-        }
-        ncol_data <- ncol(.data)
-        msg2 <- if (ncol_data == 1L) {
-            gettext("There is only one column.")
-        } else {
-          gettextf("There are only %d columns.", ncol_data)
-          }
-        abort(c(
-          gettext("Can't select columns past the end."),
-          i = msg1, i = msg2))
-      }
+      wrong_cols <- abs(.cols) > ncol(.data)
+      if (any(wrong_cols))
+        stop("Can't select columns past the end.",
+          i = "Location{?s} {as.character(abs(.cols[wrong_cols]))} {?doesn't/don't} exist.",
+          i = "There {?is/are} only {ncol(.data)} column{?s}.")
+
     } else if (is.logical(.cols)) {
       if (length(.cols) != ncol(.data))
-        abort(gettextf("Logical selection must match columns (%d).",
-          ncol(.data)))
+        stop("Logical selection must match columns ({ncol(.data)}).")
+
       setv(.cols, NA, FALSE) # NA are considered as FALSE here
     } else if (anyNA(.cols)) {
-      abort(gettext("Selections can't have missing values."))
+      stop("Selections can't have missing values.")
     }
     if (!length(.cols)) # No column to rename, return .data
       return(.data)
   }
 
   if (missing(.fn))
-    abort(gettext("Argument `.fn` is missing, with no default."))
+    stop("Argument {.arg .fn} is missing, with no default.")
   if (is_formula(.fn)) {
     if (is_formula(.fn, lhs = FALSE)) { # Check for lhs absence
       # The convention being to use `.x` for the argument, we put names in .x
@@ -460,21 +461,17 @@ rename_with_ <- structure(function(.data = (.), .fn,
       }
       return(.data)
     } else {
-      abort(gettext(
-        "Can't convert `.fn`, a two-sided formula, to a function."))
+      stop("Can't convert {.arg .fn}, a two-sided {.cls formula}, to a {.cls function}.")
     }
   }
 
   # Now, we are supposed to get the name of a function...
-  .fn_type <- typeof(.fn)
   if (length(.fn) != 1L)
-    abort(gettextf("Can't convert `.fn`, a %s vector, to a function.",
-      .fn_type))
+    stop("Can't convert {.arg .fn}, a {.cls {typeof(.fn)}} vector, to a {.cls function}.")
   if (is.character(.fn))
     .fn <- get0(.fn, envir = parent.frame(), mode = 'function')
   if (!is.function(.fn))
-    abort(gettextf("Can't convert `.fn`, a %s vector, to a function.",
-      .fn_type))
+    stop("Can't convert {.arg .fn}, a {.cls {typeof(.fn)}} vector, to a {.cls function}.")
 
   # Treat data.trames as data.tables
   to_dtrm <- is.data.trame(.data)
@@ -496,43 +493,95 @@ rename_with_ <- structure(function(.data = (.), .fn,
 }, class = c("function", "sciviews_fn"),
   comment = .src_sciviews("dplyr::rename_with"))
 
-# Apparently, I don't need to transform a data.trame into a data.table here
 #' @export
 #' @rdname sciviews_functions
-filter_ <- structure(function(.data = (.), ...) {
+filter_ <- structure(function(.data = (.), ..., .by = NULL, .preserve = FALSE) {
+
+  .__top_call__. <- TRUE
 
   # Implicit data-dot mechanism
   if (missing(.data) || !is.data.frame(.data))
     return(eval_data_dot(sys.call(), arg = '.data', abort_msg =
         gettext("`.data` must be a `data.frame`.")))
 
-  filters <- match.call()[-(1:2)]
+  # Case missing(...)
+  # Just return the data frame
+  if (missing(...))
+    return(.data)
+
+  # Apparently, I don't need to transform a data.trame into a data.table here
+  # Treat data.trames as data.tables
+  #to_dtrm <- is.data.trame(.data)
+  #if (to_dtrm) {
+  #  let_data.trame_to_data.table(.data)
+  #  on.exit(let_data.table_to_data.trame(.data))
+  #}
+
+  # Process dots with formula-masking
+  is_grouped <- is_grouped_df(.data)
+  if (is_grouped) {
+    new_gvars <- fgroup_vars(.data, return = "names")
+  } else {# No grouping variables
+    new_gvars <- character(0)
+  }
+
+  # Apply formula-masking on ...
+  no_se_msg <- gettext(
+    "Standard evaluation is not supported for grouped data frames.")
+  args <- formula_masking(..., .no.se = is_grouped, .no.se.msg = no_se_msg)
+
+  # If .by is defined, use these groups, but do not keep them
+  if (!missing(.by)) {
+    if (is_grouped)
+      abort(gettext("Can't supply `.by` when `.data` is a grouped data frame."))
+    if (!args$are_formulas)
+      abort(no_se_msg)
+    # Here, we need to take care of the object class, or we end up with a
+    # data.table in .data!
+    #let_data.table_to_data.trame(.data)
+    # TODO: a formula-select "lite" here
+    .data <- group_by_vars(.data, by = .by, sort = FALSE)
+    #let_data.trame_to_data.table(.data)
+    new_gvars <- character(0) # Don't keep these groups
+  } else {
+    .data <- .data
+  }
+
+  # No input can be named
+  dots_names <- names(args$dots)
+  if (!is.null(dots_names)) {
+    first_named <- whichv(dots_names, "", invert = TRUE)
+    first_name <- dots_names[first_named]
+    first_value <- expr_deparse(args$dots[[first_named]])
+    abort(c(gettext("We detected a named input.",
+      i = "This usually means that you've used `=` instead of `==`."),
+      gettextf("Did you mean `%s`?",
+        paste(first_name, first_value, sep = " = "))))
+  }
+
+  res <- .data
+  filters <- args$dots
   # fsubset() can use only one subset argument at a time. So, we run it
   # multiple times on each argument to filter_() to mimic filter()
-  for (i in 1:...length()) {
-    filter <- filters[[i]]
-    if (is_formula(filter)) {
-      if (!is_formula(filter, lhs = FALSE)) # Check for lhs
-        abort("If a formula is provided, it cannot have a left member (lhs).")
-      .data <- do.call('fsubset', list(.x = .data, f_rhs(filter)))
-    } else {# Not a formula -> should be an index
-      .data <- ss(.data, eval(filter, envir = parent.frame()))
-    }
-  }
-  .data
+  for (i in 1:...length())
+    .data <- ss(res, eval(filters[[i]], envir = args$env))
+  #if (to_dtrm)
+  #  let_data.table_to_data.trame(res)
+  res
 }, class = c("function", "sciviews_fn"),
   comment = .src_sciviews("dplyr::filter"))
 
-# TODO: allow for a formula here
 # Do we need to transform temporarily data.trame into data.table here?
 #' @export
 #' @rdname sciviews_functions
 select_ <- structure(function(.data = (.), ...) {
 
+  .__top_call__. <- TRUE
+
   # Implicit data-dot mechanism
   if (missing(.data) || !is.data.frame(.data))
-    return(eval_data_dot(sys.call(), arg = '.data', abort_msg =
-      gettext("`.data` must be a `data.frame`.")))
+    return(eval_data_dot(sys.call(), arg = '.data',
+      abort_msg = gettext("`.data` must be a `data.frame`.")))
 
   # Treat data.trames as data.tables
   to_dtrm <- is.data.trame(.data)
@@ -551,7 +600,7 @@ select_ <- structure(function(.data = (.), ...) {
     #message(gettextf("Using tidyselect with `%s`",
     #  paste(args$dots, collapse = ", ")))
     eval_select2 <- function(..., data)
-      eval_select(expr(c(...)), data = data)
+      eval_select(expr(c(...)), data = data, error_call = stop_top_call())
     loc <- do.call(eval_select2, c(args$dots, list(data = .data)))
     if (to_dtrm)
       let_data.table_to_data.trame(.data)
@@ -573,6 +622,9 @@ select_ <- structure(function(.data = (.), ...) {
 #' @export
 #' @rdname sciviews_functions
 mutate_ <- structure(function(.data, ..., .keep = "all") {
+
+  .__top_call__. <- TRUE
+
   fmutate(.data, ..., .keep = .keep)
 },
 # TODO: Arguments .by, .before= and .after= not supported yet, but to be
@@ -583,6 +635,9 @@ mutate_ <- structure(function(.data, ..., .keep = "all") {
 #' @export
 #' @rdname sciviews_functions
 transmute_ <- structure(function(.data, ...) {
+
+  .__top_call__. <- TRUE
+
   fmutate(.data, ...)[, ...names()]
 }, class = c("function", "sciviews_fn"),
   comment = .src_sciviews("dplyr::transmute"))
@@ -596,6 +651,8 @@ transmute_ <- structure(function(.data, ...) {
 #' @rdname sciviews_functions
 summarise_ <- structure(function(.data = (.), ..., .by = NULL,
     .groups = "drop_last", .keep.group_vars = TRUE, .cols = NULL) {
+
+  .__top_call__. <- TRUE
 
   # Implicit data-dot mechanism
   if (missing(.data) || !is.data.frame(.data))
@@ -694,6 +751,8 @@ summarise_ <- structure(function(.data = (.), ..., .by = NULL,
 reframe_ <- structure(function(.data, ..., .by = NULL, .groups = "drop",
     .keep.group_vars = TRUE, .cols = NULL) {
 
+  .__top_call__. <- TRUE
+
   # Call summarise_(.groups = "drop")
   if (.groups != "drop")
     abort(gettext(
@@ -716,6 +775,9 @@ comment = .src_sciviews("collapse::fsummarise"))
 #' @rdname sciviews_functions
 full_join_ <- structure(function(x, y, by = NULL, suffix = c(".x", ".y"),
 copy = FALSE, ...) {
+
+  .__top_call__. <- TRUE
+
   if (!missing(copy))
     warning("This argument is here only for compatibility with tfull_join() but it does nothing here.")
   # We transform x into a data.table, then restore the result into data.frame
@@ -738,6 +800,9 @@ copy = FALSE, ...) {
 #' @rdname sciviews_functions
 left_join_ <- structure(function(x, y, by = NULL, suffix = c(".x", ".y"),
 copy = FALSE, ...) {
+
+  .__top_call__. <- TRUE
+
   if (!missing(copy))
     warning("This argument is here only for compatibility with tleft_join() but it does nothing here.")
   # We transform x into a data.table, then restore the result into data.frame
@@ -760,6 +825,9 @@ copy = FALSE, ...) {
 #' @rdname sciviews_functions
 right_join_ <- structure(function(x, y, by = NULL, suffix = c(".x", ".y"),
 copy = FALSE, ...) {
+
+  .__top_call__. <- TRUE
+
   if (!missing(copy))
     warning("This argument is here only for compatibility with tright_join() but it does nothing here.")
   # We transform x into a data.table, then restore the result into data.frame
@@ -782,6 +850,9 @@ copy = FALSE, ...) {
 #' @rdname sciviews_functions
 inner_join_ <- structure(function(x, y, by = NULL, suffix = c(".x", ".y"),
 copy = FALSE, ...) {
+
+  .__top_call__. <- TRUE
+
   if (!missing(copy))
     warning("This argument is here only for compatibility with tinner_join() but it does nothing here.")
   # We transform x into a data.table, then restore the result into data.frame
@@ -803,6 +874,9 @@ copy = FALSE, ...) {
 #' @export
 #' @rdname sciviews_functions
 bind_rows_ <- structure(function(..., .id = NULL) {
+
+  .__top_call__. <- TRUE
+
   if (!is.null(.id) && (length(.id) != 1 || !is.character(.id)))
     stop("`.id` must be a scalar string")
   # We transform check the class of first argument to return something similar
@@ -835,6 +909,9 @@ bind_rows_ <- structure(function(..., .id = NULL) {
 #' @rdname sciviews_functions
 count_ <- structure(function(x, ..., wt = NULL, sort = FALSE, name = NULL,
 .drop = dplyr::group_by_drop_default(x), sort_cat = TRUE, decreasing = FALSE) {
+
+  .__top_call__. <- TRUE
+
   # TODO: .drop = FALSE not implemented yet
   if (isFALSE(.drop))
     stop(".drop = FALSE not implemented yet in scount(), use count() instead")
@@ -885,6 +962,9 @@ count_ <- structure(function(x, ..., wt = NULL, sort = FALSE, name = NULL,
 #' @rdname sciviews_functions
 tally_ <- structure(function(x, wt = NULL, sort = FALSE, name = NULL,
 sort_cat = TRUE, decreasing = FALSE) {
+
+  .__top_call__. <- TRUE
+
   # Same as scount(), but without ...; grouping must be done with sgroup_by()
   if (is.null(name))
     name <- "n" # Default value is N in collapse, but n in dplyr
@@ -925,6 +1005,9 @@ sort_cat = TRUE, decreasing = FALSE) {
 #' @rdname sciviews_functions
 add_count_ <- structure(function(x, ..., wt = NULL, sort = FALSE, name = NULL,
   .drop = NULL, sort_cat = TRUE, decreasing = FALSE) {
+
+  .__top_call__. <- TRUE
+
   if (!missing(.drop))
     warning("the .drop= argument is deprecated in (s)add_count()")
   # TODO: this does not work yet -> send an error message
@@ -974,6 +1057,9 @@ add_count_ <- structure(function(x, ..., wt = NULL, sort = FALSE, name = NULL,
 #' @rdname sciviews_functions
 add_tally_ <- structure(function(x, wt = NULL, sort = FALSE, name = NULL,
 sort_cat = TRUE, decreasing = FALSE) {
+
+  .__top_call__. <- TRUE
+
   # TODO: align arguments with dplyr::count, currently, it is .drop = TRUE
   # but must implement .drop = FALSE too (shows 0 for levels that have no cases)
   # TODO: allow pronouns .data and .env
@@ -1019,6 +1105,9 @@ sort_cat = TRUE, decreasing = FALSE) {
 #' @rdname sciviews_functions
 bind_cols_ <- structure(function(...,
 .name_repair = c("unique", "universal", "check_unique", "minimal")) {
+
+  .__top_call__. <- TRUE
+
   # For now, we use same function as tbind_cols() internally, but we convert
   # into the correct data frame object at the end
 
@@ -1039,6 +1128,9 @@ bind_cols_ <- structure(function(...,
 #' @export
 #' @rdname sciviews_functions
 arrange_ <- structure(function(.data, ..., .by_group = FALSE) {
+
+  .__top_call__. <- TRUE
+
   # For now, we use same function as txxx() counterpart... still must rework
   if (inherits(.data, c("tbl_db", "dtplyr_step")))
     stop("You must collect results from a tidy function before using a sciviews one.")
@@ -1074,6 +1166,9 @@ arrange_ <- structure(function(.data, ..., .by_group = FALSE) {
 #' @export
 #' @rdname sciviews_functions
 pull_ <- structure(function(.data, var = -1, name = NULL, ...) {
+
+  .__top_call__. <- TRUE
+
   # For now, we use same function as txxx() counterpart... still must rework
   if (inherits(.data, c("tbl_db", "dtplyr_step")))
     stop("You must collect results from a tidy function before using a sciviews one.")
@@ -1085,6 +1180,9 @@ pull_ <- structure(function(.data, var = -1, name = NULL, ...) {
 #' @export
 #' @rdname sciviews_functions
 distinct_ <- structure(function(.data, ..., .keep_all = FALSE) {
+
+  .__top_call__. <- TRUE
+
   # For now, we use same function as txxx() counterpart... still must rework
   # Can use collapse::funique() by transforming the variables into a vector of
   # names, dropping .data$ and if .env$... is used, add it as .env$... in the
@@ -1126,6 +1224,9 @@ distinct_ <- structure(function(.data, ..., .keep_all = FALSE) {
 #' @export
 #' @rdname sciviews_functions
 drop_na_ <- structure(function(data, ...) {
+
+  .__top_call__. <- TRUE
+
   # For now, we use same function as txxx() counterpart... still must rework
   if (inherits(data, c("tbl_db", "dtplyr_step")))
     stop("You must collect results from a tidy function before using a sciviews one.")
@@ -1151,6 +1252,9 @@ drop_na_ <- structure(function(data, ...) {
 #' @export
 #' @rdname sciviews_functions
 replace_na_ <- structure(function(data, replace, ...) {
+
+  .__top_call__. <- TRUE
+
   # For now, we use same function as txxx() counterpart... still must rework
   if (inherits(data, c("tbl_db", "dtplyr_step")))
     stop("You must collect results from a tidy function before using a sciviews one.")
@@ -1178,6 +1282,9 @@ replace_na_ <- structure(function(data, replace, ...) {
 #' @rdname sciviews_functions
 pivot_longer_ <- structure(function(data, cols, names_to = "name",
 values_to = "value", ...) {
+
+  .__top_call__. <- TRUE
+
   # For now, we use same function as txxx() counterpart... still must rework
   if (inherits(data, c("tbl_db", "dtplyr_step")))
     stop("You must collect results from a tidy function before using a sciviews one.")
@@ -1202,7 +1309,10 @@ value <- NULL
 #' @export
 #' @rdname sciviews_functions
 pivot_wider_ <- structure(function(data, names_from = name,
-  values_from = value, ...) {
+    values_from = value, ...) {
+
+  .__top_call__. <- TRUE
+
   # For now, we use same function as txxx() counterpart... still must rework
   if (inherits(data, c("tbl_db", "dtplyr_step")))
     stop("You must collect results from a tidy function before using a sciviews one.")
@@ -1224,6 +1334,9 @@ pivot_wider_ <- structure(function(data, names_from = name,
 #' @export
 #' @rdname sciviews_functions
 uncount_ <- structure(function(data, weights, .remove = TRUE, .id = NULL) {
+
+  .__top_call__. <- TRUE
+
   # For now, we use same function as txxx() counterpart... still must rework
   if (inherits(data, c("tbl_db", "dtplyr_step")))
     stop("You must collect results from a tidy function before using a sciviews one.")
@@ -1244,7 +1357,10 @@ uncount_ <- structure(function(data, weights, .remove = TRUE, .id = NULL) {
 #' @export
 #' @rdname sciviews_functions
 unite_ <- structure(function(data, col, ..., sep = "_", remove = TRUE,
-na.rm = FALSE) {
+    na.rm = FALSE) {
+
+  .__top_call__. <- TRUE
+
   # For now, we use same function as txxx() counterpart... still must rework
   if (inherits(data, c("tbl_db", "dtplyr_step")))
     stop("You must collect results from a tidy function before using a sciviews one.")
@@ -1265,7 +1381,10 @@ na.rm = FALSE) {
 #' @export
 #' @rdname sciviews_functions
 separate_ <- structure(function(data, col, into, sep = "[^[:alnum:]]+",
-remove = TRUE, convert = FALSE, ...) {
+    remove = TRUE, convert = FALSE, ...) {
+
+  .__top_call__. <- TRUE
+
   # For now, we use same function as txxx() counterpart... still must rework
   if (inherits(data, c("tbl_db", "dtplyr_step")))
     stop("You must collect results from a tidy function before using a sciviews one.")
@@ -1287,7 +1406,10 @@ remove = TRUE, convert = FALSE, ...) {
 #' @export
 #' @rdname sciviews_functions
 separate_rows_ <- structure(function(data, ..., sep = "[^[:alnum:].]+",
-convert = FALSE) {
+    convert = FALSE) {
+
+  .__top_call__. <- TRUE
+
   # For now, we use same function as txxx() counterpart... still must rework
   if (inherits(data, c("tbl_db", "dtplyr_step")))
     stop("You must collect results from a tidy function before using a sciviews one.")
@@ -1308,7 +1430,10 @@ convert = FALSE) {
 #' @export
 #' @rdname sciviews_functions
 fill_ <- structure(function(data, ...,
-.direction = c("down", "up", "downup", "updown")) {
+    .direction = c("down", "up", "downup", "updown")) {
+
+  .__top_call__. <- TRUE
+
   # For now, we use same function as txxx() counterpart... still must rework
   if (inherits(data, c("tbl_db", "dtplyr_step")))
     stop("You must collect results from a tidy function before using a sciviews one.")
@@ -1334,7 +1459,10 @@ fill_ <- structure(function(data, ...,
 #' @export
 #' @rdname sciviews_functions
 extract_ <- structure(function(data, col, into, regex = "([[:alnum:]]+)",
-remove = TRUE, convert = FALSE, ...) {
+    remove = TRUE, convert = FALSE, ...) {
+
+  .__top_call__. <- TRUE
+
   # For now, we use same function as txxx() counterpart... still must rework
   if (inherits(data, c("tbl_db", "dtplyr_step")))
     stop("You must collect results from a tidy function before using a sciviews one.")

@@ -3,6 +3,7 @@
 \name{sciviews_functions}
 \alias{sciviews_functions}
 \alias{list_sciviews_functions}
+\alias{all_of}
 \alias{group_by_}
 \alias{ungroup_}
 \alias{rename_}
@@ -40,6 +41,8 @@
 \usage{
 list_sciviews_functions()
 
+all_of(x)
+
 group_by_(
   .data = (.),
   ...,
@@ -59,7 +62,7 @@ rename_(.data = (.), ...)
 
 rename_with_(.data = (.), .fn, .cols = ~everything(), ...)
 
-filter_(.data = (.), ...)
+filter_(.data = (.), ..., .by = NULL, .preserve = FALSE)
 
 select_(.data = (.), ...)
 
@@ -183,6 +186,8 @@ extract_(
 )
 }
 \arguments{
+\item{x}{A data frame (data.frame, data.table or tibble's tbl_df).}
+
 \item{.data}{A data frame (data.frame, data.table or tibble's tbl_df)}
 
 \item{...}{Arguments dependent to the context of the function and most of
@@ -215,10 +220,13 @@ returned in the object (by default, same value as \verb{sort=}).}
 the moment, only all existing columns, which means \code{.cols = everything()}
 is implemented}
 
+\item{.by}{A list of names of the columns to use for grouping the data.}
+
+\item{.preserve}{When data is grouped, do we preserve grouping or recalculate
+it according to the new data frame obtained?}
+
 \item{.keep}{Which columns to keep. The default is \code{"all"}, possible values
 are \code{"used"}, \code{"unused"}, or \code{"none"} (see \code{\link[=mutate]{mutate()}}).}
-
-\item{.by}{A list of names of the columns to use for grouping the data.}
 
 \item{.groups}{How to treat the grouping variables in the result? Possible
 values are \code{"drop_last"} (default), \code{"drop"} (no grouping variables),
@@ -227,8 +235,6 @@ yet).}
 
 \item{.keep.group_vars}{If \code{TRUE} (by default), the grouping variables are
 kept in the result.}
-
-\item{x}{A data frame (data.frame, data.table or tibble's tbl_df).}
 
 \item{y}{A second data frame.}
 
