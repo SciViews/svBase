@@ -150,7 +150,7 @@ group_by_ <- structure(function(.data = (.), ..., .add = FALSE, .drop = TRUE,
   # .drop = FALSE not implemented yet (should be possible, because converting
   # a grouped_df object into GRP gives the correct groups)
   if (!isTRUE(.drop))
-    stop("{.code .drop = FALSE} is not implemented yet in {.fun group_by_()}, sorry.",
+    stop("{.code .drop = FALSE} is not implemented yet in {.fun group_by_}, sorry.",
       i = "Use {.code group_by(..., .drop = FALSE)} instead for now.")
 
   # Treat data.trames as data.tables
@@ -503,8 +503,7 @@ filter_ <- structure(function(.data = (.), ..., .by = NULL, .preserve = FALSE) {
     return(eval_data_dot(sys.call(), arg = '.data', abort_msg =
         gettext("`.data` must be a `data.frame`.")))
 
-  # Case missing(...)
-  # Just return the data frame
+  # Case missing(...), just return the data frame
   if (missing(...))
     return(.data)
 
@@ -539,30 +538,54 @@ filter_ <- structure(function(.data = (.), ..., .by = NULL, .preserve = FALSE) {
     # data.table in .data!
     #let_data.table_to_data.trame(.data)
     # TODO: a formula-select "lite" here
-    .data <- group_by_vars(.data, by = .by, sort = FALSE)
+    res <- group_by_vars(.data, by = .by, sort = FALSE)
     #let_data.trame_to_data.table(.data)
     new_gvars <- character(0) # Don't keep these groups
   } else {
-    .data <- .data
+    res <- .data
   }
 
   # No input can be named
   dots_names <- names(args$dots)
   if (!is.null(dots_names)) {
-    first_named <- whichv(dots_names, "", invert = TRUE)
-    first_name <- dots_names[first_named]
-    first_value <- expr_deparse(args$dots[[first_named]])
-    stop("We detected a named input.",
-      i = "This usually means that you've used {.code =} instead of {.code ==}.",
-      "Did you mean {.code {paste(first_name, first_value, sep = " = ")}}?")
+    named <- whichv(dots_names, "", invert = TRUE)
+    if (length(named)) {
+      first_named <- named[1]
+      first_name <- dots_names[first_named]
+      first_expr <- expr_deparse(sys.call()[[first_name]])
+      if (first_expr == "NULL") {# Probably using formula like name ~ expr
+        stop("We detected a named input.",
+          i = "Did you used formula like {.code name ~ expr}?",
+          i = "You must filter with formula having only right member, like {.code ~expr}.")
+      } else {# Same error message as dplyr
+        msg_expr <- paste(first_name, first_expr, sep = " == ")
+        stop("We detected a named input.",
+          i = "This usually means that you've used {.code =} instead of {.code ==}.",
+          i = "Did you mean {.code {msg_expr}}?")
+      }
+    }
   }
 
-  res <- .data
   filters <- args$dots
-  # fsubset() can use only one subset argument at a time. So, we run it
+  # fsubset() or ss() can use only one subset argument at a time. So, we run it
   # multiple times on each argument to filter_() to mimic filter()
-  for (i in 1:...length())
-    .data <- ss(res, eval(filters[[i]], envir = args$env))
+  if (args$are_formulas) {# NSE argument, must us fsubset()
+    # fsubset() does not support groups, so, we need to do the job ourselves
+    # TODO: implement it!
+    if (is_grouped)
+      stop("Filtering with grouped data frames is not implemented yet with {.fun filter_}.",
+        i = "Use {.fun filter} with {.fun group_by} instead.")
+    for (i in 1:...length())
+      res <- do.call(fsubset, list(.x = res, filters[[i]]), envir = args$env)
+  } else {# SE arguments, ss() is faster
+    filter <- filters[[1L]]
+    lfilters <- length(filters)
+    if (lfilters > 1L) {
+      for (i in 2:lfilters)
+        filter <- filter & filters[[i]]
+    }
+    res <- ss(res, filter)
+  }
   #if (to_dtrm)
   #  let_data.table_to_data.trame(res)
   res
@@ -751,8 +774,8 @@ reframe_ <- structure(function(.data, ..., .by = NULL, .groups = "drop",
 
   # Call summarise_(.groups = "drop")
   if (.groups != "drop")
-    stop("{.fun reframe_()} only accepts {.code .groups = \"drop\"}.",
-      i = "Use {.fun summarise_()} instead.")
+    stop("{.fun reframe_} only accepts {.code .groups = \"drop\"}.",
+      i = "Use {.fun summarise_} instead.")
 
   call <- sys.call()
   call[[1]] <- as.symbol('summarise_') # Use summarise_() instead
