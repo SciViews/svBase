@@ -113,7 +113,15 @@ speedy and SciViews functions in the same pipeline.</p>
 <span></span>
 <span><span class="fu">select_</span><span class="op">(</span>.data <span class="op">=</span> <span class="op">(</span><span class="va">.</span><span class="op">)</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">mutate_</span><span class="op">(</span><span class="va">.data</span>, <span class="va">...</span>, .keep <span class="op">=</span> <span class="st">"all"</span><span class="op">)</span></span>
+<span><span class="fu">mutate_</span><span class="op">(</span></span>
+<span>  .data <span class="op">=</span> <span class="op">(</span><span class="va">.</span><span class="op">)</span>,</span>
+<span>  <span class="va">...</span>,</span>
+<span>  .by <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  .keep <span class="op">=</span> <span class="st">"all"</span>,</span>
+<span>  .before <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  .after <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  .cols <span class="op">=</span> <span class="cn">NULL</span></span>
+<span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">transmute_</span><span class="op">(</span><span class="va">.data</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
@@ -309,6 +317,14 @@ it according to the new data frame obtained?</p></dd>
 <dt id="arg--keep">.keep<a class="anchor" aria-label="anchor" href="#arg--keep"></a></dt>
 <dd><p>Which columns to keep. The default is <code>"all"</code>, possible values
 are <code>"used"</code>, <code>"unused"</code>, or <code>"none"</code> (see <code><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate()</a></code>).</p></dd>
+
+
+<dt id="arg--before">.before<a class="anchor" aria-label="anchor" href="#arg--before"></a></dt>
+<dd><p>Place new columns before this one.</p></dd>
+
+
+<dt id="arg--after">.after<a class="anchor" aria-label="anchor" href="#arg--after"></a></dt>
+<dd><p>Place new columns after this one.</p></dd>
 
 
 <dt id="arg--groups">.groups<a class="anchor" aria-label="anchor" href="#arg--groups"></a></dt>
