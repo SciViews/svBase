@@ -60,6 +60,8 @@
 #' @param var A variable specified as a name, a positive or a negative integer
 #'   (counting from the end). The default is `-1` and returns last variable.
 #' @param .keep_all If `TRUE` keep all variables in `.data`.
+#' @param .before Place new columns before this one.
+#' @param .after Place new columns after this one.
 #' @param data A data frame, or for `replace_na()` a vector or a data frame.
 #' @param replace If `data` is a vector, a unique value to replace `NA`s,
 #' otherwise, a list of values, one per column of the data frame.
@@ -642,14 +644,73 @@ select_ <- structure(function(.data = (.), ...) {
 
 #' @export
 #' @rdname sciviews_functions
-mutate_ <- structure(function(.data, ..., .keep = "all") {
+mutate_ <- structure(function(.data = (.), ..., .by = NULL,
+    .keep = "all", .before = NULL, .after = NULL, .cols = NULL) {
 
   .__top_call__. <- TRUE
 
-  fmutate(.data, ..., .keep = .keep)
+  # Implicit data-dot mechanism
+  if (missing(.data) || !is.data.frame(.data))
+    return(eval_data_dot(sys.call(), arg = '.data', abort_msg =
+        gettext("`.data` must be a `data.frame`.")))
+
+  if (!is.character(.keep))
+    stop("{.arg .keep} must be a string or character vector.")
+  if (length(.keep) != 1L)
+    stop("{.arg .keep} must be a single string, not a vector of length {.val {length(.keep)}}.")
+  .keep <- .keep
+  if (fmatch(.keep, c("all", "used", "unused", "none"), 0L) == 0L)
+    stop("{.arg .keep} must be one of \"all\", \"used\", \"unused\", or \"none\", not \"{(.keep)}\".")
+
+  is_grouped <- is_grouped_df(.data)
+
+  # Case missing(...), just return the original data frame
+  if (missing(...))
+    return(.data)
+
+  # Treat data.trames as data.tables (not needed here?)
+  #to_dtrm <- is.data.trame(.data)
+  #if (to_dtrm) {
+  #  let_data.trame_to_data.table(.data)
+  #  on.exit(let_data.table_to_data.trame(.data))
+  #}
+
+  # Process dots with formula-masking
+  no_se_msg <- gettext(
+    "Standard evaluation is not supported for grouped data frames.")
+  args <- formula_masking(..., .make.names = TRUE, .no.se = is_grouped,
+    .no.se.msg = no_se_msg)
+
+  # If .by is defined, use these groups, but do not keep them
+  if (!missing(.by)) {
+    if (is_grouped)
+      stop("can't supply {.arg .by} when {.arg .data} is a grouped data frame.")
+    if (!args$are_formulas)
+      abort(no_se_msg)
+    # Here, we need to take care of the object class, or we end up with a
+    # data.table in .data!
+    #let_data.table_to_data.trame(.data)
+    res <- group_by_vars(.data, by = .by, sort = FALSE)
+    #let_data.trame_to_data.table(.data)
+  } else {
+    res <- .data
+  }
+
+  res <- do.call(fmutate, c(list(.data = res), args$dots,
+    list(.keep = force(.keep), .cols = force(.cols))), envir = args$env)
+  if (!missing(.by))
+    res <- fungroup(res)
+  if (!missing(.before) || !missing(.after)) {# Reorder the columns
+    # TODO: not implemented yet
+    stop("{.arg .before} and {.arg .after} are not implemented yet in {.fun mutate_}.",
+      i = "Use {.fun mutate} instead.")
+    #res_names <- names(res)
+    #data_names <- names(.data)
+  }
+  #if (to_dtrm)
+  #  let_data.table_to_data.trame(res)
+    res
 },
-# TODO: Arguments .by, .before= and .after= not supported yet, but to be
-# implemented
   class = c("function", "sciviews_fn"),
   comment = .src_sciviews("collapse::fmutate"))
 
@@ -659,7 +720,7 @@ transmute_ <- structure(function(.data, ...) {
 
   .__top_call__. <- TRUE
 
-  fmutate(.data, ...)[, ...names()]
+  do.call(mutate_, list(.data, ..., .keep = "none"), envir = parent.frame())
 }, class = c("function", "sciviews_fn"),
   comment = .src_sciviews("dplyr::transmute"))
 

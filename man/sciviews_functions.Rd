@@ -66,7 +66,15 @@ filter_(.data = (.), ..., .by = NULL, .preserve = FALSE)
 
 select_(.data = (.), ...)
 
-mutate_(.data, ..., .keep = "all")
+mutate_(
+  .data = (.),
+  ...,
+  .by = NULL,
+  .keep = "all",
+  .before = NULL,
+  .after = NULL,
+  .cols = NULL
+)
 
 transmute_(.data, ...)
 
@@ -227,6 +235,10 @@ it according to the new data frame obtained?}
 
 \item{.keep}{Which columns to keep. The default is \code{"all"}, possible values
 are \code{"used"}, \code{"unused"}, or \code{"none"} (see \code{\link[=mutate]{mutate()}}).}
+
+\item{.before}{Place new columns before this one.}
+
+\item{.after}{Place new columns after this one.}
 
 \item{.groups}{How to treat the grouping variables in the result? Possible
 values are \code{"drop_last"} (default), \code{"drop"} (no grouping variables),
