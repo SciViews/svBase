@@ -1,5 +1,5 @@
 ---
-title: "Base Objects like Data Frames for 'SciViews::R'"
+title: "'SciViews::R' - Base Objects like Data Frames"
 author: "Philippe Grosjean"
 date: "`r Sys.Date()`"
 output:
@@ -8,7 +8,7 @@ output:
     toc_depth: 3
     fig_caption: yes
 vignette: >
-  %\VignetteIndexEntry{Base Objects like Data Frames for 'SciViews::R'}
+  %\VignetteIndexEntry{'SciViews::R' - Base Objects like Data Frames}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

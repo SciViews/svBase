@@ -642,6 +642,7 @@ select_ <- structure(function(.data = (.), ...) {
 }, class = c("function", "sciviews_fn"),
   comment = .src_sciviews("collapse::fselect"))
 
+# TODO: .before and .after
 #' @export
 #' @rdname sciviews_functions
 mutate_ <- structure(function(.data = (.), ..., .by = NULL,

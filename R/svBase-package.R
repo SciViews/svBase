@@ -16,6 +16,8 @@
 #' `getOption("SciViews.as_dtx", default = as_dtt)` to specify which function to
 #' use to convert into the preferred format.
 
+# The following block is used by usethis to automatically manage
+# roxygen namespace tags. Modify with care!
 ## usethis namespace: start
 #' @importFrom data.table as.data.table haskey key rbindlist setattr setDT setkeyv
 #' @importFrom data.trame as.data.trame data.trame is.data.trame let_data.trame_to_data.table let_data.table_to_data.trame
