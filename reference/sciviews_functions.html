@@ -90,11 +90,27 @@ speedy and SciViews functions in the same pipeline.</p>
 <span></span>
 <span><span class="fu">all_of</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
 <span></span>
+<span><span class="fu">group_vars_</span><span class="op">(</span>.data <span class="op">=</span> <span class="op">(</span><span class="va">.</span><span class="op">)</span>, return <span class="op">=</span> <span class="st">"names"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">group_rows_</span><span class="op">(</span>.data <span class="op">=</span> <span class="op">(</span><span class="va">.</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">group_data_</span><span class="op">(</span>.data <span class="op">=</span> <span class="op">(</span><span class="va">.</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">group_indices_</span><span class="op">(</span>.data <span class="op">=</span> <span class="op">(</span><span class="va">.</span><span class="op">)</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">group_keys_</span><span class="op">(</span>.data <span class="op">=</span> <span class="op">(</span><span class="va">.</span><span class="op">)</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">groups_</span><span class="op">(</span>.data <span class="op">=</span> <span class="op">(</span><span class="va">.</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">group_size_</span><span class="op">(</span>.data <span class="op">=</span> <span class="op">(</span><span class="va">.</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">n_groups_</span><span class="op">(</span>.data <span class="op">=</span> <span class="op">(</span><span class="va">.</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
 <span><span class="fu">group_by_</span><span class="op">(</span></span>
 <span>  .data <span class="op">=</span> <span class="op">(</span><span class="va">.</span><span class="op">)</span>,</span>
 <span>  <span class="va">...</span>,</span>
 <span>  .add <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  .drop <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  .drop <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  .sort <span class="op">=</span> <span class="fu"><a href="https://sebkrantz.github.io/collapse/reference/collapse-options.html" class="external-link">get_collapse</a></span><span class="op">(</span><span class="st">"sort"</span><span class="op">)</span>,</span>
 <span>  .decreasing <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  .na.last <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -251,6 +267,15 @@ speedy and SciViews functions in the same pipeline.</p>
 
 <dt id="arg--data">.data<a class="anchor" aria-label="anchor" href="#arg--data"></a></dt>
 <dd><p>A data frame (data.frame, data.table or tibble's tbl_df)</p></dd>
+
+
+<dt id="arg-return">return<a class="anchor" aria-label="anchor" href="#arg-return"></a></dt>
+<dd><p>What to return: <code>"data"</code> or <code>1</code>, <code>"unique"</code> or <code>2</code> for unique
+rows of grouping columns, <code>"names"</code> or <code>3</code> (default) for names of grouping
+columns, <code>"indices"</code> or <code>4</code> for integer indices of grouping columns,
+<code>"named_indices"</code> or <code>5</code> for named indices, <code>"logicial"</code> or <code>6</code> for logical
+selection vector of grouping columns, or <code>"named_logical"</code> or <code>7</code> for named
+logical.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
