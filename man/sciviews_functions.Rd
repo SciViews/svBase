@@ -4,6 +4,14 @@
 \alias{sciviews_functions}
 \alias{list_sciviews_functions}
 \alias{all_of}
+\alias{group_vars_}
+\alias{group_rows_}
+\alias{group_data_}
+\alias{group_indices_}
+\alias{group_keys_}
+\alias{groups_}
+\alias{group_size_}
+\alias{n_groups_}
 \alias{group_by_}
 \alias{ungroup_}
 \alias{rename_}
@@ -43,11 +51,27 @@ list_sciviews_functions()
 
 all_of(x)
 
+group_vars_(.data = (.), return = "names")
+
+group_rows_(.data = (.))
+
+group_data_(.data = (.))
+
+group_indices_(.data = (.), ...)
+
+group_keys_(.data = (.), ...)
+
+groups_(.data = (.))
+
+group_size_(.data = (.))
+
+n_groups_(.data = (.))
+
 group_by_(
   .data = (.),
   ...,
   .add = FALSE,
-  .drop = TRUE,
+  .drop = NULL,
   .sort = get_collapse("sort"),
   .decreasing = FALSE,
   .na.last = TRUE,
@@ -197,6 +221,13 @@ extract_(
 \item{x}{A data frame (data.frame, data.table or tibble's tbl_df).}
 
 \item{.data}{A data frame (data.frame, data.table or tibble's tbl_df)}
+
+\item{return}{What to return: \code{"data"} or \code{1}, \code{"unique"} or \code{2} for unique
+rows of grouping columns, \code{"names"} or \code{3} (default) for names of grouping
+columns, \code{"indices"} or \code{4} for integer indices of grouping columns,
+\code{"named_indices"} or \code{5} for named indices, \code{"logicial"} or \code{6} for logical
+selection vector of grouping columns, or \code{"named_logical"} or \code{7} for named
+logical.}
 
 \item{...}{Arguments dependent to the context of the function and most of
 the time, not evaluated in a standard way (cf. the tidyverse approach).}

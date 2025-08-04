@@ -26,7 +26,7 @@
 #' @importFrom svMisc assign_temp eval_data_dot expr_funs stop_ stop_top_call warning_
 #' @importFrom dplyr across add_count add_tally arrange bind_cols collect count distinct filter full_join group_by inner_join is_grouped_df left_join mutate pull rename rename_with right_join select summarise tally transmute ungroup
 #' @importFrom tidyr drop_na extract fill pivot_longer pivot_wider replace_na separate separate_rows uncount unite
-#' @importFrom collapse allNA anyv ckmatch fcount fnobs fmatch fselect fsummarise fmutate frename fsubset fgroup_vars fungroup get_collapse group_by_vars replace_NA setv ss fgroup_by whichv
+#' @importFrom collapse add_vars allNA anyv ckmatch fcount fnobs fmatch fselect fsummarise fmutate frename fsubset fgroup_vars fungroup get_collapse get_vars group_by_vars GRP GRPid GRPN gsplit replace_NA setv ss fgroup_by whichv
 #' @importFrom rlang abort call2 caller_env check_dots_empty env_name eval_bare expr expr_deparse f_env f_name f_lhs f_rhs inject is_formula warn
 # @importFrom pillar tbl_sum
 #' @import zeallot

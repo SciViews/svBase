@@ -134,11 +134,189 @@ list_sciviews_functions <- function() {
 #' @rdname sciviews_functions
 all_of <- function(x) x
 
-# TODO: default .drop as in dplytr::group_by()
-# TODO: what are those "computations" that one can give to group_by()? See doc
 #' @export
 #' @rdname sciviews_functions
-group_by_ <- structure(function(.data = (.), ..., .add = FALSE, .drop = TRUE,
+#' @param return What to return: `"data"` or `1`, `"unique"` or `2` for unique
+#'   rows of grouping columns, `"names"` or `3` (default) for names of grouping
+#'   columns, `"indices"` or `4` for integer indices of grouping columns,
+#'   `"named_indices"` or `5` for named indices, `"logicial"` or `6` for logical
+#'   selection vector of grouping columns, or `"named_logical"` or `7` for named
+#'   logical.
+group_vars_ <- function(.data = (.), return = "names") {
+
+  .__top_call__. <- TRUE
+
+  # Implicit data-dot mechanism
+  if (missing(.data) || !is.data.frame(.data))
+    return(eval_data_dot(sys.call(), arg = '.data', abort_msg =
+        gettext("`.data` must be a `data.frame`.")))
+
+  if (!is_grouped_df(.data)) {
+    switch(as.character(return),
+      "1" =,
+      "data" = .data[0L, 0L],
+      "2" =,
+      "unique" = unique(.data),
+      "3" =,
+      "names" = character(0),
+      "4" =,
+      "indices" =,
+      "5" =,
+      "named_indices" = integer(0),
+      "6" =,
+      "logical" =,
+      "7" =,
+      "named_logical" = logical(0),
+      stop("Unknown {.arg return} value."))
+  } else {
+    fgroup_vars(.data, return = return)
+  }
+}
+
+#' @export
+#' @rdname sciviews_functions
+group_rows_ <- function(.data = (.)) {
+  .__top_call__. <- TRUE
+
+  # Implicit data-dot mechanism
+  if (missing(.data))
+    return(eval_data_dot(sys.call(), arg = '.data', abort_msg =
+        gettext("`.data` must be a `data.frame`.")))
+
+  if (!is_grouped_df(.data)) {
+    list(seq_len(nrow(.data)))
+  } else {
+    # Unfortunately, gsplit() skips empty groups, so the hack!
+    res <- gsplit(seq_len(nrow(.data)), GRPid(.data), use.g.names = TRUE)
+    ngroups <- length(GRPN(.data, expand = FALSE))
+    nms <- as.character(1:ngroups)
+    res <- res[nms]
+    res <- lapply(res, function(x) if (is.null(x)) integer(0) else x)
+    names(res) <- NULL
+    res
+  }
+}
+
+#' @export
+#' @rdname sciviews_functions
+group_data_ <- function(.data = (.)) {
+  .__top_call__. <- TRUE
+
+  # Implicit data-dot mechanism
+  if (missing(.data))
+    return(eval_data_dot(sys.call(), arg = '.data', abort_msg =
+      gettext("`.data` must be a `data.frame`.")))
+
+  if (!is_grouped_df(.data)) {
+    res <- .data[1L, 1L]
+    names(res) <- ".rows"
+    res$.rows <- list(seq_len(nrow(.data)))
+    res
+  } else {
+    res <- fgroup_vars(.data, return = "unique")
+    res$.rows <- group_rows_(.data)
+    res
+  }
+}
+
+#' @export
+#' @rdname sciviews_functions
+group_indices_ <- function(.data = (.), ...) {
+  .__top_call__. <- TRUE
+
+  # Implicit data-dot mechanism
+  if (missing(.data))
+    return(eval_data_dot(sys.call(), arg = '.data', abort_msg =
+        gettext("`.data` must be a `data.frame`.")))
+
+  if (!missing(...))
+    check_dots_empty()
+
+  if (!is_grouped_df(.data)) {
+    rep_len(1, nrow(.data))
+  } else {
+    GRPid(.data)
+  }
+}
+
+#' @export
+#' @rdname sciviews_functions
+group_keys_ <- function(.data = (.), ...) {
+  .__top_call__. <- TRUE
+
+  # Implicit data-dot mechanism
+  if (missing(.data))
+    return(eval_data_dot(sys.call(), arg = '.data', abort_msg =
+        gettext("`.data` must be a `data.frame`.")))
+
+  if (!missing(...))
+    check_dots_empty()
+
+  if (!is_grouped_df(.data)) {
+    .data[1L, 0L]
+  } else {
+    fgroup_vars(.data, return = "unique")
+  }
+}
+
+#' @export
+#' @rdname sciviews_functions
+groups_ <- function(.data = (.)) {
+  .__top_call__. <- TRUE
+
+  # Implicit data-dot mechanism
+  if (missing(.data))
+    return(eval_data_dot(sys.call(), arg = '.data', abort_msg =
+        gettext("`.data` must be a `data.frame`.")))
+
+  if (!is_grouped_df(.data)) {
+    list()
+  } else {
+    lapply(as.list(fgroup_vars(.data, return = "names")), as.symbol)
+  }
+}
+
+#' @export
+#' @rdname sciviews_functions
+group_size_ <- function(.data = (.)) {
+  .__top_call__. <- TRUE
+
+  # Implicit data-dot mechanism
+  if (missing(.data))
+    return(eval_data_dot(sys.call(), arg = '.data', abort_msg =
+        gettext("`.data` must be a `data.frame`.")))
+
+  if (!is_grouped_df(.data)) {
+    nrow(.data)
+  } else {
+    GRPN(.data, expand = FALSE)
+  }
+}
+
+#' @export
+#' @rdname sciviews_functions
+n_groups_ <- function(.data = (.)) {
+  .__top_call__. <- TRUE
+
+  # Implicit data-dot mechanism
+  if (missing(.data))
+    return(eval_data_dot(sys.call(), arg = '.data', abort_msg =
+        gettext("`.data` must be a `data.frame`.")))
+
+  if (!is_grouped_df(.data)) {
+    1L
+  } else {
+    length(GRPN(.data, expand = FALSE))
+  }
+}
+
+# TODO: default .drop as in dplytr::group_by()
+# TODO: what are those "computations" that one can give to group_by()? See doc
+# TODO: also compute the grouping variables in the data frame itself, like
+# group_by does (+ an argument to do so or not)
+#' @export
+#' @rdname sciviews_functions
+group_by_ <- structure(function(.data = (.), ..., .add = FALSE, .drop = NULL,
     .sort = get_collapse("sort"), .decreasing = FALSE, .na.last = TRUE,
     .return.groups = TRUE, .return.order = .sort, .method = "auto") {
 
@@ -149,11 +327,16 @@ group_by_ <- structure(function(.data = (.), ..., .add = FALSE, .drop = TRUE,
     return(eval_data_dot(sys.call(), arg = '.data', abort_msg =
       gettext("`.data` must be a `data.frame`.")))
 
-  # .drop = FALSE not implemented yet (should be possible, because converting
-  # a grouped_df object into GRP gives the correct groups)
-  if (!isTRUE(.drop))
-    stop("{.code .drop = FALSE} is not implemented yet in {.fun group_by_}, sorry.",
-      i = "Use {.code group_by(..., .drop = FALSE)} instead for now.")
+  # If no grouping variables provided
+  if (missing(...)) {
+    if (isTRUE(.add)) {# Return unmodified .data
+      return(.data)
+    } else {# Return an ungrouped data frame
+      #let_data.trame_to_data.table(.data)
+      #on.exit(let_data.table_to_data.trame(.data))
+      return(fungroup(.data))
+    }
+  }
 
   # Treat data.trames as data.tables
   to_dtrm <- is.data.trame(.data)
@@ -162,26 +345,101 @@ group_by_ <- structure(function(.data = (.), ..., .add = FALSE, .drop = TRUE,
     on.exit(let_data.table_to_data.trame(.data))
   }
 
-  # If no grouping variables provided
-  if (missing(...)) {
-    if (isTRUE(.add)) {# Return unmodified .data
-      return(.data)
-    } else {# Return an ungrouped data frame
-      return(fungroup(.data))
+  args <- formula_select(..., .fast.allowed.funs = "")
+
+  # Default value for .drop is TRUE, unless previously grouped using FALSE
+  if (missing(.drop)) {
+    if (is_grouped_df(.data)) {
+      .drop <- attr(.data, "groups") |> attr(".drop")
+      if (is.null(.drop))
+        .drop <- TRUE
+    } else {
+      .drop <- TRUE
     }
   }
 
-  # If a formula, get vars from it
-  args <- formula_masking(...)
+  # There are cases not handled (yet) by collapse::fgroup_by(). So, we use
+  # dplyr::group_by() and convert the corresponding object into a GRP_df,
+  # also reconverting the tibble into data.frame, data.table, or data.trame...
+  # Not very efficient, but the only solution I fould to support those cases.
 
-  if (args$are_formulas) {
-    # TODO: implement .add = TRUE (-> add a formula in args$dots with current vars?)
+  # *  .drop = FALSE not implemented yet in fgroup_by() (should be possible,
+  #    because converting a grouped_df object into GRP gives the correct groups)
+  #    For now, we just use dplyr::group_by() and do the conversion...
+  # *  .add = TRUE is also not implemented yet in fgroup_by(), but we have a
+  #    solution for group_by_vars() when not using formulas.
+  # *  expressions are handled differently by group_by() and fgroup_by(), so,
+  #    for any expression found, we automatically switch to group_by().
+  if ((isTRUE(.add) && args$are_formulas) || !isTRUE(.drop) || !args$fastselect) {
+    # group_by() cannot handle .sort = FALSE, decreasing = TRUE or
+    # .na.last = FALSE
+    if (isFALSE(.sort) || isTRUE(.decreasing) || isFALSE(.na.last))
+      stop("Using {.fun dplyr::group_by_} but it only sorts increasing  with {.code NA} last.",
+        i = "So, keep defaults for {.arg .sort}, {.arg .decreasing} and {.arg .na.last}.")
+
+    # Call group_by() and convert the grouped_df object into a GRP_df object
+    .__dplyr_error_call__. <- environment() # For correct display of the error
+    # Since dplyr::group_by() does not accept character names,
+    # we have to transform them into symbols
+    args$dots <- lapply(args$dots, function(x) {
+      if (is.character(x)) {
+        as.symbol(x)
+      } else {
+        x
+      }
+    })
+    # If we have data already grouped with collapse::fgroup_by(),
+    # dplyr::group_by() issues an error, so, we must ungroup it first
+    if (inherits(.data, 'GRP_df')) {
+      # If we have .add = TRUE; we must handle existing grouping variable too
+      if (isTRUE(.add)) {
+        gvars <- as.list(fgroup_vars(.data, return = "names"))
+        gvars <- lapply(gvars, as.symbol)
+        args$dots <- unique(c(gvars, args$dots))
+      }
+      res0 <- fungroup(.data)
+    } else {
+      res0 <- .data
+    }
+    res0 <- do.call(group_by, c(args$dots, list(.data = res0,
+      .add = force(.add), .drop = force(.drop))))
+    groups <- GRP(res0)
+    # We also keep .drop = FALSE attribute
+    if (!isTRUE(.drop))
+      attr(groups, '.drop') <- FALSE
+    res <- .data
+    # Add computed group variables into res
+    names_newg <- setdiff(names(res0), names(res))
+    if (length(names_newg))
+      res <- add_vars(res, res0[names_newg])
+    attr(res, "groups") <- groups
+    # Change the class the same way fgroup_by() does
+    class_res <- class(.data)
+    class_res <- class_res[!class_res %in% c("grouped_df", "data.frame")]
+    class(res) <- c("GRP_df", class_res, "grouped_df", "data.frame")
+    if (to_dtrm)
+      let_data.table_to_data.trame(res)
+    return(res)
+  }
+
+  # For all other cases, we can use the faster collapse functions
+  if (args$are_formulas) {# Use collapse::fgroup_by()
     res <- do.call(fgroup_by, c(args$dots, list(.X = .data, sort = force(.sort),
       decreasing = force(.decreasing), na.last = force(.na.last),
       return.groups = force(.return.groups),
       return.order = force(.return.order), method = force(.method))))
-  } else {# Use groups_by_vars instead
-    gvars <- unlist(args$dots)
+    # Note: should a problem emerge again with wrong interpretation of formulas
+    # We could use this check to detect it:
+    ## Check if we are in the case ~c(var1, var2), while we meant ~var1, ~var2
+    #ngroups <- length(fgroup_vars(res, return = "names"))
+    #largs <- ...length()
+    #if (largs != ngroups)
+    #  stop("Incorrect grouping formula (you got {.val {ngroups}} groups instead of {.val {largs}}).",
+    #    i = "You cannot use {.code ~var1:var2} in {.fun group_by_}.",
+    #    i = "and you must use {.code ~var1, ~var2, ...} instead of {.code ~c(var1, var2, ...)}.")
+
+  } else {# Use collapse::groups_by_vars() instead
+    gvars <- unlist(args$dots) # Also allows c('var1', 'var2', ...) not in dplyr
     if (isTRUE(.add) && is_grouped_df(.data))
       gvars <- unique(c(fgroup_vars(.data, return = "names"), gvars))
     res <- group_by_vars(.data, by = gvars, sort = .sort,
@@ -195,64 +453,6 @@ group_by_ <- structure(function(.data = (.), ..., .add = FALSE, .drop = TRUE,
   res
 }, class = c("function", "sciviews_fn"),
   comment = .src_sciviews("collapse::fgroup_by"))
-
-# An older implementation...
-# group_by_ <- structure(function(.data = (.), ..., .add = FALSE, .drop = TRUE,
-#   sort = get_collapse("sort"), decreasing = FALSE, na.last = TRUE,
-#   return.groups = TRUE, return.order = sort, method = "auto") {
-#
-#   # Implicit data-dot mechanism
-#   if (missing(.data) || !is.data.frame(.data))
-#     return(eval_data_dot(sys.call(), arg = '.data', abort_msg =
-#         gettext("`.data` must be a `data.frame`.")))
-#
-#   # .drop = FALSE not implemented yet (should be possible, because converting
-#   # a grouped_df object into GRP gives the correct groups)
-#   if (!isTRUE(.drop))
-#     abort(c("`.drop = FALSE` is not implemented yet in `group_by_()`, sorry.",
-#       i = "Use `group_by(..., .drop = FALSE)` instead for now."))
-#
-#   # Treat data.trames as data.tables
-#   to_dtrm <- is.data.trame(.data)
-#   if (to_dtrm) {
-#     let_data.trame_to_data.table(.data)
-#     on.exit(let_data.table_to_data.trame(.data))
-#   }
-#
-#   # If a formula, get vars from it
-#   if (is_formula(..1)) {
-#     if (...length() > 1L)
-#       abort("If you provide a formula, there can be only one item in ...")
-#     if (!is_formula(..1, lhs = FALSE)) # Check for lhs absence
-#       abort("The formula cannot have a lhs (must be like `~var1 + var2 + ...`)")
-#     # Get the variable names from the formula
-#     gvars <- all.vars(..1)
-#     # Check that the formula is correct (something like `~var1 + var2`)
-#     gnames <- all.names(..1)
-#     # gnames should only contain '~' and '+' in addition to names
-#     allowed <- c(gvars, '~', '+')
-#     ckmatch(gnames, allowed,
-#       "Incorrect formula operator(s) in `group_by_()` (must be like `~var1 + var2`):")
-#
-#   } else {# Not a formula
-#     gvars <- c(...)
-#     if (!is.character(gvars))
-#       abort("You must provide the names (character) of the grouping variables to `group_by_()`.")
-#   }
-#
-#   if (isTRUE(.add) && is_grouped_df(.data))
-#     gvars <- unique(c(fgroup_vars(.data, return = "names"), gvars))
-#
-#   res <- group_by_vars(.data, by = gvars, sort = sort, decreasing = decreasing,
-#     na.last = na.last, return.groups = return.groups,
-#     return.order = return.order, method = method)
-#   if (to_dtrm)
-#     let_data.table_to_data.trame(res)
-#   res
-# }, class = c("function", "sciviews_fn"),
-#   comment = .src_sciviews("collapse::fgroup_by"))
-
-
 
 # Note: only standard evaluation for ... for now
 # Note: in dplyr, it is ungroup(x, ...), but changed x here to .data
@@ -277,9 +477,21 @@ ungroup_ <- structure(function(.data = (.), ..., .na.last = TRUE,
 
   if (...length()) {# Ungroup only certain data
     un_gvars <- c(...)
+    if (!is.character(un_gvars)) {
+      # Try to convert only formulas like ~name into character
+      un_gvars <- sapply(un_gvars, function(x) {
+        if (is_formula(x)) {
+          x <- f_rhs(x)
+          if (is.symbol(x))
+            as.character(x)
+        } else {# Something else, should not happen, so place something wrong
+          quote(incorrect_item)
+        }
+      })
+    }
     if (!is.character(un_gvars))
-      stop("incorrect names of the grouping variables.",
-        i = "provide the names as {.cls character} vectors like {.code \"name\"}.")
+      stop("Incorrect names of the ungrouping variables.",
+        i = "Use either {.code ~name} or {.code 'name'} (and don't mix both forms).")
 
     # Provided variables must be in the dataset
     non_exist <- setdiff(un_gvars, names(.data))
@@ -288,7 +500,7 @@ ungroup_ <- structure(function(.data = (.), ..., .na.last = TRUE,
         x = "Column {.code {non_exist[1]}} doesn't exist.")
     }
 
-    # Consider only variables that are actuelly in the grouping
+    # Consider only variables that are actually in the grouping
     gvars <- setdiff(fgroup_vars(.data, return = "names"), un_gvars)
     # If there remain grouping variables, we keep them
     if (length(gvars)) {
@@ -308,7 +520,7 @@ ungroup_ <- structure(function(.data = (.), ..., .na.last = TRUE,
           let_data.table_to_data.trame(res)
         return(res)
 
-      } else {# A grouped_df object of dplyr
+      } else {# A dplyr grouped_df object... for now, don't change it to GRP_df
         drop <- attr(.data, "groups") |> attr(".drop")
         if (is.null(drop)) drop <- TRUE
         res <- group_by(.data, gvars, .drop = drop)
@@ -319,7 +531,7 @@ ungroup_ <- structure(function(.data = (.), ..., .na.last = TRUE,
     }
   }
 
-  # No grouping variables left, so we ungroup
+  # No grouping variables left, so we just ungroup
   res <- fungroup(.data)
   if (to_dtrm)
     let_data.table_to_data.trame(res)
@@ -631,9 +843,13 @@ select_ <- structure(function(.data = (.), ...) {
     names(res) <- names(loc)
 
   } else {# fastselect with collapse
-    # Other return modes not supported (yet)
-    res <- do.call(fselect, c(list(.x = .data, return = "data"), args$dots),
-      envir = args$env)
+    if (args$are_formulas) {
+      # Other return modes not supported (yet)
+      res <- do.call(fselect, c(list(.x = .data, return = "data"), args$dots),
+        envir = args$env)
+    } else {
+      res <- get_vars(.data, args$dots, rename = TRUE)
+    }
     if (to_dtrm)
       let_data.table_to_data.trame(res)
   }
