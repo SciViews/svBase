@@ -23,6 +23,7 @@
 \alias{summarise_}
 \alias{reframe_}
 \alias{arrange_}
+\alias{pull_}
 \alias{full_join_}
 \alias{left_join_}
 \alias{right_join_}
@@ -33,7 +34,6 @@
 \alias{add_count_}
 \alias{add_tally_}
 \alias{bind_cols_}
-\alias{pull_}
 \alias{distinct_}
 \alias{drop_na_}
 \alias{replace_na_}
@@ -128,6 +128,8 @@ arrange_(
   .decreasing = FALSE
 )
 
+pull_(.data = (.), var = -1, name = NULL, ...)
+
 full_join_(x, y, by = NULL, suffix = c(".x", ".y"), copy = FALSE, ...)
 
 left_join_(x, y, by = NULL, suffix = c(".x", ".y"), copy = FALSE, ...)
@@ -182,8 +184,6 @@ bind_cols_(
   ...,
   .name_repair = c("unique", "universal", "check_unique", "minimal")
 )
-
-pull_(.data, var = -1, name = NULL, ...)
 
 distinct_(.data, ..., .keep_all = FALSE)
 
@@ -291,6 +291,12 @@ variables in any. \code{FALSE} by default.}
 \item{.locale}{The locale to sort character vectors in. If \code{NULL}(default),
 use \code{"C"} locale.}
 
+\item{var}{A variable specified as a name, a positive or a negative integer
+(counting from the end). The default is \code{-1} and returns last variable.}
+
+\item{name}{The name of the new column in the output (\code{n} by default, and no
+existing column must have this name, or an error is generated).4}
+
 \item{y}{A second data frame.}
 
 \item{by}{A list of names of the columns to use for joining the two data
@@ -310,18 +316,12 @@ other arguments are named, or numbers.}
 
 \item{sort}{If \code{TRUE} largest group will be shown on top.}
 
-\item{name}{The name of the new column in the output (\code{n} by default, and no
-existing column must have this name, or an error is generated).4}
-
 \item{sort_cat}{Are levels sorted (\code{TRUE} by default).}
 
 \item{decreasing}{Is sorting done in decreasing order (\code{FALSE} by default)?}
 
 \item{.name_repair}{How should the name be "repaired" to avoid duplicate
 column names? See \code{\link[dplyr:bind_cols]{dplyr::bind_cols()}} for more details.}
-
-\item{var}{A variable specified as a name, a positive or a negative integer
-(counting from the end). The default is \code{-1} and returns last variable.}
 
 \item{.keep_all}{If \code{TRUE} keep all variables in \code{.data}.}
 

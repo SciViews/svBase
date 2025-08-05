@@ -1231,6 +1231,56 @@ arrange_ <- structure(function(.data = (.), ..., .by_group = FALSE,
   res
 }, class = c("function", "sciviews_fn"), comment = .src_sciviews("dplyr::arrange"))
 
+# TODO: use default .rownames for name?
+#' @export
+#' @rdname sciviews_functions
+pull_ <- structure(function(.data = (.), var = -1, name = NULL, ...) {
+
+  .__top_call__. <- TRUE
+
+  # Implicit data-dot mechanism
+  if (missing(.data) || !is.data.frame(.data))
+    return(eval_data_dot(sys.call(), arg = '.data', abort_msg =
+        gettext("`.data` must be a `data.frame`.")))
+
+  ## For now, we use same function as txxx() counterpart... still must rework
+  #if (inherits(.data, c("tbl_db", "dtplyr_step")))
+  #  stop("You must collect results before using this function.",
+  #    i = "Use {.fun collect_dtx} first.")
+
+  if (!missing(...))
+    check_dots_empty()
+
+  if (is_formula(var)) {
+    env <- f_env(var)
+    var <- f_rhs(var)
+    if (is.symbol(var)) {
+      var <- as.character(var)
+    } else {
+      var <- eval(var, envir = env)
+    }
+  }
+  if (is.numeric(var) && var < 0)
+    var <- ncol(.data) + 1 + var
+  res <- c(.data[[var]])
+
+  if (!is.null(name)) {
+    if (is_formula(name)) {
+      env <- f_env(name)
+      name <- f_rhs(name)
+      if (is.symbol(name)) {
+        name <- as.character(name)
+      } else {
+        name <- eval(name, envir = env)
+      }
+    }
+    if (is.numeric(name) && name < 0)
+      name <- ncol(.data)  + 1 + name
+    names(res) <- c(.data[[name]])
+  }
+  res
+}, class = c("function", "sciviews_fn"), comment = .src_sciviews("dplyr::pull"))
+
 #' @export
 #' @rdname sciviews_functions
 full_join_ <- structure(function(x, y, by = NULL, suffix = c(".x", ".y"),
@@ -1584,20 +1634,6 @@ bind_cols_ <- structure(function(...,
   res
 }, class = c("function", "sciviews_fn"),
   comment = .src_sciviews("dplyr::bind_cols"))
-
-#' @export
-#' @rdname sciviews_functions
-pull_ <- structure(function(.data, var = -1, name = NULL, ...) {
-
-  .__top_call__. <- TRUE
-
-  # For now, we use same function as txxx() counterpart... still must rework
-  if (inherits(.data, c("tbl_db", "dtplyr_step")))
-    stop("You must collect results from a tidy function before using a sciviews one.")
-
-  do.call(pull, list(.data = .data, var = substitute(var),
-    name = substitute(name), ...))
-}, class = c("function", "sciviews_fn"), comment = .src_sciviews("dplyr::pull"))
 
 #' @export
 #' @rdname sciviews_functions
