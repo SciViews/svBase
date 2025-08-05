@@ -22,6 +22,7 @@
 \alias{transmute_}
 \alias{summarise_}
 \alias{reframe_}
+\alias{arrange_}
 \alias{full_join_}
 \alias{left_join_}
 \alias{right_join_}
@@ -32,7 +33,6 @@
 \alias{add_count_}
 \alias{add_tally_}
 \alias{bind_cols_}
-\alias{arrange_}
 \alias{pull_}
 \alias{distinct_}
 \alias{drop_na_}
@@ -120,6 +120,14 @@ reframe_(
   .cols = NULL
 )
 
+arrange_(
+  .data = (.),
+  ...,
+  .by_group = FALSE,
+  .locale = "C",
+  .decreasing = FALSE
+)
+
 full_join_(x, y, by = NULL, suffix = c(".x", ".y"), copy = FALSE, ...)
 
 left_join_(x, y, by = NULL, suffix = c(".x", ".y"), copy = FALSE, ...)
@@ -174,8 +182,6 @@ bind_cols_(
   ...,
   .name_repair = c("unique", "universal", "check_unique", "minimal")
 )
-
-arrange_(.data, ..., .by_group = FALSE)
 
 pull_(.data, var = -1, name = NULL, ...)
 
@@ -279,6 +285,12 @@ yet).}
 \item{.keep.group_vars}{If \code{TRUE} (by default), the grouping variables are
 kept in the result.}
 
+\item{.by_group}{Logical. If \code{TRUE} rows are first arranger by the grouping
+variables in any. \code{FALSE} by default.}
+
+\item{.locale}{The locale to sort character vectors in. If \code{NULL}(default),
+use \code{"C"} locale.}
+
 \item{y}{A second data frame.}
 
 \item{by}{A list of names of the columns to use for joining the two data
@@ -307,9 +319,6 @@ existing column must have this name, or an error is generated).4}
 
 \item{.name_repair}{How should the name be "repaired" to avoid duplicate
 column names? See \code{\link[dplyr:bind_cols]{dplyr::bind_cols()}} for more details.}
-
-\item{.by_group}{Logical. If \code{TRUE} rows are first arranger by the grouping
-variables in any. \code{FALSE} by default.}
 
 \item{var}{A variable specified as a name, a positive or a negative integer
 (counting from the end). The default is \code{-1} and returns last variable.}

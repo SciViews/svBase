@@ -509,6 +509,10 @@ ungroup_ <- structure(function(.data = (.), ..., .na.last = TRUE,
         # Get configuration to apply the same one
         grp <- attr(.data, "groups")
         sort <- isTRUE(grp$ordered[1])
+        drop <- attr(grp, ".drop")
+        # If drop = FALSE, we must use group_by() and convert... not handled yet!
+        if (!isTRUE(drop))
+          warning("Regrouping with `.drop = FALSE` is not handled yet, changing to `.drop = TRUE`.")
         decreasing <- isTRUE(grp$ordered[2]) # If sort = TRUE, no matters
         return.groups <- !is.null(grp$groups)
         return.order <- !is.null(grp$order)
@@ -1066,6 +1070,166 @@ reframe_ <- structure(function(.data, ..., .by = NULL, .groups = "drop",
 }, class = c("function", "sciviews_fn"),
 comment = .src_sciviews("collapse::fsummarise"))
 
+#' @export
+#' @rdname sciviews_functions
+#' @param .locale The locale to sort character vectors in. If `NULL`(default),
+#'   use `"C"` locale.
+arrange_ <- structure(function(.data = (.), ..., .by_group = FALSE,
+  .locale = "C", .decreasing = FALSE) {
+
+  .__top_call__. <- TRUE
+  .__dplyr_error_call__. <- environment()
+
+  # Implicit data-dot mechanism
+  if (missing(.data) || !is.data.frame(.data))
+    return(eval_data_dot(sys.call(), arg = '.data', abort_msg =
+        gettext("`.data` must be a `data.frame`.")))
+
+  # Case missing(...), or no rows, or only one row, just return the data frame
+  if (missing(...) || nrow(.data) < 2L)
+    return(.data)
+
+  # Not necessary?
+  # Treat data.trames as data.tables
+  #to_dtrm <- is.data.trame(.data)
+  #if (to_dtrm) {
+  #  let_data.trame_to_data.table(.data)
+  #  on.exit(let_data.table_to_data.trame(.data))
+  #}
+
+  # dplyr uses desc(var) and collapse uses -var to sort in descending order
+  args <- formula_select(..., .fast.allowed.funs = c("desc", "-"))
+
+  if (is.null(.locale) && !isTRUE(getOption("dplyr.legacy_locale")))
+    .locale <- "C" # Default locale for sorting
+
+  if (!is.null(.locale) && .locale == "C" && args$fastselect) {
+    # We can use the fast collapse::roworder()/roworderv()
+    if (args$are_formulas) {
+      if (!missing(.decreasing))
+        warning("`.decreasing` is ignored when using formulas in arrange_().")
+      # Transform desc(var) into -var, since collapse does not understand desc()
+      minus <- as.symbol('-')
+      args$dots <- lapply(args$dots, function(x) {
+        if (is.call(x) && x[[1]] == 'desc')
+          x[[1]] <- minus
+        x
+      })
+    } else {# SE mode: unlist the arguments, and possibly "extract" .decreasing=
+      # from the arguments
+      ovars <- unlist(args$dots)
+      if (!is.character(ovars))
+        stop("All arguments in {.code ...} must be column names or formulas.")
+      if (missing(.decreasing)) {# Recreate it from the vars (TRUE when '-var')
+        .decreasing <- startsWith(ovars, "-")
+        ovars[.decreasing] <- substring(ovars[.decreasing], 2L) # Eliminate '-'
+      }
+    }
+    # If this is a grouped_df, we ungroup, sort, and then, recalculate groups
+    if (is_grouped_df(.data)) {
+      gvars <- fgroup_vars(.data, return = "names")
+      grp <- attr(.data, "groups")
+      desc <- isTRUE(grp$ordered[2])
+      drop <- attr(grp, ".drop")
+
+      if (args$are_formulas) {
+        # If we sort by groups, prepend the grouping variables to the list
+        if (isTRUE(.by_group)) {
+          if (desc)
+            gvars <- paste0("-", gvars) # Collapse understands '-var'
+          args$dots <- c(as.list(gvars), args$dots)
+        }
+        res <- do.call(roworder, c(list(X = fungroup(.data)), args$dots),
+          envir = args$env)
+
+      } else {# SE arguments
+        # If we sort by groups, prepend the grouping variables to the list
+        if (isTRUE(.by_group)) {
+          ovars <- c(gvars, ovars)
+          odesc <- c(rep_along(gvars, desc), rep_along(ovars, .decreasing))
+        } else {
+          odesc <- .decreasing
+        }
+        res <- roworderv(fungroup(.data), cols = ovars, decreasing = odesc)
+      }
+
+      # Recalculate groups
+      # Collect required data to redo a similar grouping after sorting
+      is_grp <- inherits(.data, "GRP_df") # either a GRP_df or a grouped_df
+      drop <- attr(grp, ".drop")
+      # Regroup
+      if (is_grp) {
+        # If drop = FALSE, we must use group_by() and convert... not handled yet!
+        if (isFALSE(drop))
+          warning("Regrouping with `.drop = FALSE` is not handled yet, changing to `.drop = TRUE`.")
+        sort <- isTRUE(grp$ordered[1])
+        return.groups <- !is.null(grp$groups)
+        return.order <- !is.null(grp$order)
+        # How do I got na.last and method? Better to always keep defaults here?
+        res <- group_by_vars(res, by = gvars, sort = sort,
+          decreasing = desc, na.last = TRUE, return.groups = return.groups,
+          return.order = return.order, method = 'auto')
+
+      } else {# Regroup with dplyr::group_by()
+        gvars_sym <- lapply(as.list(gvars), as.symbol)
+        res <- do.call(group_by, c(list(.data = res, .drop = drop), gvars_sym),
+          envir = args$env)
+      }
+
+    } else {# Ungrouped dataset, no particular difficulties
+      if (args$are_formulas) {
+        res <- do.call(roworder, c(list(X = .data), args$dots),
+          envir = args$env)
+      } else {# Not using formulas
+        res <- roworderv(.data, cols = ovars, decreasing = .decreasing)
+      }
+    }
+
+  } else {# .locale != "C", or complex data-masking: fall back to dplyr/stringi
+    desc <- as.symbol('desc')
+    # If we supply .decreasing=, must transform into desc(var)
+    if (!missing(.decreasing)) {
+      .decrease <- rep_along(args$dots, .decreasing)
+      for (i in 1:length(.decrease)) {
+        if (isTRUE(.decrease[i])) {
+          x <- args$dots[[i]]
+          args$dots[[i]] <- as.call(list(desc, as.symbol(x))) # desc(var)
+        }
+      }
+    }
+    # Transform -var into desc(var), since dplyr does not understand -var
+    args$dots <- lapply(args$dots, function(x) {
+      if (is.call(x) && x[[1]] == '-') {
+        x[[1]] <- desc
+      } else if (is.character(x)) {# arrange() does not support 'var' here!
+        # If we have '-var', we must transform it into desc(var)
+        if (startsWith(x, "-")) {
+          x <- substring(x, 2L) # Eliminate '-'
+          x <- as.call(list(desc, as.symbol(x))) # desc(var)
+        } else {
+          x <- as.symbol(x) # Just a symbol
+        }
+      }
+      x
+    })
+    # If we have a GRP_df object, we cannot proceed
+    if (inherits(.data, "GRP_df")) {
+      if (.locale != "C") {
+        stop("Cannot use {.fun arrange_} with \"{(.locale)}\" locale on these data.",
+          i = "Either ungroup the data first, or use {.fun group_by} for grouping.")
+      } else {# Complex data-masking
+        stop("Cannot use {.fun arrange_} with complex data masking on these data.",
+          i = "Either ungroup the data first, or use {.fun group_by} for grouping.")
+      }
+    }
+    res <- do.call(arrange, c(list(.data), args$dots,
+      list(.by_group = .by_group, .locale = .locale)), envir = args$env)
+  }
+
+  #if (to_dtrm)
+  #  let_data.table_to_data.trame(res)
+  res
+}, class = c("function", "sciviews_fn"), comment = .src_sciviews("dplyr::arrange"))
 
 #' @export
 #' @rdname sciviews_functions
@@ -1420,44 +1584,6 @@ bind_cols_ <- structure(function(...,
   res
 }, class = c("function", "sciviews_fn"),
   comment = .src_sciviews("dplyr::bind_cols"))
-
-#' @export
-#' @rdname sciviews_functions
-arrange_ <- structure(function(.data, ..., .by_group = FALSE) {
-
-  .__top_call__. <- TRUE
-
-  # For now, we use same function as txxx() counterpart... still must rework
-  if (inherits(.data, c("tbl_db", "dtplyr_step")))
-    stop("You must collect results from a tidy function before using a sciviews one.")
-
-  is_x_dtf <- is_dtf(.data)
-  is_x_dtt <- is_dtt(.data)
-  # Also if we have a GRP_by object from fgroup_by() or sgroup_by(), transform
-  # it in,to regular group_by and restore the GRP_by after.
-  if (inherits(.data, "GRP_df")) {
-    is_x_grp_df <- TRUE
-    gvars <- fgroup_vars(.data, return = "names")
-    gvars <- lapply(gvars, as.name)
-    # Must regroup with the regular dplyr::group_by()
-    #.data <- group_by(fungroup(.data), across(gvars)) # Warning message
-    .data <- fungroup(.data)
-    .data <- do.call(group_by, c(list(.data = .data), gvars))
-  } else {
-    is_x_grp_df <- FALSE
-  }
-  res <- arrange(.data, ..., .by_group = .by_group)
-  if (!is.data.frame(res))
-    res <- collect(res)
-  # Transform if needed
-  if (is_x_dtf)
-    res <- as_dtf(res)
-  if (is_x_dtt)
-    res <- as_dtt(res)
-  if (is_x_grp_df)
-    res <- do.call(fgroup_by, c(list(.X = res), gvars))
-  res
-}, class = c("function", "sciviews_fn"), comment = .src_sciviews("dplyr::arrange"))
 
 #' @export
 #' @rdname sciviews_functions
