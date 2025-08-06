@@ -24,10 +24,12 @@
 \alias{reframe_}
 \alias{arrange_}
 \alias{pull_}
+\alias{right_join_}
 \alias{full_join_}
 \alias{left_join_}
-\alias{right_join_}
 \alias{inner_join_}
+\alias{semi_join_}
+\alias{anti_join_}
 \alias{bind_rows_}
 \alias{count_}
 \alias{tally_}
@@ -130,13 +132,102 @@ arrange_(
 
 pull_(.data = (.), var = -1, name = NULL, ...)
 
-full_join_(x, y, by = NULL, suffix = c(".x", ".y"), copy = FALSE, ...)
+right_join_(
+  x = (.),
+  y,
+  by = NULL,
+  copy = FALSE,
+  suffix = c(".x", ".y"),
+  ...,
+  keep = NULL,
+  na_matches = c("na", "never"),
+  multiple = "all",
+  unmatched = "drop",
+  relationship = NULL,
+  sort = FALSE,
+  verbose = 0,
+  column = NULL,
+  attr = NULL
+)
 
-left_join_(x, y, by = NULL, suffix = c(".x", ".y"), copy = FALSE, ...)
+full_join_(
+  x = (.),
+  y,
+  by = NULL,
+  copy = FALSE,
+  suffix = c(".x", ".y"),
+  ...,
+  keep = NULL,
+  na_matches = c("na", "never"),
+  multiple = "all",
+  relationship = NULL,
+  sort = FALSE,
+  verbose = 0,
+  column = NULL,
+  attr = NULL
+)
 
-right_join_(x, y, by = NULL, suffix = c(".x", ".y"), copy = FALSE, ...)
+left_join_(
+  x = (.),
+  y,
+  by = NULL,
+  copy = FALSE,
+  suffix = c(".x", ".y"),
+  ...,
+  keep = NULL,
+  na_matches = c("na", "never"),
+  multiple = "all",
+  unmatched = "drop",
+  relationship = NULL,
+  sort = FALSE,
+  verbose = 0,
+  column = NULL,
+  attr = NULL
+)
 
-inner_join_(x, y, by = NULL, suffix = c(".x", ".y"), copy = FALSE, ...)
+inner_join_(
+  x = (.),
+  y,
+  by = NULL,
+  copy = FALSE,
+  suffix = c(".x", ".y"),
+  ...,
+  keep = NULL,
+  na_matches = c("na", "never"),
+  multiple = "all",
+  unmatched = "drop",
+  relationship = NULL,
+  sort = FALSE,
+  verbose = 0,
+  column = NULL,
+  attr = NULL
+)
+
+semi_join_(
+  x = (.),
+  y,
+  by = NULL,
+  copy = FALSE,
+  ...,
+  na_matches = c("na", "never"),
+  sort = FALSE,
+  verbose = 0,
+  column = NULL,
+  attr = NULL
+)
+
+anti_join_(
+  x = (.),
+  y,
+  by = NULL,
+  copy = FALSE,
+  ...,
+  na_matches = c("na", "never"),
+  sort = FALSE,
+  verbose = 0,
+  column = NULL,
+  attr = NULL
+)
 
 bind_rows_(..., .id = NULL)
 
@@ -300,21 +391,82 @@ existing column must have this name, or an error is generated).4}
 \item{y}{A second data frame.}
 
 \item{by}{A list of names of the columns to use for joining the two data
-frames.}
+frames. Could also be a join specification created with \code{\link[dplyr:join_by]{dplyr::join_by()}},
+but in this case, calculation is delegated to dplyr's join methods.}
+
+\item{copy}{This argument is there for compatibility with the "t" matching
+functions, but it is not used here.}
 
 \item{suffix}{The suffix to the column names to use to differentiate the
 columns that come from the first or the second data frame. By default it is
 \code{c(".x", ".y")}.}
 
-\item{copy}{This argument is there for compatibility with the "t" matching
-functions, but it is not used here.}
+\item{keep}{Should the join keys from both \code{x} and \code{y} be preserved in the
+output? If \code{NULL}, the default, joins on equality retain only the keys from
+\code{x}, while joins on inequality retain the keys from both inputs. If \code{TRUE},
+all keys from both inputs are retained. If \code{FALSE}, only keys from \code{x} are
+retained. For right and full joins, the data in key columns corresponding to
+rows that only exist in \code{y} are merged into the key columns from \code{x}. Can't
+be used when joining on inequality conditions. If \code{keep = TRUE}, calculation
+is delegated to dplyr join methods.}
+
+\item{na_matches}{Should two \code{NA} or two \code{NaN} values match? \code{"na"}, the
+default, treats two \code{NA} or two \code{NaN} values as equal, like \code{\%in\%},
+\code{match()}, \verb{and merge()}. \code{"never"} treats two \code{NA} or two \code{NaN} values as
+different, and will never match them together or to any other values. This is
+similar to joins for database sources and to
+\code{base::merge(incomparables = NA)}. If \code{"never"}, calculation is delegated to
+dplyr join methods.}
+
+\item{multiple}{Handling of rows in \code{x} with multiple matches in \code{y}. For
+each row of \code{x}: \code{"all"}, the default, returns every match detected in \code{y}.
+This is the same behavior as SQL. \code{"any"} returns one match detected in \code{y},
+with no guarantees on which match will be returned. It is often faster than
+\code{"first"} and \code{"last"} in dplyr, but avoid it here. \code{"first"} returns the
+first match detected in \code{y}. \code{"last"} returns the last match detected in \code{y}.
+For \code{"any"} and \code{"last"}, calculation is delegated to dplyr join methods, and
+in the case of right join, also for \code{"first"}..}
+
+\item{unmatched}{How should unmatched keys that would result in dropped rows
+be handled? \code{"drop"} drops unmatched keys from the result. \code{"error"} throws
+an error if unmatched keys are detected. Also, a named list of the form
+\code{list(x = 1, y = 0.5, fail = "warning")}can be used when calculation is
+\strong{not} delegated to dplyr. The first two elements are the proportions that
+must match, and the third element is \code{"message"}, \code{"warning"}, or \code{"error"}.}
+
+\item{relationship}{Handling of the expected relationship between the keys of
+\code{x} and \code{y}. If the expectations chosen from the list below are invalidated,
+an error is thrown. \code{NULL}, the default, doesn't expect there to be any
+relationship between \code{x} and \code{y}. However, for equality joins it will check
+for a many-to-many relationship (which is typically unexpected) and will warn
+if one occurs, encouraging you to either take a closer look at your inputs or
+make this relationship explicit by specifying "many-to-many". \code{"one-to-one"}
+expects: Each row in x matches at most 1 row in y. Each row in y matches at
+most 1 row in x. \code{"one-to-many"} expects:  Each row in y matches at most 1
+row in x. "many-to-one" expects: Each row in x matches at most 1 row in y.
+\code{"many-to-many"} doesn't perform any relationship checks, but is provided to
+allow you to be explicit about this relationship if you know it exists.
+\code{relationship} doesn't handle cases where there are zero matches. For that,
+see \code{unmatched}.}
+
+\item{sort}{If \code{TRUE} largest group will be shown on top.}
+
+\item{verbose}{integer. Prints information about the join. One of \code{0} (off),
+\code{1} (default) or \code{2} (additionally prints the classes of the \code{by} columns).}
+
+\item{column}{name for an extra column to generate in the output indicating
+which dataset a record came from. \code{TRUE} calls this column \code{".join"}, or give
+another name.}
+
+\item{attr}{name for attribute providing information about the join performed
+(including the output of \code{\link[collapse:fmatch]{collapse::fmatch()}}) to the result. \code{TRUE} calls
+this attribute \code{"join.match"} or give your own name. Note: this also invokes
+the count argument to \code{\link[collapse:fmatch]{collapse::fmatch()}}.}
 
 \item{.id}{The name of the column for the origin id, either names if all
 other arguments are named, or numbers.}
 
 \item{wt}{Frequency weights. Can be \code{NULL} or a variable. Use data masking.}
-
-\item{sort}{If \code{TRUE} largest group will be shown on top.}
 
 \item{sort_cat}{Are levels sorted (\code{TRUE} by default).}
 

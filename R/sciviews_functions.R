@@ -36,7 +36,8 @@
 #' @param x A data frame (data.frame, data.table or tibble's tbl_df).
 #' @param y A second data frame.
 #' @param by A list of names of the columns to use for joining the two data
-#' frames.
+#' frames. Could also be a join specification created with [dplyr::join_by()],
+#' but in this case, calculation is delegated to dplyr's join methods.
 #' @param suffix The suffix to the column names to use to differentiate the
 #' columns that come from the first or the second data frame. By default it is
 #' `c(".x", ".y")`.
@@ -113,13 +114,13 @@
 #' @examples
 #' # TODO...
 list_sciviews_functions <- function() {
-  c("add_count_", "add_tally_", "arrange_", "bind_cols_", "bind_rows_",
-    "count_", "distinct_", "drop_na_", "extract_", "fill_", "filter_",
-    "full_join_", "group_by_", "inner_join_", "left_join_", "mutate_",
-    "pivot_longer_", "pivot_wider_", "pull_", "reframe_", "rename_",
-    "rename_with_", "replace_na_", "right_join_", "select_", "separate_",
-    "separate_rows_", "summarise_", "tally_", "transmute_", "uncount_",
-    "ungroup_", "unite_")
+  c("add_count_", "add_tally_", "anti_join", "arrange_", "bind_cols_",
+    "bind_rows_", "count_", "distinct_", "drop_na_", "extract_", "fill_",
+    "filter_", "full_join_", "group_by_", "inner_join_", "left_join_",
+    "mutate_", "pivot_longer_", "pivot_wider_", "pull_", "reframe_", "rename_",
+    "rename_with_", "replace_na_", "right_join_", "select_", "semi_join",
+    "separate_", "separate_rows_", "summarise_", "tally_", "transmute_",
+    "uncount_", "ungroup_", "unite_")
 }
 
 .src_sciviews <- function(src,
@@ -310,7 +311,7 @@ n_groups_ <- function(.data = (.)) {
   }
 }
 
-# TODO: default .drop as in dplytr::group_by()
+# TODO: default .drop as in dplyr::group_by()
 # TODO: what are those "computations" that one can give to group_by()? See doc
 # TODO: also compute the grouping variables in the data frame itself, like
 # group_by does (+ an argument to do so or not)
@@ -401,7 +402,7 @@ group_by_ <- structure(function(.data = (.), ..., .add = FALSE, .drop = NULL,
     } else {
       res0 <- .data
     }
-    res0 <- do.call(group_by, c(args$dots, list(.data = res0,
+    res0 <- do.call('group_by', c(args$dots, list(.data = res0,
       .add = force(.add), .drop = force(.drop))))
     groups <- GRP(res0)
     # We also keep .drop = FALSE attribute
@@ -424,7 +425,7 @@ group_by_ <- structure(function(.data = (.), ..., .add = FALSE, .drop = NULL,
 
   # For all other cases, we can use the faster collapse functions
   if (args$are_formulas) {# Use collapse::fgroup_by()
-    res <- do.call(fgroup_by, c(args$dots, list(.X = .data, sort = force(.sort),
+    res <- do.call('fgroup_by', c(args$dots, list(.X = .data, sort = force(.sort),
       decreasing = force(.decreasing), na.last = force(.na.last),
       return.groups = force(.return.groups),
       return.order = force(.return.order), method = force(.method))))
@@ -603,7 +604,7 @@ rename_ <- structure(function(.data = (.), ...) {
     stop("Can't rename columns that don't exist.",
       x = "Column {.code {missing_cols[1]}} doesn't exist.")
 
-  res <- do.call(frename, c(list(.x = .data, .nse = FALSE), dots_inv),
+  res <- do.call('frename', c(list(.x = .data, .nse = FALSE), dots_inv),
     envir = args$env)
   if (to_dtrm)
     let_data.table_to_data.trame(res)
@@ -794,7 +795,7 @@ filter_ <- structure(function(.data = (.), ..., .by = NULL, .preserve = FALSE) {
       stop("Filtering with grouped data frames is not implemented yet with {.fun filter_}.",
         i = "Use {.fun filter} with {.fun group_by} instead.")
     for (i in 1:...length())
-      res <- do.call(fsubset, list(.x = res, filters[[i]]), envir = args$env)
+      res <- do.call('fsubset', list(.x = res, filters[[i]]), envir = args$env)
   } else {# SE arguments, ss() is faster
     filter <- filters[[1L]]
     lfilters <- length(filters)
@@ -840,7 +841,7 @@ select_ <- structure(function(.data = (.), ...) {
     #  paste(args$dots, collapse = ", ")))
     eval_select2 <- function(..., data)
       eval_select(expr(c(...)), data = data, error_call = stop_top_call())
-    loc <- do.call(eval_select2, c(args$dots, list(data = .data)))
+    loc <- do.call('eval_select2', c(args$dots, list(data = .data)))
     if (to_dtrm)
       let_data.table_to_data.trame(.data)
     res <- .data[, loc, drop = FALSE]
@@ -849,7 +850,7 @@ select_ <- structure(function(.data = (.), ...) {
   } else {# fastselect with collapse
     if (args$are_formulas) {
       # Other return modes not supported (yet)
-      res <- do.call(fselect, c(list(.x = .data, return = "data"), args$dots),
+      res <- do.call('fselect', c(list(.x = .data, return = "data"), args$dots),
         envir = args$env)
     } else {
       res <- get_vars(.data, args$dots, rename = TRUE)
@@ -917,7 +918,7 @@ mutate_ <- structure(function(.data = (.), ..., .by = NULL,
     res <- .data
   }
 
-  res <- do.call(fmutate, c(list(.data = res), args$dots,
+  res <- do.call('fmutate', c(list(.data = res), args$dots,
     list(.keep = force(.keep), .cols = force(.cols))), envir = args$env)
   if (!missing(.by))
     res <- fungroup(res)
@@ -1033,7 +1034,7 @@ summarise_ <- structure(function(.data = (.), ..., .by = NULL,
     .data <- .data
   }
 
-  res <- do.call(fsummarise, c(list(.data = .data), args$dots,
+  res <- do.call('fsummarise', c(list(.data = .data), args$dots,
     list(keep.group_vars = force(.keep.group_vars), .cols = force(.cols))),
     envir = args$env)
   if (length(new_gvars)) # (re)set grouping
@@ -1139,7 +1140,7 @@ arrange_ <- structure(function(.data = (.), ..., .by_group = FALSE,
             gvars <- paste0("-", gvars) # Collapse understands '-var'
           args$dots <- c(as.list(gvars), args$dots)
         }
-        res <- do.call(roworder, c(list(X = fungroup(.data)), args$dots),
+        res <- do.call('roworder', c(list(X = fungroup(.data)), args$dots),
           envir = args$env)
 
       } else {# SE arguments
@@ -1172,13 +1173,13 @@ arrange_ <- structure(function(.data = (.), ..., .by_group = FALSE,
 
       } else {# Regroup with dplyr::group_by()
         gvars_sym <- lapply(as.list(gvars), as.symbol)
-        res <- do.call(group_by, c(list(.data = res, .drop = drop), gvars_sym),
-          envir = args$env)
+        res <- do.call('group_by', c(list(.data = res, .drop = drop),
+          gvars_sym), envir = args$env)
       }
 
     } else {# Ungrouped dataset, no particular difficulties
       if (args$are_formulas) {
-        res <- do.call(roworder, c(list(X = .data), args$dots),
+        res <- do.call('roworder', c(list(X = .data), args$dots),
           envir = args$env)
       } else {# Not using formulas
         res <- roworderv(.data, cols = ovars, decreasing = .decreasing)
@@ -1222,7 +1223,7 @@ arrange_ <- structure(function(.data = (.), ..., .by_group = FALSE,
           i = "Either ungroup the data first, or use {.fun group_by} for grouping.")
       }
     }
-    res <- do.call(arrange, c(list(.data), args$dots,
+    res <- do.call('arrange', c(list(.data), args$dots,
       list(.by_group = .by_group, .locale = .locale)), envir = args$env)
   }
 
@@ -1281,105 +1282,367 @@ pull_ <- structure(function(.data = (.), var = -1, name = NULL, ...) {
   res
 }, class = c("function", "sciviews_fn"), comment = .src_sciviews("dplyr::pull"))
 
-#' @export
-#' @rdname sciviews_functions
-full_join_ <- structure(function(x, y, by = NULL, suffix = c(".x", ".y"),
-copy = FALSE, ...) {
+.join_ <- function(x, y, by = NULL, copy = FALSE,
+  suffix = c(".x", ".y"), ..., keep = NULL, na_matches = c("na", "never"),
+  multiple = "all", unmatched = "drop", relationship = NULL, sort = FALSE,
+  verbose = 0, column = NULL, attr = NULL, how = "full") {
 
   .__top_call__. <- TRUE
 
-  if (!missing(copy))
-    warning("This argument is here only for compatibility with tfull_join() but it does nothing here.")
-  # We transform x into a data.table, then restore the result into data.frame
-  # or  tibble if needed
-  is_x_dtf <- is_dtf(x)
-  is_x_dtbl <- is_dtbl(x)
-  x <- as_dtt(x)
-  res <- merge(x, y, by = by, all = TRUE, all.x = TRUE, all.y = TRUE,
-    sort = TRUE, suffixes = suffix, no.dups = TRUE, allow.cartesian = FALSE)
-  # Transform if needed
-  if (is_x_dtf)
-    res <- as_dtf(res)
-  if (is_x_dtbl)
-    res <- as_dtbl(res)
-  res
-}, class = c("function", "sciviews_fn"),
-  comment = .src_sciviews("dplyr::full_join"))
+  if (!missing(...))
+    check_dots_empty()
 
+  #if (!missing(copy))
+  #  warning("`copy =` is only for compatibility with `right_join()` but it does nothing.")
+
+  na_matches <- na_matches[1]
+  if (!(isTRUE(na_matches == "na") || isTRUE(na_matches == "never")))
+    stop("{.arg na_matches} must be one of \"na\" or \"never\", not {.obj_type_friendly {na_matches}}.")
+
+  if (length(multiple) != 1L ||
+      fmatch(multiple, c("all", "first", "any", "last"), nomatch = 0L) == 0L)
+    stop("{.arg multiple} must be one of \"all\", \"first\", \"any\", or \"last\", not {.obj_type_friendly {multiple}}.")
+
+  if (!(isTRUE(unmatched == "drop") || isTRUE(unmatched == "error") ||
+      is.list(unmatched))) # List for collapse::join()
+    stop("{.arg unmatched} must be \"drop\", \"error\", or a {.cls list}, not {.obj_type_friendly {unmatched}}.")
+
+  # Depending on the arguments, we use the fast collapse::join(), or the slower
+  # dplyr::xxx_join(), also if a 'dplyr_join_by' object is provided for `by=`
+  # Exception for right_join() where collapse::join() does not produce the same
+  # result as dplyr::right_join(), for the other, "first" is OK for collapse::join()
+  if (how == "right") {
+    multi_no_collapse <- c("first", "any", "last")
+  } else {
+    multi_no_collapse <- c("any", "last")
+  }
+  if (isTRUE(keep) || na_matches == "never" ||
+      multiple %in% multi_no_collapse || inherits(by, 'dplyr_join_by')) {
+    # These are not handled by collapse::join()
+    # Note: sort, verbose, column and attr not used!
+    if (isTRUE(sort) || verbose > 0 || !is.null(column) || !is.null(attr))
+      warning("Using dplyr join method: `sort`, `verbose`, `column` and `attr` ignored.")
+    if (is.list(unmatched)) {
+      warning("`unmatched = \"error\"` (`dplyr::right_joint()` cannot handle a list).")
+      unmatched <- "error"
+    }
+    .__dplyr_error_call__. <- environment()
+    dplyr_join <- switch(how,
+      "inner" = inner_join,
+      "left"  = left_join,
+      "right" = right_join,
+      "full"  = full_join,
+      "semi"  = semi_join,
+      "anti"  = anti_join,
+      stop("{.arg how} must be one of \"inner\", \"left\", \"right\", \"full\", \"semi\", or \"anti\"."))
+    # There are less arguments for semi and anti joins (and full)
+    if (how %in% c("semi", "anti")) {
+      return(dplyr_join(x, y, by = by, copy = copy, na_matches = na_matches))
+    } else if (how == "full") {
+      return(dplyr_join(x, y, by = by, copy = copy, suffix = suffix, keep = keep,
+        na_matches = na_matches, multiple = multiple,
+        relationship = relationship))
+    } else {
+      return(dplyr_join(x, y, by = by, copy = copy, suffix = suffix, keep = keep,
+        na_matches = na_matches, multiple = multiple, unmatched = unmatched,
+        relationship = relationship))
+    }
+  }
+
+  # Otherwise, use collapse::join()
+  if (!is.character(suffix) || length(suffix) != 2L)
+    stop("{.arg suffix} must be a character vector of length 2, not {.obj_type_friendly {suffix}} of length {length(suffix)}.")
+
+  if (!is.null(keep) && !isFALSE(keep))
+    stop("{.arg keep} must be {.code TRUE}, {.code FALSE}, or {.code NULL}, not {.obj_type_friendly {keep}}.")
+
+  if (is.null(relationship)) {
+    validate <- "m:m"
+  } else if (length(relationship) != 1L || !is.character(relationship)) {
+    stop("{.arg relationship} must be a single string, not {.obj_type_friendly {relationship}} of length {length(relationship)}.")
+  } else {
+    validate <- switch(relationship,
+      "one-to-one" = "1:1",
+      "one-to-many" = "1:m",
+      "many-to-one" = "m:1",
+      "many-to-many" = "m:m",
+      stop("{.arg relationship} must be one of \"one-to-one\", \"one-to-many\", \"many-to-one\", or \"many-to-many\"."))
+  }
+
+  mult <- multiple == "all"
+
+  if (length(verbose) != 1 || fmatch(verbose, c(0, 1, 2), nomatch = 0L) == 0L)
+    stop("{.arg verbose} must be one of 0, 1, or 2, not {.obj_type_friendly {verbose}}.")
+
+  if (is.list(unmatched)) {
+    require <- unmatched
+  } else if (unmatched == "error") {
+    require <- list(x = 1, y = 1, fail = "error")
+  } else {# Must be unmatched == "drop"
+    require = NULL
+  }
+  if (!is.null(require) && verbose == 0)
+    verbose <- 1
+
+  if(!isTRUE(sort) && !isFALSE(sort))
+    stop("{.arg sort} must be {.code TRUE} or {.code FALSE}, not {.obj_type_friendly {sort}}.")
+
+  # Better manage errors returned by collapse::join()
+  .temp_env <- temp_env()
+  .temp_env$.stop_top_call_env <- stop_top_call(1L)
+
+  err <- function(e) {
+    call_env = svMisc::get_temp(".stop_top_call_env")
+    svMisc::rm_temp(".stop_top_call_env")
+    msg <- e$message
+    msg2 <- svBase::process_error_msg(msg, list(
+      "x must be a list" = c("{msg}",
+        i = "Provide a valid {.cls data.frame} for {.arg x}."),
+      "y must be a list" = c("{msg}",
+        i = "Provide a valid {.cls data.frame} for {.arg y}."),
+      "Unknown x columns" = c("{msg}",
+        i = "All {.arg by} columns must be present in {.arg x}."),
+      "Unknown y columns" = c("{msg}",
+        i = "All {.arg by} columns must be present in {.arg y}."),
+      "Join is not 1:1" = c("{msg}",
+        i = "Each row in {.arg x} must match exactly 1 row in {.arg y}."),
+      "Join is not 1:m" = c("{msg}",
+        i = "Each row in {.arg y} must match at most 1 row in {.arg x}."),
+      "Join is not m:1" = c("{msg}",
+        i = "Each row in {.arg x} must match at most 1 row in {.arg y}.")
+    ), fixed = TRUE)
+    cli::cli_abort(c(msg2,
+      `*` = sprintf("{.emph from: {.code {expr_text(e$call, nlines = 2L)}}}")),
+      call = call_env, .frame = call_env)
+  }
+  res <- withCallingHandlers(error = err, expr =
+      do.call('join', list(substitute(x), substitute(y), on = by, how = how,
+        suffix = suffix, validate = validate,
+        multiple = mult, sort = sort, keep.col.order = TRUE,
+        drop.dup.cols = FALSE, verbose = verbose, require = require,
+        column = column, attr = attr), envir = parent.frame()))
+  .temp_env$.stop_top_call_env <- NULL
+
+  res
+}
+
+
+# TODO: it should be possible to recreate what dplyr's keep = TRUE produces,
+# starting from collapse's column = TRUE.
 #' @export
 #' @rdname sciviews_functions
-left_join_ <- structure(function(x, y, by = NULL, suffix = c(".x", ".y"),
-copy = FALSE, ...) {
+#' @param keep Should the join keys from both `x` and `y` be preserved in the
+#' output? If `NULL`, the default, joins on equality retain only the keys from
+#' `x`, while joins on inequality retain the keys from both inputs. If `TRUE`,
+#' all keys from both inputs are retained. If `FALSE`, only keys from `x` are
+#' retained. For right and full joins, the data in key columns corresponding to
+#' rows that only exist in `y` are merged into the key columns from `x`. Can't
+#' be used when joining on inequality conditions. If `keep = TRUE`, calculation
+#' is delegated to dplyr join methods.
+#' @param na_matches Should two `NA` or two `NaN` values match? `"na"`, the
+#' default, treats two `NA` or two `NaN` values as equal, like `%in%`,
+#' `match()`, `and merge()`. `"never"` treats two `NA` or two `NaN` values as
+#' different, and will never match them together or to any other values. This is
+#' similar to joins for database sources and to
+#' `base::merge(incomparables = NA)`. If `"never"`, calculation is delegated to
+#' dplyr join methods.
+#' @param multiple Handling of rows in `x` with multiple matches in `y`. For
+#' each row of `x`: `"all"`, the default, returns every match detected in `y`.
+#' This is the same behavior as SQL. `"any"` returns one match detected in `y`,
+#' with no guarantees on which match will be returned. It is often faster than
+#' `"first"` and `"last"` in dplyr, but avoid it here. `"first"` returns the
+#' first match detected in `y`. `"last"` returns the last match detected in `y`.
+#' For `"any"` and `"last"`, calculation is delegated to dplyr join methods, and
+#' in the case of right join, also for `"first"`..
+#' @param unmatched How should unmatched keys that would result in dropped rows
+#' be handled? `"drop"` drops unmatched keys from the result. `"error"` throws
+#' an error if unmatched keys are detected. Also, a named list of the form
+#' `list(x = 1, y = 0.5, fail = "warning")`can be used when calculation is
+#' **not** delegated to dplyr. The first two elements are the proportions that
+#' must match, and the third element is `"message"`, `"warning"`, or `"error"`.
+#' @param relationship Handling of the expected relationship between the keys of
+#' `x` and `y`. If the expectations chosen from the list below are invalidated,
+#' an error is thrown. `NULL`, the default, doesn't expect there to be any
+#' relationship between `x` and `y`. However, for equality joins it will check
+#' for a many-to-many relationship (which is typically unexpected) and will warn
+#' if one occurs, encouraging you to either take a closer look at your inputs or
+#' make this relationship explicit by specifying "many-to-many". `"one-to-one"`
+#' expects: Each row in x matches at most 1 row in y. Each row in y matches at
+#' most 1 row in x. `"one-to-many"` expects:  Each row in y matches at most 1
+#' row in x. "many-to-one" expects: Each row in x matches at most 1 row in y.
+#' `"many-to-many"` doesn't perform any relationship checks, but is provided to
+#' allow you to be explicit about this relationship if you know it exists.
+#' `relationship` doesn't handle cases where there are zero matches. For that,
+#' see `unmatched`.
+#' @param verbose integer. Prints information about the join. One of `0` (off),
+#' `1` (default) or `2` (additionally prints the classes of the `by` columns).
+#' @param column name for an extra column to generate in the output indicating
+#' which dataset a record came from. `TRUE` calls this column `".join"`, or give
+#' another name.
+#' @param attr name for attribute providing information about the join performed
+#' (including the output of [collapse::fmatch()]) to the result. `TRUE` calls
+#' this attribute `"join.match"` or give your own name. Note: this also invokes
+#' the count argument to [collapse::fmatch()].
+right_join_ <- structure(function(x = (.), y, by = NULL, copy = FALSE,
+    suffix = c(".x", ".y"), ..., keep = NULL, na_matches = c("na", "never"),
+    multiple = "all", unmatched = "drop", relationship = NULL, sort = FALSE,
+    verbose = 0, column = NULL, attr = NULL) {
 
   .__top_call__. <- TRUE
 
-  if (!missing(copy))
-    warning("This argument is here only for compatibility with tleft_join() but it does nothing here.")
-  # We transform x into a data.table, then restore the result into data.frame
-  # or  tibble if needed
-  is_x_dtf <- is_dtf(x)
-  is_x_dtbl <- is_dtbl(x)
-  x <- as_dtt(x)
-  res <- merge(x, y, by = by, all.x = TRUE, all.y = FALSE,
-    sort = TRUE, suffixes = suffix, no.dups = TRUE, allow.cartesian = FALSE)
-  # Transform if needed
-  if (is_x_dtf)
-    res <- as_dtf(res)
-  if (is_x_dtbl)
-    res <- as_dtbl(res)
-  res
-}, class = c("function", "sciviews_fn"),
-  comment = .src_sciviews("dplyr::left_join"))
+  # Implicit data-dot mechanism
+  if (missing(x) || (is.data.frame(x) && (missing(y) || !is.data.frame(y))))
+    return(eval_data_dot(sys.call(), arg = 'x', abort_msg =
+        gettext("`x` and `y` must be `data.frame`s.")))
 
-#' @export
-#' @rdname sciviews_functions
-right_join_ <- structure(function(x, y, by = NULL, suffix = c(".x", ".y"),
-copy = FALSE, ...) {
+  if (!missing(...))
+    check_dots_empty()
 
-  .__top_call__. <- TRUE
+  # Deleguate to .join_()
+  do.call('.join_', list(x = substitute(x), y = substitute(y), by = by,
+    copy = copy, suffix = suffix, keep = keep, na_matches = na_matches,
+    multiple = multiple, unmatched = unmatched, relationship = relationship,
+    sort = sort, verbose = verbose, column = column, attr = attr,
+    how = "right"), envir = parent.frame())
 
-  if (!missing(copy))
-    warning("This argument is here only for compatibility with tright_join() but it does nothing here.")
-  # We transform x into a data.table, then restore the result into data.frame
-  # or  tibble if needed
-  is_x_dtf <- is_dtf(x)
-  is_x_dtbl <- is_dtbl(x)
-  x <- as_dtt(x)
-  res <- merge(x, y, by = by, all.x = FALSE, all.y = TRUE,
-    sort = TRUE, suffixes = suffix, no.dups = TRUE, allow.cartesian = FALSE)
-  # Transform if needed
-  if (is_x_dtf)
-    res <-  as_dtf(res)
-  if (is_x_dtbl)
-    res <- as_dtbl(res)
-  res
 }, class = c("function", "sciviews_fn"),
   comment = .src_sciviews("dplyr::right_join"))
 
 #' @export
 #' @rdname sciviews_functions
-inner_join_ <- structure(function(x, y, by = NULL, suffix = c(".x", ".y"),
-copy = FALSE, ...) {
+full_join_ <- structure(function(x = (.), y, by = NULL, copy = FALSE,
+  suffix = c(".x", ".y"), ..., keep = NULL, na_matches = c("na", "never"),
+  multiple = "all", relationship = NULL, sort = FALSE,
+  verbose = 0, column = NULL, attr = NULL) {
 
   .__top_call__. <- TRUE
 
-  if (!missing(copy))
-    warning("This argument is here only for compatibility with tinner_join() but it does nothing here.")
-  # We transform x into a data.table, then restore the result into data.frame
-  # or  tibble if needed
-  is_x_dtf <- is_dtf(x)
-  is_x_dtbl <- is_dtbl(x)
-  x <- as_dtt(x)
-  res <- merge(x, y, by = by, all.x = FALSE, all.y = FALSE,
-    sort = TRUE, suffixes = suffix, no.dups = TRUE, allow.cartesian = FALSE)
-  # Transform if needed
-  if (is_x_dtf)
-    res <- as_dtf(res)
-  if (is_x_dtbl)
-    res <- as_dtbl(res)
-  res
+  # Implicit data-dot mechanism
+  if (missing(x) || (is.data.frame(x) && (missing(y) || !is.data.frame(y))))
+    return(eval_data_dot(sys.call(), arg = 'x', abort_msg =
+        gettext("`x` and `y` must be `data.frame`s.")))
+
+  if (!missing(...))
+    check_dots_empty()
+
+  # Deleguate to .join_()
+  do.call('.join_', list(x = substitute(x), y = substitute(y), by = by,
+    copy = copy, suffix = suffix, keep = keep, na_matches = na_matches,
+    multiple = multiple, relationship = relationship,
+    sort = sort, verbose = verbose, column = column, attr = attr,
+    how = "full"), envir = parent.frame())
+
+}, class = c("function", "sciviews_fn"),
+  comment = .src_sciviews("dplyr::full_join"))
+
+#' @export
+#' @rdname sciviews_functions
+left_join_ <- structure(function(x = (.), y, by = NULL, copy = FALSE,
+  suffix = c(".x", ".y"), ..., keep = NULL, na_matches = c("na", "never"),
+  multiple = "all", unmatched = "drop", relationship = NULL, sort = FALSE,
+  verbose = 0, column = NULL, attr = NULL) {
+
+  .__top_call__. <- TRUE
+
+  # Implicit data-dot mechanism
+  if (missing(x) || (is.data.frame(x) && (missing(y) || !is.data.frame(y))))
+    return(eval_data_dot(sys.call(), arg = 'x', abort_msg =
+        gettext("`x` and `y` must be `data.frame`s.")))
+
+  if (!missing(...))
+    check_dots_empty()
+
+  # Deleguate to .join_()
+  do.call('.join_', list(x = substitute(x), y = substitute(y), by = by,
+    copy = copy, suffix = suffix, keep = keep, na_matches = na_matches,
+    multiple = multiple, unmatched = unmatched, relationship = relationship,
+    sort = sort, verbose = verbose, column = column, attr = attr,
+    how = "left"), envir = parent.frame())
+
+}, class = c("function", "sciviews_fn"),
+  comment = .src_sciviews("dplyr::left_join"))
+
+#' @export
+#' @rdname sciviews_functions
+inner_join_ <- structure(function(x = (.), y, by = NULL, copy = FALSE,
+  suffix = c(".x", ".y"), ..., keep = NULL, na_matches = c("na", "never"),
+  multiple = "all", unmatched = "drop", relationship = NULL, sort = FALSE,
+  verbose = 0, column = NULL, attr = NULL) {
+
+  .__top_call__. <- TRUE
+
+  # Implicit data-dot mechanism
+  if (missing(x) || (is.data.frame(x) && (missing(y) || !is.data.frame(y))))
+    return(eval_data_dot(sys.call(), arg = 'x', abort_msg =
+        gettext("`x` and `y` must be `data.frame`s.")))
+
+  if (!missing(...))
+    check_dots_empty()
+
+  # Deleguate to .join_()
+  do.call('.join_', list(x = substitute(x), y = substitute(y), by = by,
+    copy = copy, suffix = suffix, keep = keep, na_matches = na_matches,
+    multiple = multiple, unmatched = unmatched, relationship = relationship,
+    sort = sort, verbose = verbose, column = column, attr = attr,
+    how = "inner"), envir = parent.frame())
+
 }, class = c("function", "sciviews_fn"),
   comment = .src_sciviews("dplyr::inner_join"))
+
+# Note: for semi_join, multiple = FALSE must be used in collapse::join()
+#       -> multiple = "first"
+#' @export
+#' @rdname sciviews_functions
+semi_join_ <- structure(function(x = (.), y, by = NULL, copy = FALSE, ...,
+    na_matches = c("na", "never"), sort = FALSE, verbose = 0, column = NULL,
+  attr = NULL) {
+
+  .__top_call__. <- TRUE
+
+  # Implicit data-dot mechanism
+  if (missing(x) || (is.data.frame(x) && (missing(y) || !is.data.frame(y))))
+    return(eval_data_dot(sys.call(), arg = 'x', abort_msg =
+        gettext("`x` and `y` must be `data.frame`s.")))
+
+  if (!missing(...))
+    check_dots_empty()
+
+  # Deleguate to .join_()
+  do.call('.join_', list(x = substitute(x), y = substitute(y), by = by,
+    copy = copy, na_matches = na_matches, multiple = "first", sort = sort,
+    verbose = verbose, column = column, attr = attr, how = "semi"),
+    envir = parent.frame())
+
+}, class = c("function", "sciviews_fn"),
+  comment = .src_sciviews("dplyr::semi_join"))
+
+# Note: for anti_join, multiple = FALSE or TRUE are OK in collapse::join()
+#       -> multiple = "first"
+#' @export
+#' @rdname sciviews_functions
+anti_join_ <- structure(function(x = (.), y, by = NULL, copy = FALSE, ...,
+  na_matches = c("na", "never"), sort = FALSE, verbose = 0, column = NULL,
+  attr = NULL) {
+
+  .__top_call__. <- TRUE
+
+  # Implicit data-dot mechanism
+  if (missing(x) || (is.data.frame(x) && (missing(y) || !is.data.frame(y))))
+    return(eval_data_dot(sys.call(), arg = 'x', abort_msg =
+        gettext("`x` and `y` must be `data.frame`s.")))
+
+  if (!missing(...))
+    check_dots_empty()
+
+  # Deleguate to .join_()
+  do.call('.join_', list(x = substitute(x), y = substitute(y), by = by,
+    copy = copy, na_matches = na_matches, multiple = "first", sort = sort,
+    verbose = verbose, column = column, attr = attr, how = "anti"),
+    envir = parent.frame())
+
+}, class = c("function", "sciviews_fn"),
+  comment = .src_sciviews("dplyr::anti_join"))
+
 
 #' @export
 #' @rdname sciviews_functions
@@ -1659,7 +1922,7 @@ distinct_ <- structure(function(.data, ..., .keep_all = FALSE) {
     # Must regroup with the regular dplyr::group_by()
     #.data <- group_by(fungroup(.data), across(gvars)) # Warning message
     .data <- fungroup(.data)
-    .data <- do.call(group_by, c(list(.data = .data), gvars))
+    .data <- do.call('group_by', c(list(.data = .data), gvars))
   } else {
     is_x_grp_df <- FALSE
   }
@@ -1672,7 +1935,7 @@ distinct_ <- structure(function(.data, ..., .keep_all = FALSE) {
   if (is_x_dtt)
     res <- as_dtt(res)
   if (is_x_grp_df)
-    res <- do.call(fgroup_by, c(list(.X = res), gvars))
+    res <- do.call('fgroup_by', c(list(.X = res), gvars))
   res
 }, class = c("function", "sciviews_fn"), comment = .src_sciviews("dplyr::distinct"))
 
@@ -1703,7 +1966,7 @@ drop_na_ <- structure(function(data, ...) {
     res <- drop_na(data, ...)
   }
   if (is_x_grp_df)
-    res <- do.call(fgroup_by, c(list(.X = res), gvars))
+    res <- do.call('fgroup_by', c(list(.X = res), gvars))
   res
 }, class = c("function", "sciviews_fn"), comment = .src_sciviews("tidyr::drop_na"))
 
@@ -1731,7 +1994,7 @@ replace_na_ <- structure(function(data, replace, ...) {
     res <- replace_na(data, replace, ...)
   }
   if (is_x_grp_df)
-    res <- do.call(fgroup_by, c(list(.X = res), gvars))
+    res <- do.call('fgroup_by', c(list(.X = res), gvars))
   res
 }, class = c("function", "sciviews_fn"),
   comment = .src_sciviews("tidyr::replace_na"))
@@ -1750,7 +2013,7 @@ values_to = "value", ...) {
   # Object is always ungrouped => we don't care of the groups!
   is_x_dtf <- is_dtf(data)
   is_x_dtt <- is_dtt(data)
-  res <-  do.call(pivot_longer, list(data = data, cols = substitute(cols),
+  res <-  do.call('pivot_longer', list(data = data, cols = substitute(cols),
     names_to = names_to, values_to = values_to, ...))
   if (is_x_dtf)
     res <- as_dtf(res)
@@ -1778,7 +2041,7 @@ pivot_wider_ <- structure(function(data, names_from = name,
   # Sometimes groups are kept, sometimes not... for now, we do not care.
   is_x_dtf <- is_dtf(data)
   is_x_dtt <- is_dtt(data)
-  res <- do.call(pivot_wider, list(data = fungroup(data),
+  res <- do.call('pivot_wider', list(data = fungroup(data),
     names_from = substitute(names_from),
     values_from = substitute(values_from), ...))
   if (is_x_dtf)
@@ -1803,7 +2066,7 @@ uncount_ <- structure(function(data, weights, .remove = TRUE, .id = NULL) {
   # (we always ungroup).
   is_x_dtf <- is_dtf(data)
   is_x_dtt <- is_dtt(data)
-  res <- do.call(uncount, list(data = fungroup(data),
+  res <- do.call('uncount', list(data = fungroup(data),
     weights = substitute(weights), .remove = .remove, .id = .id))
   if (is_x_dtf)
     res <- as_dtf(res)
@@ -1851,7 +2114,7 @@ separate_ <- structure(function(data, col, into, sep = "[^[:alnum:]]+",
   # (we always ungroup).
   is_x_dtf <- is_dtf(data)
   is_x_dtt <- is_dtt(data)
-  res <- do.call(separate, list(data = as_dtbl(fungroup(data)),
+  res <- do.call('separate', list(data = as_dtbl(fungroup(data)),
     col = substitute(col), into = into, sep = sep, remove = remove,
     convert = convert, ...))
   if (is_x_dtf)
@@ -1910,7 +2173,7 @@ fill_ <- structure(function(data, ...,
     res <- fill(data, ..., .direction = .direction)
   }
   if (is_x_grp_df)
-    res <- do.call(fgroup_by, c(list(.X = res), gvars))
+    res <- do.call('fgroup_by', c(list(.X = res), gvars))
   res
 }, class = c("function", "sciviews_fn"), comment = .src_sciviews("tidyr::fill"))
 
@@ -1934,14 +2197,14 @@ extract_ <- structure(function(data, col, into, regex = "([[:alnum:]]+)",
   }
   if (is_dtt(data)) {
 
-    res <- do.call(extract, list(as_dtbl(data), col = substitute(col),
+    res <- do.call('extract', list(as_dtbl(data), col = substitute(col),
       into = into, regex = regex, remove = remove, convert = convert, ...))
     res <- as_dtt(collect(res))
   } else {
-    res <- do.call(extract, list(data, col = substitute(col), into = into,
+    res <- do.call('extract', list(data, col = substitute(col), into = into,
       regex = regex, remove = remove, convert = convert, ...))
   }
   if (is_x_grp_df)
-    res <- do.call(fgroup_by, c(list(.X = res), gvars))
+    res <- do.call('fgroup_by', c(list(.X = res), gvars))
   res
 }, class = c("function", "sciviews_fn"), comment = .src_sciviews("tidyr::extract"))
