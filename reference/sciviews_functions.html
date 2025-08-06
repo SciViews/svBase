@@ -169,13 +169,102 @@ speedy and SciViews functions in the same pipeline.</p>
 <span></span>
 <span><span class="fu">pull_</span><span class="op">(</span>.data <span class="op">=</span> <span class="op">(</span><span class="va">.</span><span class="op">)</span>, var <span class="op">=</span> <span class="op">-</span><span class="fl">1</span>, name <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">full_join_</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, by <span class="op">=</span> <span class="cn">NULL</span>, suffix <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">".x"</span>, <span class="st">".y"</span><span class="op">)</span>, copy <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span>
+<span><span class="fu">right_join_</span><span class="op">(</span></span>
+<span>  x <span class="op">=</span> <span class="op">(</span><span class="va">.</span><span class="op">)</span>,</span>
+<span>  <span class="va">y</span>,</span>
+<span>  by <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  copy <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  suffix <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">".x"</span>, <span class="st">".y"</span><span class="op">)</span>,</span>
+<span>  <span class="va">...</span>,</span>
+<span>  keep <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  na_matches <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"na"</span>, <span class="st">"never"</span><span class="op">)</span>,</span>
+<span>  multiple <span class="op">=</span> <span class="st">"all"</span>,</span>
+<span>  unmatched <span class="op">=</span> <span class="st">"drop"</span>,</span>
+<span>  relationship <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  sort <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  column <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  attr <span class="op">=</span> <span class="cn">NULL</span></span>
+<span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">left_join_</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, by <span class="op">=</span> <span class="cn">NULL</span>, suffix <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">".x"</span>, <span class="st">".y"</span><span class="op">)</span>, copy <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span>
+<span><span class="fu">full_join_</span><span class="op">(</span></span>
+<span>  x <span class="op">=</span> <span class="op">(</span><span class="va">.</span><span class="op">)</span>,</span>
+<span>  <span class="va">y</span>,</span>
+<span>  by <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  copy <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  suffix <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">".x"</span>, <span class="st">".y"</span><span class="op">)</span>,</span>
+<span>  <span class="va">...</span>,</span>
+<span>  keep <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  na_matches <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"na"</span>, <span class="st">"never"</span><span class="op">)</span>,</span>
+<span>  multiple <span class="op">=</span> <span class="st">"all"</span>,</span>
+<span>  relationship <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  sort <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  column <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  attr <span class="op">=</span> <span class="cn">NULL</span></span>
+<span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">right_join_</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, by <span class="op">=</span> <span class="cn">NULL</span>, suffix <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">".x"</span>, <span class="st">".y"</span><span class="op">)</span>, copy <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span>
+<span><span class="fu">left_join_</span><span class="op">(</span></span>
+<span>  x <span class="op">=</span> <span class="op">(</span><span class="va">.</span><span class="op">)</span>,</span>
+<span>  <span class="va">y</span>,</span>
+<span>  by <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  copy <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  suffix <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">".x"</span>, <span class="st">".y"</span><span class="op">)</span>,</span>
+<span>  <span class="va">...</span>,</span>
+<span>  keep <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  na_matches <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"na"</span>, <span class="st">"never"</span><span class="op">)</span>,</span>
+<span>  multiple <span class="op">=</span> <span class="st">"all"</span>,</span>
+<span>  unmatched <span class="op">=</span> <span class="st">"drop"</span>,</span>
+<span>  relationship <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  sort <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  column <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  attr <span class="op">=</span> <span class="cn">NULL</span></span>
+<span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">inner_join_</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, by <span class="op">=</span> <span class="cn">NULL</span>, suffix <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">".x"</span>, <span class="st">".y"</span><span class="op">)</span>, copy <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span>
+<span><span class="fu">inner_join_</span><span class="op">(</span></span>
+<span>  x <span class="op">=</span> <span class="op">(</span><span class="va">.</span><span class="op">)</span>,</span>
+<span>  <span class="va">y</span>,</span>
+<span>  by <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  copy <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  suffix <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">".x"</span>, <span class="st">".y"</span><span class="op">)</span>,</span>
+<span>  <span class="va">...</span>,</span>
+<span>  keep <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  na_matches <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"na"</span>, <span class="st">"never"</span><span class="op">)</span>,</span>
+<span>  multiple <span class="op">=</span> <span class="st">"all"</span>,</span>
+<span>  unmatched <span class="op">=</span> <span class="st">"drop"</span>,</span>
+<span>  relationship <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  sort <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  column <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  attr <span class="op">=</span> <span class="cn">NULL</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">semi_join_</span><span class="op">(</span></span>
+<span>  x <span class="op">=</span> <span class="op">(</span><span class="va">.</span><span class="op">)</span>,</span>
+<span>  <span class="va">y</span>,</span>
+<span>  by <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  copy <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  <span class="va">...</span>,</span>
+<span>  na_matches <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"na"</span>, <span class="st">"never"</span><span class="op">)</span>,</span>
+<span>  sort <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  column <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  attr <span class="op">=</span> <span class="cn">NULL</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">anti_join_</span><span class="op">(</span></span>
+<span>  x <span class="op">=</span> <span class="op">(</span><span class="va">.</span><span class="op">)</span>,</span>
+<span>  <span class="va">y</span>,</span>
+<span>  by <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  copy <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  <span class="va">...</span>,</span>
+<span>  na_matches <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"na"</span>, <span class="st">"never"</span><span class="op">)</span>,</span>
+<span>  sort <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  column <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  attr <span class="op">=</span> <span class="cn">NULL</span></span>
+<span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">bind_rows_</span><span class="op">(</span><span class="va">...</span>, .id <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
 <span></span>
@@ -396,7 +485,13 @@ existing column must have this name, or an error is generated).4</p></dd>
 
 <dt id="arg-by">by<a class="anchor" aria-label="anchor" href="#arg-by"></a></dt>
 <dd><p>A list of names of the columns to use for joining the two data
-frames.</p></dd>
+frames. Could also be a join specification created with <code><a href="https://dplyr.tidyverse.org/reference/join_by.html" class="external-link">dplyr::join_by()</a></code>,
+but in this case, calculation is delegated to dplyr's join methods.</p></dd>
+
+
+<dt id="arg-copy">copy<a class="anchor" aria-label="anchor" href="#arg-copy"></a></dt>
+<dd><p>This argument is there for compatibility with the "t" matching
+functions, but it is not used here.</p></dd>
 
 
 <dt id="arg-suffix">suffix<a class="anchor" aria-label="anchor" href="#arg-suffix"></a></dt>
@@ -405,9 +500,84 @@ columns that come from the first or the second data frame. By default it is
 <code>c(".x", ".y")</code>.</p></dd>
 
 
-<dt id="arg-copy">copy<a class="anchor" aria-label="anchor" href="#arg-copy"></a></dt>
-<dd><p>This argument is there for compatibility with the "t" matching
-functions, but it is not used here.</p></dd>
+<dt id="arg-keep">keep<a class="anchor" aria-label="anchor" href="#arg-keep"></a></dt>
+<dd><p>Should the join keys from both <code>x</code> and <code>y</code> be preserved in the
+output? If <code>NULL</code>, the default, joins on equality retain only the keys from
+<code>x</code>, while joins on inequality retain the keys from both inputs. If <code>TRUE</code>,
+all keys from both inputs are retained. If <code>FALSE</code>, only keys from <code>x</code> are
+retained. For right and full joins, the data in key columns corresponding to
+rows that only exist in <code>y</code> are merged into the key columns from <code>x</code>. Can't
+be used when joining on inequality conditions. If <code>keep = TRUE</code>, calculation
+is delegated to dplyr join methods.</p></dd>
+
+
+<dt id="arg-na-matches">na_matches<a class="anchor" aria-label="anchor" href="#arg-na-matches"></a></dt>
+<dd><p>Should two <code>NA</code> or two <code>NaN</code> values match? <code>"na"</code>, the
+default, treats two <code>NA</code> or two <code>NaN</code> values as equal, like <code>%in%</code>,
+<code><a href="https://rdrr.io/r/base/match.html" class="external-link">match()</a></code>, <code>and merge()</code>. <code>"never"</code> treats two <code>NA</code> or two <code>NaN</code> values as
+different, and will never match them together or to any other values. This is
+similar to joins for database sources and to
+<code>base::merge(incomparables = NA)</code>. If <code>"never"</code>, calculation is delegated to
+dplyr join methods.</p></dd>
+
+
+<dt id="arg-multiple">multiple<a class="anchor" aria-label="anchor" href="#arg-multiple"></a></dt>
+<dd><p>Handling of rows in <code>x</code> with multiple matches in <code>y</code>. For
+each row of <code>x</code>: <code>"all"</code>, the default, returns every match detected in <code>y</code>.
+This is the same behavior as SQL. <code>"any"</code> returns one match detected in <code>y</code>,
+with no guarantees on which match will be returned. It is often faster than
+<code>"first"</code> and <code>"last"</code> in dplyr, but avoid it here. <code>"first"</code> returns the
+first match detected in <code>y</code>. <code>"last"</code> returns the last match detected in <code>y</code>.
+For <code>"any"</code> and <code>"last"</code>, calculation is delegated to dplyr join methods, and
+in the case of right join, also for <code>"first"</code>..</p></dd>
+
+
+<dt id="arg-unmatched">unmatched<a class="anchor" aria-label="anchor" href="#arg-unmatched"></a></dt>
+<dd><p>How should unmatched keys that would result in dropped rows
+be handled? <code>"drop"</code> drops unmatched keys from the result. <code>"error"</code> throws
+an error if unmatched keys are detected. Also, a named list of the form
+<code>list(x = 1, y = 0.5, fail = "warning")</code>can be used when calculation is
+<strong>not</strong> delegated to dplyr. The first two elements are the proportions that
+must match, and the third element is <code>"message"</code>, <code>"warning"</code>, or <code>"error"</code>.</p></dd>
+
+
+<dt id="arg-relationship">relationship<a class="anchor" aria-label="anchor" href="#arg-relationship"></a></dt>
+<dd><p>Handling of the expected relationship between the keys of
+<code>x</code> and <code>y</code>. If the expectations chosen from the list below are invalidated,
+an error is thrown. <code>NULL</code>, the default, doesn't expect there to be any
+relationship between <code>x</code> and <code>y</code>. However, for equality joins it will check
+for a many-to-many relationship (which is typically unexpected) and will warn
+if one occurs, encouraging you to either take a closer look at your inputs or
+make this relationship explicit by specifying "many-to-many". <code>"one-to-one"</code>
+expects: Each row in x matches at most 1 row in y. Each row in y matches at
+most 1 row in x. <code>"one-to-many"</code> expects:  Each row in y matches at most 1
+row in x. "many-to-one" expects: Each row in x matches at most 1 row in y.
+<code>"many-to-many"</code> doesn't perform any relationship checks, but is provided to
+allow you to be explicit about this relationship if you know it exists.
+<code>relationship</code> doesn't handle cases where there are zero matches. For that,
+see <code>unmatched</code>.</p></dd>
+
+
+<dt id="arg-sort">sort<a class="anchor" aria-label="anchor" href="#arg-sort"></a></dt>
+<dd><p>If <code>TRUE</code> largest group will be shown on top.</p></dd>
+
+
+<dt id="arg-verbose">verbose<a class="anchor" aria-label="anchor" href="#arg-verbose"></a></dt>
+<dd><p>integer. Prints information about the join. One of <code>0</code> (off),
+<code>1</code> (default) or <code>2</code> (additionally prints the classes of the <code>by</code> columns).</p></dd>
+
+
+<dt id="arg-column">column<a class="anchor" aria-label="anchor" href="#arg-column"></a></dt>
+<dd><p>name for an extra column to generate in the output indicating
+which dataset a record came from. <code>TRUE</code> calls this column <code>".join"</code>, or give
+another name.</p></dd>
+
+
+<dt id="arg-attr">attr<a class="anchor" aria-label="anchor" href="#arg-attr"></a></dt>
+<dd><p>name for attribute providing information about the join performed
+(including the output of <code><a href="https://sebkrantz.github.io/collapse/reference/fmatch.html" class="external-link">collapse::fmatch()</a></code>) to the result. <code>TRUE</code> calls
+this attribute <code>"join.match"</code> or give your own name. Note: this also invokes
+the count argument to <code><a href="https://sebkrantz.github.io/collapse/reference/fmatch.html" class="external-link">collapse::fmatch()</a></code>.</p></dd>
 
 
 <dt id="arg--id">.id<a class="anchor" aria-label="anchor" href="#arg--id"></a></dt>
@@ -417,10 +587,6 @@ other arguments are named, or numbers.</p></dd>
 
 <dt id="arg-wt">wt<a class="anchor" aria-label="anchor" href="#arg-wt"></a></dt>
 <dd><p>Frequency weights. Can be <code>NULL</code> or a variable. Use data masking.</p></dd>
-
-
-<dt id="arg-sort">sort<a class="anchor" aria-label="anchor" href="#arg-sort"></a></dt>
-<dd><p>If <code>TRUE</code> largest group will be shown on top.</p></dd>
 
 
 <dt id="arg-sort-cat">sort_cat<a class="anchor" aria-label="anchor" href="#arg-sort-cat"></a></dt>
