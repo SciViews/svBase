@@ -119,8 +119,8 @@ list_sciviews_functions <- function() {
     "filter_", "full_join_", "group_by_", "inner_join_", "left_join_",
     "mutate_", "pivot_longer_", "pivot_wider_", "pull_", "reframe_", "rename_",
     "rename_with_", "replace_na_", "right_join_", "select_", "semi_join",
-    "separate_", "separate_rows_", "summarise_", "tally_", "transmute_",
-    "uncount_", "ungroup_", "unite_")
+    "separate_", "separate_rows_", "summarise_", "summarize_()", "tally_",
+    "transmute_", "uncount_", "ungroup_", "unite_")
 }
 
 .src_sciviews <- function(src,
@@ -1045,6 +1045,10 @@ summarise_ <- structure(function(.data = (.), ..., .by = NULL,
 }, class = c("function", "sciviews_fn"),
   comment = .src_sciviews("collapse::fsummarise"))
 
+#' @export
+#' @rdname sciviews_functions
+summarize_ <- summarise_
+
 # Reframe_() works unless some groups return a 0-row result. It also does not
 # support the return of a data.frame with several columns, nor across()
 # The syntax using .cols/.data does not work either
@@ -1282,7 +1286,9 @@ pull_ <- structure(function(.data = (.), var = -1, name = NULL, ...) {
   res
 }, class = c("function", "sciviews_fn"), comment = .src_sciviews("dplyr::pull"))
 
-.join_ <- function(x, y, by = NULL, copy = FALSE,
+#' @export
+#' @rdname sciviews_functions
+join_ <- function(x, y, by = NULL, copy = FALSE,
   suffix = c(".x", ".y"), ..., keep = NULL, na_matches = c("na", "never"),
   multiple = "all", unmatched = "drop", relationship = NULL, sort = FALSE,
   verbose = 0, column = NULL, attr = NULL, how = "full") {
@@ -1297,15 +1303,15 @@ pull_ <- structure(function(.data = (.), var = -1, name = NULL, ...) {
 
   na_matches <- na_matches[1]
   if (!(isTRUE(na_matches == "na") || isTRUE(na_matches == "never")))
-    stop("{.arg na_matches} must be one of \"na\" or \"never\", not {.obj_type_friendly {na_matches}}.")
+    stop("{.arg na_matches} must be one of \"na\" or \"never\", not {.obj_type_friendly {na_matches}} (it is {.val {na_matches}}).")
 
   if (length(multiple) != 1L ||
       fmatch(multiple, c("all", "first", "any", "last"), nomatch = 0L) == 0L)
-    stop("{.arg multiple} must be one of \"all\", \"first\", \"any\", or \"last\", not {.obj_type_friendly {multiple}}.")
+    stop("{.arg multiple} must be one of \"all\", \"first\", \"any\", or \"last\", not {.obj_type_friendly {multiple}} (it is {.val {multiple}}).")
 
   if (!(isTRUE(unmatched == "drop") || isTRUE(unmatched == "error") ||
       is.list(unmatched))) # List for collapse::join()
-    stop("{.arg unmatched} must be \"drop\", \"error\", or a {.cls list}, not {.obj_type_friendly {unmatched}}.")
+    stop("{.arg unmatched} must be \"drop\", \"error\", or a {.cls list}, not {.obj_type_friendly {unmatched}} (it is {.val {unmatched}}).")
 
   # Depending on the arguments, we use the fast collapse::join(), or the slower
   # dplyr::xxx_join(), also if a 'dplyr_join_by' object is provided for `by=`
@@ -1354,7 +1360,7 @@ pull_ <- structure(function(.data = (.), var = -1, name = NULL, ...) {
     stop("{.arg suffix} must be a character vector of length 2, not {.obj_type_friendly {suffix}} of length {length(suffix)}.")
 
   if (!is.null(keep) && !isFALSE(keep))
-    stop("{.arg keep} must be {.code TRUE}, {.code FALSE}, or {.code NULL}, not {.obj_type_friendly {keep}}.")
+    stop("{.arg keep} must be {.code TRUE}, {.code FALSE}, or {.code NULL}, not {.obj_type_friendly {keep}} (it is {.val {keep}}).")
 
   if (is.null(relationship)) {
     validate <- "m:m"
@@ -1372,7 +1378,7 @@ pull_ <- structure(function(.data = (.), var = -1, name = NULL, ...) {
   mult <- multiple == "all"
 
   if (length(verbose) != 1 || fmatch(verbose, c(0, 1, 2), nomatch = 0L) == 0L)
-    stop("{.arg verbose} must be one of 0, 1, or 2, not {.obj_type_friendly {verbose}}.")
+    stop("{.arg verbose} must be one of 0, 1, or 2, not {.obj_type_friendly {verbose}} (it is {.val {verbose}}).")
 
   if (is.list(unmatched)) {
     require <- unmatched
@@ -1384,8 +1390,8 @@ pull_ <- structure(function(.data = (.), var = -1, name = NULL, ...) {
   if (!is.null(require) && verbose == 0)
     verbose <- 1
 
-  if(!isTRUE(sort) && !isFALSE(sort))
-    stop("{.arg sort} must be {.code TRUE} or {.code FALSE}, not {.obj_type_friendly {sort}}.")
+  if (!isTRUE(sort) && !isFALSE(sort))
+    stop("{.arg sort} must be {.code TRUE} or {.code FALSE}, not {.obj_type_friendly {sort}} (it is {.val {sort}}).")
 
   # Better manage errors returned by collapse::join()
   .temp_env <- temp_env()
@@ -1412,7 +1418,7 @@ pull_ <- structure(function(.data = (.), var = -1, name = NULL, ...) {
         i = "Each row in {.arg x} must match at most 1 row in {.arg y}.")
     ), fixed = TRUE)
     cli::cli_abort(c(msg2,
-      `*` = sprintf("{.emph from: {.code {expr_text(e$call, nlines = 2L)}}}")),
+      `*` = sprintf("{.emph from: {.code {expr_text(e$call, nlines = 3L)}}}")),
       call = call_env, .frame = call_env)
   }
   res <- withCallingHandlers(error = err, expr =
@@ -1499,7 +1505,7 @@ right_join_ <- structure(function(x = (.), y, by = NULL, copy = FALSE,
     check_dots_empty()
 
   # Deleguate to .join_()
-  do.call('.join_', list(x = substitute(x), y = substitute(y), by = by,
+  do.call('join_', list(x = substitute(x), y = substitute(y), by = by,
     copy = copy, suffix = suffix, keep = keep, na_matches = na_matches,
     multiple = multiple, unmatched = unmatched, relationship = relationship,
     sort = sort, verbose = verbose, column = column, attr = attr,
@@ -1526,7 +1532,7 @@ full_join_ <- structure(function(x = (.), y, by = NULL, copy = FALSE,
     check_dots_empty()
 
   # Deleguate to .join_()
-  do.call('.join_', list(x = substitute(x), y = substitute(y), by = by,
+  do.call('join_', list(x = substitute(x), y = substitute(y), by = by,
     copy = copy, suffix = suffix, keep = keep, na_matches = na_matches,
     multiple = multiple, relationship = relationship,
     sort = sort, verbose = verbose, column = column, attr = attr,
@@ -1553,7 +1559,7 @@ left_join_ <- structure(function(x = (.), y, by = NULL, copy = FALSE,
     check_dots_empty()
 
   # Deleguate to .join_()
-  do.call('.join_', list(x = substitute(x), y = substitute(y), by = by,
+  do.call('join_', list(x = substitute(x), y = substitute(y), by = by,
     copy = copy, suffix = suffix, keep = keep, na_matches = na_matches,
     multiple = multiple, unmatched = unmatched, relationship = relationship,
     sort = sort, verbose = verbose, column = column, attr = attr,
@@ -1580,7 +1586,7 @@ inner_join_ <- structure(function(x = (.), y, by = NULL, copy = FALSE,
     check_dots_empty()
 
   # Deleguate to .join_()
-  do.call('.join_', list(x = substitute(x), y = substitute(y), by = by,
+  do.call('join_', list(x = substitute(x), y = substitute(y), by = by,
     copy = copy, suffix = suffix, keep = keep, na_matches = na_matches,
     multiple = multiple, unmatched = unmatched, relationship = relationship,
     sort = sort, verbose = verbose, column = column, attr = attr,
@@ -1608,7 +1614,7 @@ semi_join_ <- structure(function(x = (.), y, by = NULL, copy = FALSE, ...,
     check_dots_empty()
 
   # Deleguate to .join_()
-  do.call('.join_', list(x = substitute(x), y = substitute(y), by = by,
+  do.call('join_', list(x = substitute(x), y = substitute(y), by = by,
     copy = copy, na_matches = na_matches, multiple = "first", sort = sort,
     verbose = verbose, column = column, attr = attr, how = "semi"),
     envir = parent.frame())
@@ -1635,7 +1641,7 @@ anti_join_ <- structure(function(x = (.), y, by = NULL, copy = FALSE, ...,
     check_dots_empty()
 
   # Deleguate to .join_()
-  do.call('.join_', list(x = substitute(x), y = substitute(y), by = by,
+  do.call('join_', list(x = substitute(x), y = substitute(y), by = by,
     copy = copy, na_matches = na_matches, multiple = "first", sort = sort,
     verbose = verbose, column = column, attr = attr, how = "anti"),
     envir = parent.frame())
@@ -1643,40 +1649,121 @@ anti_join_ <- structure(function(x = (.), y, by = NULL, copy = FALSE, ...,
 }, class = c("function", "sciviews_fn"),
   comment = .src_sciviews("dplyr::anti_join"))
 
-
+# TODO: a mechanism to interpret and translate rbindlist() errors, see .join_()
+# TODO: mixing character & factor -> charaxcter in dplyr, but factor in data.table
+# TODO: check and find a solution for different units
+# Note that this cannot be a data-dot function, because
+# bind_rows_(a = df1, b = df2) should be OK without adding .data = .!
 #' @export
 #' @rdname sciviews_functions
-bind_rows_ <- structure(function(..., .id = NULL) {
+#' @param .use_names If `TRUE` (default), bind by matching names, if `FALSE`, bind by
+#'   position. If `NULL`, warns if  all items do not have the same name in the
+#'   same order, and then proceeds as if `FALSE` (but will be as if `TRUE` in
+#'   the future).
+#' @param .fill If `TRUE` (default), fills missing columns with `NA` or `NULL`
+#'   for missing list columns, if `FALSE`, do not fill.
+bind_rows_ <- structure(function(..., .id = NULL, .use_names = TRUE,
+    .fill = TRUE) {
 
   .__top_call__. <- TRUE
 
+  # If nothing provided, return a 0 x 0 data.trame
+  if (missing(...))
+    return(data.trame())
+
+  # If ..1 is a list and ...length == 1, use it, otherwise, use list(...)
+  if ((is.list(..1) && !is.data.frame(..1)) && ...length() == 1) {
+    arg_list <- ..1
+  } else {
+    arg_list <- list(...)
+  }
+  # Ungroup if it is grouped (note: dplyr::bind_rows don't do that!)
+  # This is because dplyr::bind_rows() does not support data.frames grouped
+  # with collapse::fgroup_by()
+  first_arg <- arg_list[[1]]
+  if (is_grouped_df(first_arg))
+    arg_list[[1]] <- first_arg <- fungroup(first_arg)
+
+  # If the list contains something else than data frames (could be named
+  # vectors, or lists), bind_cols() uses as_tibble() instead and ignore other
+  # arguments. In this case, we currently delegate to dplyr:bind_rows().
+  if (!all(sapply(arg_list, is.data.frame)))
+    return(do.call('bind_rows', c(arg_list, list( .id = .id)),
+      envir = parent.frame()))
+
+  # If .id is not NULL, check it
   if (!is.null(.id) && (length(.id) != 1 || !is.character(.id)))
-    stop("`.id` must be a scalar string")
-  # We transform check the class of first argument to return something similar
-  is_x_dtf <- is_dtf(..1)
-  is_x_dtbl <- is_dtbl(..1)
-  list... <- list(...)
-  # If there is at least one non-names item, bind_rows() does not use labels,
-  # but rbindlist() does with "" where there is no name. Homogenise the behavior
-  # by eliminating all names if at least one is ""
-  if (any(...names() == ""))
-    names(list...) <- NULL
-  # dplyr::bind_rows() does the job more intelligently than base::rbind(): it
-  # matches column names and fill missing data where needed. rbindlist() can do
-  # both, but same behavior is obtained with use.names = TRUE + fill = TRUE
-  res <- rbindlist(list..., use.names = TRUE, fill = TRUE, idcol = .id)
+    stop("{.arg .id} must be a single string, not {.obj_type_friendly {(.id)}} of length {length(.id)}.")
+
+  # .fill can be NULL, TRUE or FALSE
+  if (!isTRUE(.fill) && !isFALSE(.fill))
+    stop("{.arg .fill} must be {.code TRUE} or {.code FALSE}, not {.obj_type_friendly {(.fill)}}.")
+
+  # .use_names can be NULL, TRUE, FALSE
+ if (!is.null(.use_names) && !isTRUE(.use_names) && !isFALSE(.use_names))
+    stop("{.arg .use_names} must be {.code TRUE}, {.code FALSE}, or {.code NULL}, not {.obj_type_friendly {(.use_names)}} (it is {.val {(.use_names)}}).")
+
+  # Treat data.trames as data.tables
+  to_dtrm <- is.data.trame(first_arg)
+  if (to_dtrm) {
+    let_data.trame_to_data.table(first_arg)
+    on.exit(let_data.table_to_data.trame(first_arg))
+  }
+  # rbindlist() always return a data.table, but we may desire a data.frame or a
+  # tibble as well
+  to_dtf <- is_dtf(first_arg)
+  to_dtbl <- is_dtbl(first_arg)
+
+  if (is.null(.use_names)) {# Use the default that is "check" in rbindlist()
+    res <- rbindlist(arg_list, fill = .fill, idcol = .id)
+  } else {
+    res <- rbindlist(arg_list, use.names = .use_names, fill = .fill, idcol = .id)
+  }
+
   # bind_rows() always returns characters for .id, but rbindlist() sometimes
   # returns integers
   if (!is.null(.id))
     res[[.id]] <- as.character(res[[.id]])
-  # Transform if needed
-  if (is_x_dtf)
+
+  if (to_dtrm) {
+    let_data.table_to_data.trame(res)
+  } else if (to_dtf) {
     res <- as_dtf(res)
-  if (is_x_dtbl)
+  } else if (to_dtbl) {
     res <- as_dtbl(res)
+  }
   res
 }, class = c("function", "sciviews_fn"),
   comment = .src_sciviews("dplyr::bind_rows"))
+
+#' @export
+#' @rdname sciviews_functions
+bind_cols_ <- structure(function(...,
+  .name_repair = c("unique", "universal", "check_unique", "minimal")) {
+
+  .__top_call__. <- TRUE
+
+  # If nothing provided, return a 0 x 0 data.trame
+  if (missing(...))
+    return(data.trame())
+
+  # Ungroup if it is grouped (note: dplyr::bind_rows don't do that!)
+  # This is because dplyr::bind_rows() does not support data.frames grouped
+  # with collapse::fgroup_by()
+  arg_list <- list(...)
+  first_arg <- arg_list[[1]]
+  if (is_grouped_df(first_arg))
+    arg_list[[1]] <- fungroup(first_arg)
+
+  # For now, we use dplyr::bind_cols() internally, but we convert
+  # into the correct data frame object at the end
+  do.call('bind_cols', c(arg_list, list( .name_repair = .name_repair)),
+    envir = parent.frame())
+}, class = c("function", "sciviews_fn"),
+  comment = .src_sciviews("dplyr::bind_cols"))
+
+
+
 
 #' @export
 #' @rdname sciviews_functions
@@ -1871,32 +1958,6 @@ sort_cat = TRUE, decreasing = FALSE) {
 }, class = c("function", "sciviews_fn"),
   comment = .src_sciviews("collapse::fcount"))
 
-
-# Verbs that are not reengineered yet -------------------------------------
-
-#' @export
-#' @rdname sciviews_functions
-bind_cols_ <- structure(function(...,
-.name_repair = c("unique", "universal", "check_unique", "minimal")) {
-
-  .__top_call__. <- TRUE
-
-  # For now, we use same function as tbind_cols() internally, but we convert
-  # into the correct data frame object at the end
-
-  # We transform check the class of first argument to return something similar
-  x <- ungroup(..1)
-  is_x_dtf <- is_dtf(x)
-  is_x_dtt <- is_dtt(x)
-  res <- bind_cols(..., .name_repair = .name_repair)
-  # Transform if needed
-  if (is_x_dtf)
-    res <- as_dtf(res)
-  if (is_x_dtt)
-    res <- as_dtt(res)
-  res
-}, class = c("function", "sciviews_fn"),
-  comment = .src_sciviews("dplyr::bind_cols"))
 
 #' @export
 #' @rdname sciviews_functions

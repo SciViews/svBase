@@ -21,9 +21,11 @@
 \alias{mutate_}
 \alias{transmute_}
 \alias{summarise_}
+\alias{summarize_}
 \alias{reframe_}
 \alias{arrange_}
 \alias{pull_}
+\alias{join_}
 \alias{right_join_}
 \alias{full_join_}
 \alias{left_join_}
@@ -31,11 +33,11 @@
 \alias{semi_join_}
 \alias{anti_join_}
 \alias{bind_rows_}
+\alias{bind_cols_}
 \alias{count_}
 \alias{tally_}
 \alias{add_count_}
 \alias{add_tally_}
-\alias{bind_cols_}
 \alias{distinct_}
 \alias{drop_na_}
 \alias{replace_na_}
@@ -113,6 +115,15 @@ summarise_(
   .cols = NULL
 )
 
+summarize_(
+  .data = (.),
+  ...,
+  .by = NULL,
+  .groups = "drop_last",
+  .keep.group_vars = TRUE,
+  .cols = NULL
+)
+
 reframe_(
   .data,
   ...,
@@ -131,6 +142,25 @@ arrange_(
 )
 
 pull_(.data = (.), var = -1, name = NULL, ...)
+
+join_(
+  x,
+  y,
+  by = NULL,
+  copy = FALSE,
+  suffix = c(".x", ".y"),
+  ...,
+  keep = NULL,
+  na_matches = c("na", "never"),
+  multiple = "all",
+  unmatched = "drop",
+  relationship = NULL,
+  sort = FALSE,
+  verbose = 0,
+  column = NULL,
+  attr = NULL,
+  how = "full"
+)
 
 right_join_(
   x = (.),
@@ -229,7 +259,12 @@ anti_join_(
   attr = NULL
 )
 
-bind_rows_(..., .id = NULL)
+bind_rows_(..., .id = NULL, .use_names = TRUE, .fill = TRUE)
+
+bind_cols_(
+  ...,
+  .name_repair = c("unique", "universal", "check_unique", "minimal")
+)
 
 count_(
   x,
@@ -269,11 +304,6 @@ add_tally_(
   name = NULL,
   sort_cat = TRUE,
   decreasing = FALSE
-)
-
-bind_cols_(
-  ...,
-  .name_repair = c("unique", "universal", "check_unique", "minimal")
 )
 
 distinct_(.data, ..., .keep_all = FALSE)
@@ -466,14 +496,22 @@ the count argument to \code{\link[collapse:fmatch]{collapse::fmatch()}}.}
 \item{.id}{The name of the column for the origin id, either names if all
 other arguments are named, or numbers.}
 
+\item{.use_names}{If \code{TRUE} (default), bind by matching names, if \code{FALSE}, bind by
+position. If \code{NULL}, warns if  all items do not have the same name in the
+same order, and then proceeds as if \code{FALSE} (but will be as if \code{TRUE} in
+the future).}
+
+\item{.fill}{If \code{TRUE} (default), fills missing columns with \code{NA} or \code{NULL}
+for missing list columns, if \code{FALSE}, do not fill.}
+
+\item{.name_repair}{How should the name be "repaired" to avoid duplicate
+column names? See \code{\link[dplyr:bind_cols]{dplyr::bind_cols()}} for more details.}
+
 \item{wt}{Frequency weights. Can be \code{NULL} or a variable. Use data masking.}
 
 \item{sort_cat}{Are levels sorted (\code{TRUE} by default).}
 
 \item{decreasing}{Is sorting done in decreasing order (\code{FALSE} by default)?}
-
-\item{.name_repair}{How should the name be "repaired" to avoid duplicate
-column names? See \code{\link[dplyr:bind_cols]{dplyr::bind_cols()}} for more details.}
 
 \item{.keep_all}{If \code{TRUE} keep all variables in \code{.data}.}
 
