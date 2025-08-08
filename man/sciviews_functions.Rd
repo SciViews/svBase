@@ -34,6 +34,7 @@
 \alias{anti_join_}
 \alias{bind_rows_}
 \alias{bind_cols_}
+\alias{slice_}
 \alias{count_}
 \alias{tally_}
 \alias{add_count_}
@@ -266,6 +267,8 @@ bind_cols_(
   .name_repair = c("unique", "universal", "check_unique", "minimal")
 )
 
+slice_(.data = (.), ..., .by = NULL, .preserve = NULL)
+
 count_(
   x,
   ...,
@@ -492,6 +495,8 @@ another name.}
 (including the output of \code{\link[collapse:fmatch]{collapse::fmatch()}}) to the result. \code{TRUE} calls
 this attribute \code{"join.match"} or give your own name. Note: this also invokes
 the count argument to \code{\link[collapse:fmatch]{collapse::fmatch()}}.}
+
+\item{how}{Can be "full" (default), "inner", "left", "right", "semi", or "anti".}
 
 \item{.id}{The name of the column for the origin id, either names if all
 other arguments are named, or numbers.}

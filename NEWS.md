@@ -2,7 +2,7 @@
 
 -   First implementation of the SciViews functions (ending with an underscore `_` and with standard evaluation of their arguments, except in formulas and with implicit data-dot).
 
--   Functions `group_by_()`, `ungroup_()` (and the group companion functions), `summarise_()`, `select_()`, `mutate_()`, `transmute_()`, `rename_()`, `rename_with_()`, `arrange_()`, `pull_()`, `full_join_()`, `inner_join_()`, `left_join_()`, `right_join_()`, `semi_join_()`, `anti_join_()`, `bind_rows()`, `bind_cols()` are done. A `filter_()` version that cannot use grouped data for now is done. A first version of `reframe_()` that does not accept data frame returns or `across()` is implemented.
+-   Functions `group_by_()`, `ungroup_()` (and the group companion functions), `summarise_()`, `select_()`, `mutate_()`, `transmute_()`, `rename_()`, `rename_with_()`, `arrange_()`, `pull_()`, `full_join_()`, `inner_join_()`, `left_join_()`, `right_join_()`, `semi_join_()`, `anti_join_()`, `bind_rows()`, `bind_cols()`, `slice_()` are done. A `filter_()` version that cannot use grouped data for now is done. A first version of `reframe_()` that does not accept data frame returns or `across()` is implemented.
 
 # svBase 1.5.0
 

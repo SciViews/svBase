@@ -116,7 +116,7 @@
 list_sciviews_functions <- function() {
   c("add_count_", "add_tally_", "anti_join", "arrange_", "bind_cols_",
     "bind_rows_", "count_", "distinct_", "drop_na_", "extract_", "fill_",
-    "filter_", "full_join_", "group_by_", "inner_join_", "left_join_",
+    "filter_", "full_join_", "group_by_", "inner_join_", "join_", "left_join_",
     "mutate_", "pivot_longer_", "pivot_wider_", "pull_", "reframe_", "rename_",
     "rename_with_", "replace_na_", "right_join_", "select_", "semi_join",
     "separate_", "separate_rows_", "summarise_", "summarize_()", "tally_",
@@ -1288,6 +1288,7 @@ pull_ <- structure(function(.data = (.), var = -1, name = NULL, ...) {
 
 #' @export
 #' @rdname sciviews_functions
+#' @param how Can be "full" (default), "inner", "left", "right", "semi", or "anti".
 join_ <- function(x, y, by = NULL, copy = FALSE,
   suffix = c(".x", ".y"), ..., keep = NULL, na_matches = c("na", "never"),
   multiple = "all", unmatched = "drop", relationship = NULL, sort = FALSE,
@@ -1762,6 +1763,134 @@ bind_cols_ <- structure(function(...,
 }, class = c("function", "sciviews_fn"),
   comment = .src_sciviews("dplyr::bind_cols"))
 
+#' @export
+#' @rdname sciviews_functions
+slice_ <- structure(function(.data = (.), ..., .by = NULL, .preserve = NULL) {
+
+  .__top_call__. <- TRUE
+
+  # Implicit data-dot mechanism
+  if (missing(.data) || !is.data.frame(.data))
+    return(eval_data_dot(sys.call(), arg = '.data', abort_msg =
+        gettext("`.data` must be a `data.frame`.")))
+
+  if (!missing(.preserve))
+    warning("`.preserve` argument is not used in `slice_()`. ",
+      "SciViews functions, unlike 'dplyr', always ungroup at the end.")
+
+  # Apparently, I don't need to transform a data.trame into a data.table here
+  # Treat data.trames as data.tables
+  #to_dtrm <- is.data.trame(.data)
+  #if (to_dtrm) {
+  #  let_data.trame_to_data.table(.data)
+  #  on.exit(let_data.table_to_data.trame(.data))
+  #}
+
+  # Process dots with formula-masking
+  is_grouped <- is_grouped_df(.data)
+  # No, we always ungroup at the end
+  #if (is_grouped) {
+  #  new_gvars <- fgroup_vars(.data, return = "names")
+  #} else {# No grouping variables
+  #  new_gvars <- character(0)
+  #}
+
+  # Case missing(...), return the data frame with zero rows
+  if (missing(...)) {
+    res <- ss(.data, 0L)
+    if (is_grouped)
+      res <- fungroup(res)
+    #if (to_dtrm)
+    #  let_data.table_to_data.trame(res)
+    return(res)
+  }
+
+  # Apply formula-masking on ...
+  #no_se_msg <- gettext(
+  #  "Standard evaluation is not supported for grouped data frames.")
+  args <- formula_masking(...) #, .no.se = is_grouped, .no.se.msg = no_se_msg)
+
+  # If .by is defined, use these groups, but do not keep them
+  if (!missing(.by) && length(.by)) {
+    if (is_grouped)
+      stop("Can't supply {.arg .by} when {.arg .data} is a grouped data frame.")
+    #if (!args$are_formulas)
+    #  stop(no_se_msg)
+    # Here, we need to take care of the object class, or we end up with a
+    # data.table in .data!
+    #let_data.table_to_data.trame(.data)
+    # For now, we let group_by_vars return the error
+    #if (is.numeric(.by)) {
+    #
+    #} else if (!is.character(.by)) {
+    #
+    #} else {# .by is a character vector
+    #  absent_by <- !.by %in% names(.data)
+    #  if (any(absent_by))
+    #    stop("Can't select columns that don't exist.",
+    #      x = "Column {.code {(.by[absent_by][1])}} doesn't exist.")
+    #}
+    # TODO: a formula-select "lite" here
+    res <- group_by_vars(.data, by = .by, sort = FALSE)
+    #let_data.trame_to_data.table(.data)
+    #new_gvars <- character(0) # Don't keep these groups
+    is_grouped <- is_grouped_df(res)
+  } else {
+    res <- .data
+  }
+
+  # No input can be named
+  dots_names <- names(args$dots)
+  if (!is.null(dots_names)) {
+    named <- whichv(dots_names, "", invert = TRUE)
+    if (length(named)) {
+      first_named <- named[1]
+      first_name <- dots_names[first_named]
+      first_expr <- expr_deparse(sys.call()[[first_name]])
+      if (first_expr == "NULL") {# Probably using formula like name ~ expr
+        stop("Arguments in {.arg ...} must be passed by position, not name.",
+          i = "Did you used formula like {.code name ~ expr}?",
+          i = "You must filter with formula having only right member, like {.code ~expr}.")
+      } else {# Same error message as dplyr
+        msg_expr <- paste(first_name, first_expr, sep = " = ")
+        stop("Arguments in {.arg ...} must be passed by position, not name.",
+          x = "Problematic argument:",
+          `*` = "{.code {msg_expr}}")
+      }
+    }
+  }
+
+  indices <- unlist(args$dots)
+  if (!is.numeric(indices)) {
+    if (!is.function(indices[[1]]))
+      stop("Can't subset elements with {.val {indices}}.",
+        i = "You must provide numeric values or a {.cls function}, not {.obj_type_friendly {indices}}.")
+    if (length(indices) != 1L) # With a function, cannot use more arguments
+      stop("If you supply a {.cls function}, you cannot give more arguments.")
+    if (is_grouped) {
+      # This one line does the whole grouped slice!
+      res <- ss(res, na_rm(unlist(lapply(gsplit(g = res), indices[[1]]))))
+      res <- fungroup(res)
+    } else {
+      res <- ss(res, na_rm(indices[[1]](seq_row(res))))
+    }
+  } else {# Numeric indices
+    indices <- as.integer(indices)
+    if (is_grouped) {
+      # This one line does the whole grouped slice!
+      res <- ss(res, na_rm(unlist(lapply(gsplit(g = res), ss, indices))))
+      res <- fungroup(res)
+    } else {
+      res <- ss(res, indices)
+    }
+  }
+
+  #if (to_dtrm)
+  #  let_data.table_to_data.trame(res)
+  res
+
+}, class = c("function", "sciviews_fn"),
+  comment = .src_sciviews("dplyr::slice"))
 
 
 
