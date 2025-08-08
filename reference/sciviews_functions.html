@@ -301,6 +301,8 @@ speedy and SciViews functions in the same pipeline.</p>
 <span>  .name_repair <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"unique"</span>, <span class="st">"universal"</span>, <span class="st">"check_unique"</span>, <span class="st">"minimal"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
+<span><span class="fu">slice_</span><span class="op">(</span>.data <span class="op">=</span> <span class="op">(</span><span class="va">.</span><span class="op">)</span>, <span class="va">...</span>, .by <span class="op">=</span> <span class="cn">NULL</span>, .preserve <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
+<span></span>
 <span><span class="fu">count_</span><span class="op">(</span></span>
 <span>  <span class="va">x</span>,</span>
 <span>  <span class="va">...</span>,</span>
@@ -606,6 +608,10 @@ another name.</p></dd>
 (including the output of <code><a href="https://sebkrantz.github.io/collapse/reference/fmatch.html" class="external-link">collapse::fmatch()</a></code>) to the result. <code>TRUE</code> calls
 this attribute <code>"join.match"</code> or give your own name. Note: this also invokes
 the count argument to <code><a href="https://sebkrantz.github.io/collapse/reference/fmatch.html" class="external-link">collapse::fmatch()</a></code>.</p></dd>
+
+
+<dt id="arg-how">how<a class="anchor" aria-label="anchor" href="#arg-how"></a></dt>
+<dd><p>Can be "full" (default), "inner", "left", "right", "semi", or "anti".</p></dd>
 
 
 <dt id="arg--id">.id<a class="anchor" aria-label="anchor" href="#arg--id"></a></dt>
