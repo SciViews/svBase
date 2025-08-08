@@ -35,6 +35,7 @@
 \alias{bind_rows_}
 \alias{bind_cols_}
 \alias{slice_}
+\alias{slice_head_}
 \alias{count_}
 \alias{tally_}
 \alias{add_count_}
@@ -268,6 +269,8 @@ bind_cols_(
 )
 
 slice_(.data = (.), ..., .by = NULL, .preserve = NULL)
+
+slice_head_(.data = (.), ..., n = 1L, prop, by = NULL)
 
 count_(
   x,
@@ -511,6 +514,11 @@ for missing list columns, if \code{FALSE}, do not fill.}
 
 \item{.name_repair}{How should the name be "repaired" to avoid duplicate
 column names? See \code{\link[dplyr:bind_cols]{dplyr::bind_cols()}} for more details.}
+
+\item{n}{Number of rows to keep}
+
+\item{prop}{Proportion of rows to keep, between 0 and 1. Provide either \code{n},
+or \code{prop} but not both simultaneously. If none is provided, \code{n = 1} is used.}
 
 \item{wt}{Frequency weights. Can be \code{NULL} or a variable. Use data masking.}
 

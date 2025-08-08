@@ -119,8 +119,8 @@ list_sciviews_functions <- function() {
     "filter_", "full_join_", "group_by_", "inner_join_", "join_", "left_join_",
     "mutate_", "pivot_longer_", "pivot_wider_", "pull_", "reframe_", "rename_",
     "rename_with_", "replace_na_", "right_join_", "select_", "semi_join",
-    "separate_", "separate_rows_", "summarise_", "summarize_()", "tally_",
-    "transmute_", "uncount_", "ungroup_", "unite_")
+    "separate_", "separate_rows_", "slice_", "summarise_", "summarize_()",
+    "tally_", "transmute_", "uncount_", "ungroup_", "unite_")
 }
 
 .src_sciviews <- function(src,
@@ -1891,6 +1891,79 @@ slice_ <- structure(function(.data = (.), ..., .by = NULL, .preserve = NULL) {
 
 }, class = c("function", "sciviews_fn"),
   comment = .src_sciviews("dplyr::slice"))
+
+#' @export
+#' @rdname sciviews_functions
+#' @param n Number of rows to keep
+#' @param prop Proportion of rows to keep, between 0 and 1. Provide either `n`,
+#'   or `prop` but not both simultaneously. If none is provided, `n = 1` is used.
+slice_head_ <- structure(function(.data = (.), ..., n = 1L, prop, by = NULL) {
+
+  .__top_call__. <- TRUE
+
+  # Implicit data-dot mechanism
+  if (missing(.data) || !is.data.frame(.data))
+    return(eval_data_dot(sys.call(), arg = '.data', abort_msg =
+        gettext("`.data` must be a `data.frame`.")))
+
+  if (!missing(...)) # ... must be empty
+    check_dots_empty()
+
+  # Use prop or n indifferently as n in fslice()
+  if (missing(n)) {
+    if (!missing(prop)) {# We use prop instead of n
+      if (!is.numeric(prop) || length(prop) != 1L)
+        stop("{.arg prop} must be a single number, not {.obj_type_friendly {prop}} of length {length(prop)}.")
+      if (prop >= 1L)
+        prop <- 0.999999999999
+    }
+  } else {# n non missing
+    if (!missing(prop))
+      stop("Must supply {.arg n} or {.arg prop}, but not both.")
+    if (!is.numeric(n) || length(n) != 1L)
+      stop("{.arg n} must be a single round number, not {.obj_type_friendly {n}} of length {length(n)}.")
+    n2 <- as.integer(n)
+    if (n2 != n)
+      stop("{.arg n} must be a single round number, not {.obj_type_friendly {n}} of length {length(n)}.")
+    n <- n2
+  }
+
+  # Apparently, I don't need to transform a data.trame into a data.table here
+  # Treat data.trames as data.tables
+  #to_dtrm <- is.data.trame(.data)
+  #if (to_dtrm) {
+  #  let_data.trame_to_data.table(.data)
+  #  on.exit(let_data.table_to_data.trame(.data))
+  #}
+
+  is_grouped <- is_grouped_df(.data)
+  # If by is defined, use these groups, but do not keep them
+  if (!missing(by) && length(by)) {
+    if (is_grouped)
+      stop("Can't supply {.arg by} when {.arg .data} is a grouped data frame.")
+    #let_data.table_to_data.trame(.data)
+    res <- group_by_vars(.data, by = by, sort = FALSE)
+    #let_data.trame_to_data.table(.data)
+  } else {
+    res <- .data
+    if (is_grouped) {
+      by <- fgroup_vars(res, return = "names")
+    } else {
+      by <- NULL
+    }
+  }
+
+  res <- fslicev(res, cols = by, n = n, how = "first")
+  if (is_grouped)
+    res <- fungroup(res) # Always ungroup at the end
+
+  #if (to_dtrm)
+  #  let_data.table_to_data.trame(res)
+  res
+
+}, class = c("function", "sciviews_fn"),
+  comment = .src_sciviews("dplyr::slice"))
+
 
 
 
