@@ -303,6 +303,8 @@ speedy and SciViews functions in the same pipeline.</p>
 <span></span>
 <span><span class="fu">slice_</span><span class="op">(</span>.data <span class="op">=</span> <span class="op">(</span><span class="va">.</span><span class="op">)</span>, <span class="va">...</span>, .by <span class="op">=</span> <span class="cn">NULL</span>, .preserve <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
 <span></span>
+<span><span class="fu">slice_head_</span><span class="op">(</span>.data <span class="op">=</span> <span class="op">(</span><span class="va">.</span><span class="op">)</span>, <span class="va">...</span>, n <span class="op">=</span> <span class="fl">1L</span>, <span class="va">prop</span>, by <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
+<span></span>
 <span><span class="fu">count_</span><span class="op">(</span></span>
 <span>  <span class="va">x</span>,</span>
 <span>  <span class="va">...</span>,</span>
@@ -634,6 +636,15 @@ for missing list columns, if <code>FALSE</code>, do not fill.</p></dd>
 <dt id="arg--name-repair">.name_repair<a class="anchor" aria-label="anchor" href="#arg--name-repair"></a></dt>
 <dd><p>How should the name be "repaired" to avoid duplicate
 column names? See <code><a href="https://dplyr.tidyverse.org/reference/bind_cols.html" class="external-link">dplyr::bind_cols()</a></code> for more details.</p></dd>
+
+
+<dt id="arg-n">n<a class="anchor" aria-label="anchor" href="#arg-n"></a></dt>
+<dd><p>Number of rows to keep</p></dd>
+
+
+<dt id="arg-prop">prop<a class="anchor" aria-label="anchor" href="#arg-prop"></a></dt>
+<dd><p>Proportion of rows to keep, between 0 and 1. Provide either <code>n</code>,
+or <code>prop</code> but not both simultaneously. If none is provided, <code>n = 1</code> is used.</p></dd>
 
 
 <dt id="arg-wt">wt<a class="anchor" aria-label="anchor" href="#arg-wt"></a></dt>
