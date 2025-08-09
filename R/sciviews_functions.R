@@ -135,6 +135,74 @@ list_sciviews_functions <- function() {
 #' @rdname sciviews_functions
 all_of <- function(x) x
 
+# dplyr and collapse grouped data are different. Worse: collapse::GRP() defines
+# its grouped data frame as GRP_df/.../grouped_df/data.frame, but since the
+# "groups" attribute is not the same, dplyr::validate_grouped_df() fails!
+# Consequently, we cannot use a grouped object obtained from collapse function
+# with dplyr functions, but the opposite can be done. Here, we need a function
+# to convert a collapse grouped data frame into a dplyr one.
+# Also, dplyr has .drop = FALSE, with no collapse equivalent... and it has also
+# rowwise() with no collapse equivalent. On the other hand, with collapse, one
+# can sort the groups or not, and decide to sort them increasing or decreasing
+# order, which is not possible with dplyr. dplyr ALWAYS sort using group_by(),
+# and NEVER sorts using the by=/.by= argument. All this is much too complicated.
+# How do we sort this out in SciViews??? Let's start with an as.grouped_df()
+# method that converts from collapse to dplyr version of the grouped data frame.
+
+#' @export
+#' @rdname sciviews_functions
+as.grouped_df <- function(x, ...) {
+  UseMethod("as.grouped_df")
+}
+
+#' @export
+#' @rdname sciviews_functions
+as_grouped_df <- as.grouped_df
+
+#' @export
+#' @rdname sciviews_functions
+as.grouped_df.default <- function(x, ...) {
+  stop("Don't know how to convert an object of class `%s` to a grouped_df.",
+    class(x)[1])
+}
+
+#' @export
+#' @rdname sciviews_functions
+as.grouped_df.grouped_df <- function(x, ...) {
+  x # Just return the object
+}
+
+#' @export
+#' @rdname sciviews_functions
+as.grouped_df.GRP_df <- function(x, ...) {
+  # Construct a grouped_df object from a GRP_df object
+  res <- x
+  attr(res, "groups") <- group_data_(x)
+  classes <- c(class(x))
+  setv(classes, "GRP_df", "grouped_df")
+  class(res) <- unique(classes)
+  res
+}
+
+#' @export
+#' @rdname sciviews_functions
+print.grouped_df <- function(x, ...) {
+  # We create grouped_df objects that could be something else than tibbles
+  # and in this casen groups are NOT printed by default
+
+  if (is_tibble(x)) {
+    NextMethod("print")
+  } else {
+    gvars <- paste(group_vars_(x), collapse = ", ")
+    grps <- n_groups_(x)
+    mark <- if (identical(getOption("OutDec"), ",")) "." else ","
+    grps <- formatC(x, big.mark = mark)
+    cat(col_red("# Groups: ", gvars, " [", grps, "]\n", sep = ""))
+    print(ungroup_(x))
+  }
+  invisible(x)
+}
+
 #' @export
 #' @rdname sciviews_functions
 #' @param return What to return: `"data"` or `1`, `"unique"` or `2` for unique
@@ -185,16 +253,19 @@ group_rows_ <- function(.data = (.)) {
         gettext("`.data` must be a `data.frame`.")))
 
   if (!is_grouped_df(.data)) {
-    list(seq_len(nrow(.data)))
+    # This is to reutrn a <list_of<integer>> like dplyr::group_rows() does
+    structure(list(seq_len(nrow(.data))), ptype = integer(0),
+      class = c("vctrs_list_of", "vctrs_vctr", "list"))
   } else {
     # Unfortunately, gsplit() skips empty groups, so the hack!
-    res <- gsplit(seq_len(nrow(.data)), GRPid(.data), use.g.names = TRUE)
+    res <- gsplit(seq_row(.data), GRPid(.data), use.g.names = TRUE)
     ngroups <- length(GRPN(.data, expand = FALSE))
     nms <- as.character(1:ngroups)
     res <- res[nms]
     res <- lapply(res, function(x) if (is.null(x)) integer(0) else x)
     names(res) <- NULL
-    res
+    structure(res, ptype = integer(0),
+      class = c("vctrs_list_of", "vctrs_vctr", "list"))
   }
 }
 
@@ -209,13 +280,14 @@ group_data_ <- function(.data = (.)) {
       gettext("`.data` must be a `data.frame`.")))
 
   if (!is_grouped_df(.data)) {
-    res <- .data[1L, 1L]
-    names(res) <- ".rows"
-    res$.rows <- list(seq_len(nrow(.data)))
+    res <- tibble(.rows = 1L)
+    res$.rows <- structure(list(seq_row(.data)), ptype = integer(0),
+      class = c("vctrs_list_of", "vctrs_vctr", "list"))
     res
   } else {
-    res <- fgroup_vars(.data, return = "unique")
+    res <- as_tibble(fgroup_vars(.data, return = "unique"))
     res$.rows <- group_rows_(.data)
+    attr(res, ".drop") <- attr(attr(.data, "groups"), ".drop") %||% TRUE
     res
   }
 }
@@ -455,6 +527,7 @@ group_by_ <- structure(function(.data = (.), ..., .add = FALSE, .drop = NULL,
 }, class = c("function", "sciviews_fn"),
   comment = .src_sciviews("collapse::fgroup_by"))
 
+# TODO: use something like collapse:::fungroup2 where applicable
 # Note: only standard evaluation for ... for now
 # Note: in dplyr, it is ungroup(x, ...), but changed x here to .data
 #' @export
@@ -1897,7 +1970,8 @@ slice_ <- structure(function(.data = (.), ..., .by = NULL, .preserve = NULL) {
 #' @param n Number of rows to keep
 #' @param prop Proportion of rows to keep, between 0 and 1. Provide either `n`,
 #'   or `prop` but not both simultaneously. If none is provided, `n = 1` is used.
-slice_head_ <- structure(function(.data = (.), ..., n = 1L, prop, by = NULL) {
+slice_head_ <- structure(function(.data = (.), ..., n = 1L, prop, by = NULL,
+    sort = TRUE) {
 
   .__top_call__. <- TRUE
 
@@ -1906,26 +1980,37 @@ slice_head_ <- structure(function(.data = (.), ..., n = 1L, prop, by = NULL) {
     return(eval_data_dot(sys.call(), arg = '.data', abort_msg =
         gettext("`.data` must be a `data.frame`.")))
 
-  if (!missing(...)) # ... must be empty
+  if (!missing(...)) {
+    if (...length() == 1L && is.null(...names()))
+      stop("{.arg n} must be explicitly named.",
+        i = "Did you mean {.code slice_head_(n = {.val {(..1)}})}?")
     check_dots_empty()
+  } # ... must be empty
 
   # Use prop or n indifferently as n in fslice()
   if (missing(n)) {
     if (!missing(prop)) {# We use prop instead of n
       if (!is.numeric(prop) || length(prop) != 1L)
         stop("{.arg prop} must be a single number, not {.obj_type_friendly {prop}} of length {length(prop)}.")
+      if (prop < 0)
+        stop("Negative {.arg prop} is not supported by {.fun slice_head_}.")
       if (prop >= 1L)
         prop <- 0.999999999999
+      n <- prop
     }
   } else {# n non missing
     if (!missing(prop))
       stop("Must supply {.arg n} or {.arg prop}, but not both.")
     if (!is.numeric(n) || length(n) != 1L)
       stop("{.arg n} must be a single round number, not {.obj_type_friendly {n}} of length {length(n)}.")
+    if (n < 0)
+      stop("Negative {.arg n} is not supported by {.fun slice_head_}.")
     n2 <- as.integer(n)
     if (n2 != n)
-      stop("{.arg n} must be a single round number, not {.obj_type_friendly {n}} of length {length(n)}.")
+      stop("{.arg n} must be a single round number, not {.val {n}}.")
     n <- n2
+    if (n > nrow(.data))
+      n <- nrow(.data)
   }
 
   # Apparently, I don't need to transform a data.trame into a data.table here
@@ -1953,7 +2038,7 @@ slice_head_ <- structure(function(.data = (.), ..., n = 1L, prop, by = NULL) {
     }
   }
 
-  res <- fslicev(res, cols = by, n = n, how = "first")
+  res <- fslicev(res, cols = by, n = n, how = "first", sort = sort)
   if (is_grouped)
     res <- fungroup(res) # Always ungroup at the end
 
@@ -1962,63 +2047,360 @@ slice_head_ <- structure(function(.data = (.), ..., n = 1L, prop, by = NULL) {
   res
 
 }, class = c("function", "sciviews_fn"),
-  comment = .src_sciviews("dplyr::slice"))
-
-
-
+  comment = .src_sciviews("dplyr::slice_head"))
 
 #' @export
 #' @rdname sciviews_functions
-count_ <- structure(function(x, ..., wt = NULL, sort = FALSE, name = NULL,
-.drop = dplyr::group_by_drop_default(x), sort_cat = TRUE, decreasing = FALSE) {
+slice_tail_ <- structure(function(.data = (.), ..., n = 1L, prop, by = NULL,
+  sort = TRUE) {
 
   .__top_call__. <- TRUE
 
-  # TODO: .drop = FALSE not implemented yet
-  if (isFALSE(.drop))
-    stop(".drop = FALSE not implemented yet in scount(), use count() instead")
-  # TODO: this does not work yet -> send an error message
-  # starwars %>% scount(birth_decade = round(birth_year, -1))
-  check <- try(rlang::check_dots_unnamed(), silent = TRUE)
-  if (inherits(check, "try-error"))
-    stop("scount() does not use computed values for ... yet, use count() instead")
-  # TODO: align arguments with dplyr::count, currently, it is .drop = TRUE
-  # but must implement .drop = FALSE too (shows 0 for levels that have no cases)
-  # TODO: allow pronouns .data and .env
-  if (is.null(name))
-    name <- "n" # Default value is N in collapse, but n in dplyr
-  # In case there are no groups defined, return just the number of rows
-  if (!...length() && is.null(attr(x, "groups"))) {
-    if (!missing(wt)) {
-      swt <- substitute(wt)
-      if (is.symbol(swt)) {
-        res <- data.frame(n = sum(x[[as.character(swt)]], na.rm = TRUE))
-      } else {
-        if (length(wt) != NROW(x))
-          stop("'wt' must be same length as the number of rows in 'x', or the name of a column in 'x'")
-        res <- data.frame(n = sum(wt, na.rm = TRUE))
-      }
-    } else {
-      res <- data.frame(n = NROW(x))
+  # Implicit data-dot mechanism
+  if (missing(.data) || !is.data.frame(.data))
+    return(eval_data_dot(sys.call(), arg = '.data', abort_msg =
+        gettext("`.data` must be a `data.frame`.")))
+
+  if (!missing(...)) {
+    if (...length() == 1L && is.null(...names()))
+      stop("{.arg n} must be explicitly named.",
+        i = "Did you mean {.code slice_tail_(n = {.val {(..1)}})}?")
+    check_dots_empty()
+  } # ... must be empty
+
+  # Use prop or n indifferently as n in fslice()
+  if (missing(n)) {
+    if (!missing(prop)) {# We use prop instead of n
+      if (!is.numeric(prop) || length(prop) != 1L)
+        stop("{.arg prop} must be a single number, not {.obj_type_friendly {prop}} of length {length(prop)}.")
+      if (prop < 0)
+        stop("Negative {.arg prop} is not supported by {.fun slice_tail_}.")
+      if (prop >= 1L)
+        prop <- 0.999999999999
+      n <- prop
     }
-    names(res) <- name
-    return(default_dtx(res))
+  } else {# n non missing
+    if (!missing(prop))
+      stop("Must supply {.arg n} or {.arg prop}, but not both.")
+    if (!is.numeric(n) || length(n) != 1L)
+      stop("{.arg n} must be a single round number, not {.obj_type_friendly {n}} of length {length(n)}.")
+    if (n < 0)
+      stop("Negative {.arg n} is not supported by {.fun slice_tail_}.")
+    n2 <- as.integer(n)
+    if (n2 != n)
+      stop("{.arg n} must be a single round number, not {.val {n}}.")
+    n <- n2
+    if (n > nrow(.data))
+      n <- nrow(.data)
   }
-  if (is.symbol(substitute(wt))) {
-    res <- inject(fcount(x, ..., w = !!substitute(wt), sort = sort_cat,
-      name = name, decreasing = decreasing, add = FALSE))
+
+  # Apparently, I don't need to transform a data.trame into a data.table here
+  # Treat data.trames as data.tables
+  #to_dtrm <- is.data.trame(.data)
+  #if (to_dtrm) {
+  #  let_data.trame_to_data.table(.data)
+  #  on.exit(let_data.table_to_data.trame(.data))
+  #}
+
+  is_grouped <- is_grouped_df(.data)
+  # If by is defined, use these groups, but do not keep them
+  if (!missing(by) && length(by)) {
+    if (is_grouped)
+      stop("Can't supply {.arg by} when {.arg .data} is a grouped data frame.")
+    #let_data.table_to_data.trame(.data)
+    res <- group_by_vars(.data, by = by, sort = FALSE)
+    #let_data.trame_to_data.table(.data)
   } else {
-    res <- fcount(x, ..., w = wt, sort = sort_cat,
-      name = name, decreasing = decreasing, add = FALSE)
+    res <- .data
+    if (is_grouped) {
+      by <- fgroup_vars(res, return = "names")
+    } else {
+      by <- NULL
+    }
   }
+
+  res <- fslicev(res, cols = by, n = n, how = "last", sort = sort)
+  if (is_grouped)
+    res <- fungroup(res) # Always ungroup at the end
+
+  #if (to_dtrm)
+  #  let_data.table_to_data.trame(res)
+  res
+
+}, class = c("function", "sciviews_fn"),
+  comment = .src_sciviews("dplyr::slice_tail"))
+
+# TODO: this still needs some work!
+# @export
+# @rdname sciviews_functions
+# slice_min_ <- structure(function(.data = (.), order_by = NULL, ..., n = 1L,
+#     prop, by = NULL, with_ties = TRUE, na_rm = FALSE, sort = TRUE) {
+#
+#   .__top_call__. <- TRUE
+#
+#   # Implicit data-dot mechanism
+#   if (missing(.data) || !is.data.frame(.data))
+#     return(eval_data_dot(sys.call(), arg = '.data', abort_msg =
+#         gettext("`.data` must be a `data.frame`.")))
+#
+#   if (!missing(...)) {
+#     if (...length() == 1L && is.null(...names()))
+#       stop("{.arg n} must be explicitly named.",
+#         i = "Did you mean {.code slice_min_(n = {.val {(..1)}})}?")
+#     check_dots_empty()
+#   } # ... must be empty
+#
+#   if (!isTRUE(na_rm) && !isFALSE(na_rm))
+#     stop("{.arg na_rm} must be {.code TRUE} or {.code FALSE}, not {.obj_type_friendly {na_rm}} ({.val {na_rm}}).")
+#
+#   if (!isTRUE(with_ties) && !isFALSE(with_ties))
+#     stop("{.arg with_ties} must be {.code TRUE} or {.code FALSE}, not {.obj_type_friendly {with_ties}} ({.val {with_ties}}).")
+#   if (isTRUE(with_ties) && (n != 1L || isTRUE(sort)))
+#     stop("{.arg with_ties} `TRUE` only supported with {.code n= 1}, and {.code sort = FALSE}.")
+#
+#   # Use prop or n indifferently as n in fslice()
+#   if (missing(n)) {
+#     if (!missing(prop)) {# We use prop instead of n
+#       if (!is.numeric(prop) || length(prop) != 1L)
+#         stop("{.arg prop} must be a single number, not {.obj_type_friendly {prop}} of length {length(prop)}.")
+#       if (prop < 0)
+#         stop("Negative {.arg prop} is not supported by {.fun slice_tail_}.")
+#       if (prop >= 1L)
+#         prop <- 0.999999999999
+#       n <- prop
+#     }
+#   } else {# n non missing
+#     if (!missing(prop))
+#       stop("Must supply {.arg n} or {.arg prop}, but not both.")
+#     if (!is.numeric(n) || length(n) != 1L)
+#       stop("{.arg n} must be a single round number, not {.obj_type_friendly {n}} of length {length(n)}.")
+#     if (n < 0)
+#       stop("Negative {.arg n} is not supported by {.fun slice_tail_}.")
+#     n2 <- as.integer(n)
+#     if (n2 != n)
+#       stop("{.arg n} must be a single round number, not {.val {n}}.")
+#     n <- n2
+#     if (n > nrow(.data))
+#       n <- nrow(.data)
+#   }
+#
+#   # Apparently, I don't need to transform a data.trame into a data.table here
+#   # Treat data.trames as data.tables
+#   #to_dtrm <- is.data.trame(.data)
+#   #if (to_dtrm) {
+#   #  let_data.trame_to_data.table(.data)
+#   #  on.exit(let_data.table_to_data.trame(.data))
+#   #}
+#
+#   is_grouped <- is_grouped_df(.data)
+#   # If by is defined, use these groups, but do not keep them
+#   if (!missing(by) && length(by)) {
+#     if (is_grouped)
+#       stop("Can't supply {.arg by} when {.arg .data} is a grouped data frame.")
+#     #let_data.table_to_data.trame(.data)
+#     res <- group_by_vars(.data, by = by, sort = FALSE)
+#     #let_data.trame_to_data.table(.data)
+#   } else {
+#     res <- .data
+#     if (is_grouped) {
+#       by <- fgroup_vars(res, return = "names")
+#     } else {
+#       by <- NULL
+#     }
+#   }
+#
+#   res <- fslicev(res, cols = by, order.by = order_by, na_rm = na_rm,
+#     with.ties = with_ties, n = n, how = "min", sort = sort)
+#   if (is_grouped)
+#     res <- fungroup(res) # Always ungroup at the end
+#
+#   #if (to_dtrm)
+#   #  let_data.table_to_data.trame(res)
+#   res
+#
+# }, class = c("function", "sciviews_fn"),
+#   comment = .src_sciviews("dplyr::slice_min"))
+
+#' @export
+#' @rdname sciviews_functions
+count_ <- structure(function(.data = (.), ..., wt = NULL, name = "n",
+    sort = FALSE, decreasing = TRUE, .drop = TRUE) {
+
+  .__top_call__. <- TRUE
+
+  # Implicit data-dot mechanism
+  if (missing(.data) || !is.data.frame(.data))
+    return(eval_data_dot(sys.call(), arg = '.data', abort_msg =
+        gettext("`.data` must be a `data.frame`.")))
+
+  is_grouped <- is_grouped_df(.data)
+  if (missing(...) && !is_grouped) {# Just return the number of row
+    res <- .data[1L, 1L]
+    names(res) <- name
+    res[[name]] <- nrow(.data)
+    return(res)
+  }
+
+  # Apparently, I don't need to transform a data.trame into a data.table here
+  # Treat data.trames as data.tables
+  #to_dtrm <- is.data.trame(.data)
+  #if (to_dtrm) {
+  #  let_data.trame_to_data.table(.data)
+  #  on.exit(let_data.table_to_data.trame(.data))
+  #}
+
+  if (missing(...)) {
+    args <- list(dots = list(), are_formulas = FALSE, env = parent.frame())
+  } else {
+    args <- formula_masking(...)
+  }
+
+  # wt can be NULL, numeric, a character string or a formula like ~name
+  if (!is.null(wt) && !is.numeric(wt)) {
+    if (is_formula(wt)) {
+      if (is_formula(wt, lhs = TRUE))
+        stop("{.arg wt} must be a simple formula like {.code ~name}, or a character string.")
+      wt <- f_rhs(wt)
+      if (!is.symbol(wt))
+        stop("{.arg wt} must be a simple formula like {.code ~name}, or a character string.")
+      # At the end, wt is always NULL, numeric or a symbol (if formulas) or a
+      # character string (if not)
+      if (!args$are_formulas)
+        wt <- as.character(wt)
+    } else if (!is.character(wt)) {
+
+    } else {# It is character
+      if (args$are_formulas)
+        wt <- as.symbol(wt)
+    }
+  }
+
+  if (length(name) != 1L || !is.character(name))
+    stop("{.arg name} must be a single string, not {.obj_type_friendly {name}} of length {length(name)}.")
+
+  if (!isTRUE(sort) && !isFALSE(sort))
+    stop("{.arg sort} must be {.code TRUE} or {.code FALSE}, not {.obj_type_friendly {sort}} ({.val {sort}}).")
+
+  if (!isTRUE(decreasing) && !isFALSE(decreasing))
+    stop("{.arg decreasing} must be {.code TRUE} or {.code FALSE}, not {.obj_type_friendly {sort}} ({.val {sort}}).")
+
+  # TODO: .drop = FALSE not implemented yet
+  if (isFALSE(.drop)) {
+    stop("{.code .drop = FALSE} not implemented yet in {.fun count_}, use {.fun count} instead")
+  } else  if (!isTRUE(.drop)) {
+    stop("{.arg .drop} must be {.code TRUE} or {.code FALSE}, not {.obj_type_friendly {.drop}} ({.val {.drop}}).")
+  }
+
+  # If there are named items, we mutate data with these expressions
+  dots_names <- names(args$dots)
+  if (!is.null(dots_names)) {
+    is_expr <- dots_names != ""
+    if (any(is_expr)) {
+      args2 <- args$dots[is_expr]
+      if (!args$are_formulas) # force standard evaluation
+        force(args2)
+      data2 <- do.call('fmutate', c(list(.data), args2), envir = args$env)
+      # Replace the expression by its name ( as a symbol, if formulas)
+      args$dots[is_expr] <- dots_names[is_expr]
+      if (args$are_formulas)
+        args$dots[is_expr] <- lapply(args$dots[is_expr], as.symbol)
+    } else {
+      data2 <- .data
+    }
+  } else {
+    data2 <- .data
+  }
+  if (args$are_formulas) {
+    if (is_grouped) {
+      gvars <- as.list(fgroup_vars(.data, return = "names"))
+      gvars <- lapply(gvars, as.symbol)
+      args$dots <- unique(c(gvars, args$dots))
+    }
+    res <- do.call('fcount', c(args$dots, list(x = data2, w = substitute(wt),
+      name = name, add = FALSE, sort = TRUE, decreasing = FALSE)),
+      envir = args$env)
+  } else {# SE evaluation
+    if (is_grouped)
+      args$dots <- unique(c(as.list(fgroup_vars(.data, return = "names")),
+        args$dots))
+    res <- fcountv(data2, cols = unlist(args$dots), w = wt, name = name,
+      add = FALSE, sort = TRUE, decreasing = FALSE)
+  }
+
   # sort= argument of dplyr::count sorts the frequency column indeed, not the
   # category column(s)
   if (isTRUE(sort))
-    res <- res[order(res[[name]], decreasing = TRUE), ]
-    # TODO: use data.table::setorder() instead
-  default_dtx(res)
+    do.call('setorderv', list(res, name, order = if (decreasing) -1 else 1,
+      na.last = TRUE))
+    #res <- res[order(res[[name]], decreasing = decreasing), ]
+
+  # row.names are always integer indices with dplyr::count()
+  if (nrow(res))
+  attr(res, "row.names") <- 1:nrow(res)
+
+  if (is_grouped)
+    res <- fungroup(res) # Always ungroup at the end
+
+  #if (to_dtrm)
+  #  let_data.table_to_data.trame(res)
+  res
 }, class = c("function", "sciviews_fn"),
-  comment = .src_sciviews("collapse::fcount"))
+  comment = .src_sciviews("dplyr::count"))
+
+
+
+# @export
+# @rdname sciviews_functions
+# count_ <- structure(function(x, ..., wt = NULL, sort = FALSE, name = NULL,
+# .drop = dplyr::group_by_drop_default(x), sort_cat = TRUE, decreasing = FALSE) {
+#
+#   .__top_call__. <- TRUE
+#
+#   # TODO: .drop = FALSE not implemented yet
+#   if (isFALSE(.drop))
+#     stop(".drop = FALSE not implemented yet in scount(), use count() instead")
+#   # TODO: this does not work yet -> send an error message
+#   # starwars %>% scount(birth_decade = round(birth_year, -1))
+#   check <- try(rlang::check_dots_unnamed(), silent = TRUE)
+#   if (inherits(check, "try-error"))
+#     stop("scount() does not use computed values for ... yet, use count() instead")
+#   # TODO: align arguments with dplyr::count, currently, it is .drop = TRUE
+#   # but must implement .drop = FALSE too (shows 0 for levels that have no cases)
+#   # TODO: allow pronouns .data and .env
+#   if (is.null(name))
+#     name <- "n" # Default value is N in collapse, but n in dplyr
+#   # In case there are no groups defined, return just the number of rows
+#   if (!...length() && is.null(attr(x, "groups"))) {
+#     if (!missing(wt)) {
+#       swt <- substitute(wt)
+#       if (is.symbol(swt)) {
+#         res <- data.frame(n = sum(x[[as.character(swt)]], na.rm = TRUE))
+#       } else {
+#         if (length(wt) != NROW(x))
+#           stop("'wt' must be same length as the number of rows in 'x', or the name of a column in 'x'")
+#         res <- data.frame(n = sum(wt, na.rm = TRUE))
+#       }
+#     } else {
+#       res <- data.frame(n = NROW(x))
+#     }
+#     names(res) <- name
+#     return(default_dtx(res))
+#   }
+#   if (is.symbol(substitute(wt))) {
+#     res <- inject(fcount(x, ..., w = !!substitute(wt), sort = sort_cat,
+#       name = name, decreasing = decreasing, add = FALSE))
+#   } else {
+#     res <- fcount(x, ..., w = wt, sort = sort_cat,
+#       name = name, decreasing = decreasing, add = FALSE)
+#   }
+#   # sort= argument of dplyr::count sorts the frequency column indeed, not the
+#   # category column(s)
+#   if (isTRUE(sort))
+#     res <- res[order(res[[name]], decreasing = TRUE), ]
+#     # TODO: use data.table::setorder() instead
+#   default_dtx(res)
+# }, class = c("function", "sciviews_fn"),
+#   comment = .src_sciviews("collapse::fcount"))
 
 #' @export
 #' @rdname sciviews_functions

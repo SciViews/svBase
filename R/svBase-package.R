@@ -19,15 +19,16 @@
 # The following block is used by usethis to automatically manage
 # roxygen namespace tags. Modify with care!
 ## usethis namespace: start
-#' @importFrom data.table as.data.table haskey key rbindlist setattr setDT setkeyv
+#' @importFrom cli col_red
+#' @importFrom data.table as.data.table copy haskey key rbindlist setattr setDT setkeyv setorderv
 #' @importFrom data.trame as.data.trame data.trame is.data.trame let_data.trame_to_data.table let_data.table_to_data.trame
-#' @importFrom tibble as_tibble tibble tribble
+#' @importFrom tibble as_tibble is_tibble tibble tribble
 #' @importFrom tidyselect eval_select
 #' @importFrom svMisc assign_temp eval_data_dot expr_funs stop_ stop_top_call temp_env warning_
 #' @importFrom dplyr across add_count add_tally anti_join arrange bind_cols bind_rows collect count distinct filter full_join group_by inner_join is_grouped_df left_join mutate pull rename rename_with semi_join right_join select summarise tally transmute ungroup
 #' @importFrom tidyr drop_na extract fill pivot_longer pivot_wider replace_na separate separate_rows uncount unite
-#' @importFrom collapse add_vars allNA anyv ckmatch fcount fnobs fmatch fselect fsummarise fmutate frename fsubset fgroup_vars fungroup fslicev get_collapse get_vars group_by_vars greorder GRP GRPid GRPN gsplit join na_rm replace_NA roworder roworderv seq_row setv ss fgroup_by whichv
-#' @importFrom rlang abort call2 caller_env check_dots_empty env_name eval_bare expr expr_deparse f_env f_name f_lhs f_rhs inject is_formula rep_along warn
+#' @importFrom collapse add_vars allNA anyv ckmatch fcount fcountv fnobs fmatch fselect fsummarise fmutate frename fsubset fgroup_vars fungroup fslicev get_collapse get_vars group_by_vars greorder GRP GRPid GRPN gsplit join na_rm replace_NA roworder roworderv seq_row setv ss fgroup_by whichv
+#' @importFrom rlang `%||%` abort call2 caller_env check_dots_empty env_name eval_bare expr expr_deparse f_env f_name f_lhs f_rhs inject is_formula rep_along warn
 # @importFrom pillar tbl_sum
 #' @import zeallot
 ## usethis namespace: end

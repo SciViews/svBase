@@ -4,6 +4,12 @@
 \alias{sciviews_functions}
 \alias{list_sciviews_functions}
 \alias{all_of}
+\alias{as.grouped_df}
+\alias{as_grouped_df}
+\alias{as.grouped_df.default}
+\alias{as.grouped_df.grouped_df}
+\alias{as.grouped_df.GRP_df}
+\alias{print.grouped_df}
 \alias{group_vars_}
 \alias{group_rows_}
 \alias{group_data_}
@@ -36,6 +42,7 @@
 \alias{bind_cols_}
 \alias{slice_}
 \alias{slice_head_}
+\alias{slice_tail_}
 \alias{count_}
 \alias{tally_}
 \alias{add_count_}
@@ -56,6 +63,18 @@
 list_sciviews_functions()
 
 all_of(x)
+
+as.grouped_df(x, ...)
+
+as_grouped_df(x, ...)
+
+\method{as.grouped_df}{default}(x, ...)
+
+\method{as.grouped_df}{grouped_df}(x, ...)
+
+\method{as.grouped_df}{GRP_df}(x, ...)
+
+\method{print}{grouped_df}(x, ...)
 
 group_vars_(.data = (.), return = "names")
 
@@ -270,17 +289,18 @@ bind_cols_(
 
 slice_(.data = (.), ..., .by = NULL, .preserve = NULL)
 
-slice_head_(.data = (.), ..., n = 1L, prop, by = NULL)
+slice_head_(.data = (.), ..., n = 1L, prop, by = NULL, sort = TRUE)
+
+slice_tail_(.data = (.), ..., n = 1L, prop, by = NULL, sort = TRUE)
 
 count_(
-  x,
+  .data = (.),
   ...,
   wt = NULL,
+  name = "n",
   sort = FALSE,
-  name = NULL,
-  .drop = dplyr::group_by_drop_default(x),
-  sort_cat = TRUE,
-  decreasing = FALSE
+  decreasing = TRUE,
+  .drop = TRUE
 )
 
 tally_(
@@ -353,6 +373,9 @@ extract_(
 \arguments{
 \item{x}{A data frame (data.frame, data.table or tibble's tbl_df).}
 
+\item{...}{Arguments dependent to the context of the function and most of
+the time, not evaluated in a standard way (cf. the tidyverse approach).}
+
 \item{.data}{A data frame (data.frame, data.table or tibble's tbl_df)}
 
 \item{return}{What to return: \code{"data"} or \code{1}, \code{"unique"} or \code{2} for unique
@@ -361,9 +384,6 @@ columns, \code{"indices"} or \code{4} for integer indices of grouping columns,
 \code{"named_indices"} or \code{5} for named indices, \code{"logicial"} or \code{6} for logical
 selection vector of grouping columns, or \code{"named_logical"} or \code{7} for named
 logical.}
-
-\item{...}{Arguments dependent to the context of the function and most of
-the time, not evaluated in a standard way (cf. the tidyverse approach).}
 
 \item{.add}{If \code{TRUE}, the grouping variables are added to the existing ones.}
 
@@ -522,9 +542,9 @@ or \code{prop} but not both simultaneously. If none is provided, \code{n = 1} is
 
 \item{wt}{Frequency weights. Can be \code{NULL} or a variable. Use data masking.}
 
-\item{sort_cat}{Are levels sorted (\code{TRUE} by default).}
-
 \item{decreasing}{Is sorting done in decreasing order (\code{FALSE} by default)?}
+
+\item{sort_cat}{Are levels sorted (\code{TRUE} by default).}
 
 \item{.keep_all}{If \code{TRUE} keep all variables in \code{.data}.}
 
