@@ -330,37 +330,23 @@ speedy and SciViews functions in the same pipeline.</p>
 <span>  name <span class="op">=</span> <span class="st">"n"</span>,</span>
 <span>  sort <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  decreasing <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  .drop <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  add <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">tally_</span><span class="op">(</span>.data <span class="op">=</span> <span class="op">(</span><span class="va">.</span><span class="op">)</span>, wt <span class="op">=</span> <span class="cn">NULL</span>, name <span class="op">=</span> <span class="st">"n"</span>, sort <span class="op">=</span> <span class="cn">FALSE</span>, decreasing <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">add_count_</span><span class="op">(</span></span>
+<span>  .data <span class="op">=</span> <span class="op">(</span><span class="va">.</span><span class="op">)</span>,</span>
+<span>  <span class="va">...</span>,</span>
+<span>  wt <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  name <span class="op">=</span> <span class="st">"n"</span>,</span>
+<span>  sort <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  decreasing <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  .drop <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">tally_</span><span class="op">(</span></span>
-<span>  <span class="va">x</span>,</span>
-<span>  wt <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  sort <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  name <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  sort_cat <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  decreasing <span class="op">=</span> <span class="cn">FALSE</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">add_count_</span><span class="op">(</span></span>
-<span>  <span class="va">x</span>,</span>
-<span>  <span class="va">...</span>,</span>
-<span>  wt <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  sort <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  name <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  .drop <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  sort_cat <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  decreasing <span class="op">=</span> <span class="cn">FALSE</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">add_tally_</span><span class="op">(</span></span>
-<span>  <span class="va">x</span>,</span>
-<span>  wt <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  sort <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  name <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  sort_cat <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  decreasing <span class="op">=</span> <span class="cn">FALSE</span></span>
-<span><span class="op">)</span></span>
+<span><span class="fu">add_tally_</span><span class="op">(</span>.data <span class="op">=</span> <span class="op">(</span><span class="va">.</span><span class="op">)</span>, wt <span class="op">=</span> <span class="cn">NULL</span>, name <span class="op">=</span> <span class="st">"n"</span>, sort <span class="op">=</span> <span class="cn">FALSE</span>, decreasing <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">distinct_</span><span class="op">(</span><span class="va">.data</span>, <span class="va">...</span>, .keep_all <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span></span>
@@ -672,8 +658,8 @@ or <code>prop</code> but not both simultaneously. If none is provided, <code>n =
 <dd><p>Is sorting done in decreasing order (<code>FALSE</code> by default)?</p></dd>
 
 
-<dt id="arg-sort-cat">sort_cat<a class="anchor" aria-label="anchor" href="#arg-sort-cat"></a></dt>
-<dd><p>Are levels sorted (<code>TRUE</code> by default).</p></dd>
+<dt id="arg-add">add<a class="anchor" aria-label="anchor" href="#arg-add"></a></dt>
+<dd><p>Add counts to the data frame (<code>FALSE</code> by default).</p></dd>
 
 
 <dt id="arg--keep-all">.keep_all<a class="anchor" aria-label="anchor" href="#arg--keep-all"></a></dt>
