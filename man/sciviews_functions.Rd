@@ -318,7 +318,7 @@ add_count_(
 
 add_tally_(.data = (.), wt = NULL, name = "n", sort = FALSE, decreasing = TRUE)
 
-distinct_(.data, ..., .keep_all = FALSE)
+distinct_(.data = (.), ..., .keep_all = FALSE, .method = "auto")
 
 drop_na_(data, ...)
 

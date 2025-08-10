@@ -2425,46 +2425,174 @@ add_tally_ <- structure(function(.data = (.), wt = NULL, name = "n",
   comment = .src_sciviews("collapse::fcount"))
 
 
+# Note: this does not work... but could be useful to rapidly count unique items
+# by groups
+# @export
+# @rdname sciviews_functions
+# ndistinct_ <- structure(function(.data = (.), ..., .keep_all = FALSE,
+#     .op = NULL, .na.rm = FALSE) {
+#
+#   .__top_call__. <- TRUE
+#
+#   # Implicit data-dot mechanism
+#   if (missing(.data) || !is.data.frame(.data))
+#     return(eval_data_dot(sys.call(), arg = '.data', abort_msg =
+#         gettext("`.data` must be a `data.frame`.")))
+#
+#   # Apparently, I don't need to transform a data.trame into a data.table here
+#   # Treat data.trames as data.tables
+#   #to_dtrm <- is.data.trame(.data)
+#   #if (to_dtrm) {
+#   #  let_data.trame_to_data.table(.data)
+#   #  on.exit(let_data.table_to_data.trame(.data))
+#   #}
+#
+#   if (missing(...)) {
+#     args <- list(dots = list(), are_formulas = FALSE, env = parent.frame())
+#   } else {
+#     args <- formula_masking(...)
+#   }
+#
+#     if (is.numeric(.keep_all))
+#       .keep_all <- as.logical(.keep_all)
+#   if (!isTRUE(.keep_all) && !isFALSE(.keep_all))
+#     stop("{.arg .keep_all} must be {.code TRUE} or {.code FALSE}, not {.obj_type_friendly {(.keep_all)}} ({.val {(.keep_all)}}).")
+#
+#   is_grouped <- is_grouped_df(.data)
+#   if (missing(...) && !is_grouped) {# use all columns of .data
+#     return(fndistinct(.data, g = .data, TRA = .op, na.rm = .na.rm,
+#       use.g.names = TRUE, drop = TRUE))
+#   }
+#
+#   # If there are named items, we mutate data with these expressions
+#   dots_names <- names(args$dots)
+#   if (!is.null(dots_names)) {
+#     is_expr <- dots_names != ""
+#     if (any(is_expr)) {
+#       args2 <- args$dots[is_expr]
+#       if (!args$are_formulas) # force standard evaluation
+#         force(args2)
+#       data2 <- do.call('fmutate', c(list(.data), args2), envir = args$env)
+#       # Replace the expression by its name ( as a symbol, if formulas)
+#       args$dots[is_expr] <- dots_names[is_expr]
+#       if (args$are_formulas)
+#         args$dots[is_expr] <- lapply(args$dots[is_expr], as.symbol)
+#     } else {
+#       data2 <- .data
+#     }
+#   } else {
+#     data2 <- .data
+#   }
+#   if (args$are_formulas) {
+#     if (is_grouped) {
+#       gvars <- as.list(fgroup_vars(.data, return = "names"))
+#       args$dots <- unique(c(gvars, lapply(args$dots, as.symbol)))
+#     }
+#   } else {# SE evaluation
+#     if (is_grouped)
+#       args$dots <- unique(c(as.list(fgroup_vars(.data, return = "names")),
+#         args$dots))
+#   }
+#   if (is_grouped)
+#     data2 <- fungroup(data2) # Always ungroup at the end
+#
+#   res <- fndistinct(data2, g = args$dots, TRA = .op, na.rm = .na.rm,
+#     use.g.names = TRUE, drop = FALSE)
+#
+#   #if (to_dtrm)
+#   #  let_data.table_to_data.trame(res)
+#   res
+#
+#
+# }, class = c("function", "sciviews_fn"),
+#   comment = .src_sciviews("collapse::fndistinct"))
+
 #' @export
 #' @rdname sciviews_functions
-distinct_ <- structure(function(.data, ..., .keep_all = FALSE) {
+distinct_ <- structure(function(.data = (.), ..., .keep_all = FALSE,
+    .method = "auto") {
 
   .__top_call__. <- TRUE
 
-  # For now, we use same function as txxx() counterpart... still must rework
-  # Can use collapse::funique() by transforming the variables into a vector of
-  # names, dropping .data$ and if .env$... is used, add it as .env$... in the
-  # data frame, then use funique(), then drop or not unused variables
-  if (inherits(.data, c("tbl_db", "dtplyr_step")))
-    stop("You must collect results from a tidy function before using a sciviews one.")
+  # Implicit data-dot mechanism
+  if (missing(.data) || !is.data.frame(.data))
+    return(eval_data_dot(sys.call(), arg = '.data', abort_msg =
+        gettext("`.data` must be a `data.frame`.")))
 
-  is_x_dtf <- is_dtf(.data)
-  is_x_dtt <- is_dtt(.data)
-  # Also if we have a GRP_by object from fgroup_by() or sgroup_by(), transform
-  # it in,to regular group_by and restore the GRP_by after.
-  if (inherits(.data, "GRP_df")) {
-    is_x_grp_df <- TRUE
-    gvars <- fgroup_vars(.data, return = "names")
-    gvars <- lapply(gvars, as.name)
-    # Must regroup with the regular dplyr::group_by()
-    #.data <- group_by(fungroup(.data), across(gvars)) # Warning message
-    .data <- fungroup(.data)
-    .data <- do.call('group_by', c(list(.data = .data), gvars))
+  # Apparently, I don't need to transform a data.trame into a data.table here
+  # Treat data.trames as data.tables
+  #to_dtrm <- is.data.trame(.data)
+  #if (to_dtrm) {
+  #  let_data.trame_to_data.table(.data)
+  #  on.exit(let_data.table_to_data.trame(.data))
+  #}
+
+  if (missing(...)) {
+    args <- list(dots = as.list(names(.data)), are_formulas = FALSE,
+      env = parent.frame())
   } else {
-    is_x_grp_df <- FALSE
+    args <- formula_masking(...)
   }
-  res <- distinct(.data, ..., .keep_all = .keep_all)
-  if (!is.data.frame(res))
-    res <- collect(res)
-  # Transform if needed
-  if (is_x_dtf)
-    res <- as_dtf(res)
-  if (is_x_dtt)
-    res <- as_dtt(res)
-  if (is_x_grp_df)
-    res <- do.call('fgroup_by', c(list(.X = res), gvars))
+
+  is_grouped <- is_grouped_df(.data)
+  if (missing(...) && !is_grouped) {# use all columns of .data
+    # Note: since we use all variables here, .keep_all = TRUE/FALSE is the same
+    return(funique(.data, cols = names(.data), method = .method))
+  }
+
+  if (is.numeric(.keep_all))
+    .keep_all <- as.logical(.keep_all)
+  if (!isTRUE(.keep_all) && !isFALSE(.keep_all))
+    stop("{.arg .keep_all} must be {.code TRUE} or {.code FALSE}, not {.obj_type_friendly {(.keep_all)}} ({.val {(.keep_all)}}).")
+
+  # If there are named items, we mutate data with these expressions
+  dots_names <- names(args$dots)
+  if (!is.null(dots_names)) {
+    is_expr <- dots_names != ""
+    if (any(is_expr)) {
+      args2 <- args$dots[is_expr]
+      if (!args$are_formulas) # force standard evaluation
+        force(args2)
+      data2 <- do.call('fmutate', c(list(.data), args2), envir = args$env)
+      # Replace the expression by its name ( as a symbol, if formulas)
+      args$dots[is_expr] <- dots_names[is_expr]
+    } else {
+      # If ~pick(...) somewhere in args$dots, use tidyselect::eval_select()
+      args$dots <- lapply(args$dots, function(x) {
+        if (is.call(x) && x[[1]] == 'pick') {
+          x[[1]] <- as.symbol('c')
+          x <- eval_select(expr = x, data = .data, env = args$env,
+            error_call = stop_top_call())
+          names(x) # eval_select() returns indices with names, we use names only
+        } else {
+          x
+        }
+      })
+      data2 <- .data
+    }
+  } else {
+    data2 <- .data
+  }
+  argsdots <- unlist(lapply(args$dots, as.character))
+  if (is_grouped) {
+    argsdots <- funique(c(fgroup_vars(.data, return = "names"), argsdots))
+    data2 <- fungroup(data2) # Always ungroup at the end
+  }
+
+  res <- funique(data2, cols <- unlist(argsdots), method = .method)
+
+  # if we don't keep all, select the columns used to compute distinct
+  if (isFALSE(.keep_all))
+    res <- fselect(res, argsdots) # This is faster than the next one.
+    #res <- res[, argsdots, drop = FALSE]
+
+  #if (to_dtrm)
+  #  let_data.table_to_data.trame(res)
   res
-}, class = c("function", "sciviews_fn"), comment = .src_sciviews("dplyr::distinct"))
+
+
+}, class = c("function", "sciviews_fn"),
+  comment = .src_sciviews("dplyr::distinct"))
 
 
 # tidyr verbs -------------------------------------------------------------
