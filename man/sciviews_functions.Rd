@@ -320,7 +320,7 @@ add_tally_(.data = (.), wt = NULL, name = "n", sort = FALSE, decreasing = TRUE)
 
 distinct_(.data = (.), ..., .keep_all = FALSE, .method = "auto")
 
-drop_na_(data, ...)
+drop_na_(.data = (.), ..., .na.attr = FALSE, .prop = 0)
 
 replace_na_(data, replace, ...)
 
@@ -533,6 +533,13 @@ or \code{prop} but not both simultaneously. If none is provided, \code{n = 1} is
 \item{add}{Add counts to the data frame (\code{FALSE} by default).}
 
 \item{.keep_all}{If \code{TRUE} keep all variables in \code{.data}.}
+
+\item{.na.attr}{logical. \code{TRUE} adds an attribute containing the removed
+cases. For compatibility reasons this is exactly the same format as
+\code{\link[=na.omit]{na.omit()}}, i.e. the attribute is called "na.action" and of class \strong{omit}}
+
+\item{.prop}{numeric. The proportion missing values in each case for the case
+to be considered as missing required to keep a}
 
 \item{data}{A data frame, or for \code{replace_na()} a vector or a data frame.}
 

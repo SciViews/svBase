@@ -2597,33 +2597,86 @@ distinct_ <- structure(function(.data = (.), ..., .keep_all = FALSE,
 
 # tidyr verbs -------------------------------------------------------------
 
+# Note: tidyr uses data=, but here we use .data= for coherence with select()
 #' @export
 #' @rdname sciviews_functions
-drop_na_ <- structure(function(data, ...) {
+#' @param .na.attr logical. `TRUE` adds an attribute containing the removed
+#' cases. For compatibility reasons this is exactly the same format as
+#' [na.omit()], i.e. the attribute is called "na.action" and of class **omit**
+#' @param .prop numeric. The proportion missing values in each case for the case
+#' to be considered as missing required to keep a
+drop_na_ <- structure(function(.data = (.), ..., .na.attr = FALSE, .prop = 0) {
 
   .__top_call__. <- TRUE
 
-  # For now, we use same function as txxx() counterpart... still must rework
-  if (inherits(data, c("tbl_db", "dtplyr_step")))
-    stop("You must collect results from a tidy function before using a sciviews one.")
+  # Implicit data-dot mechanism
+  if (missing(.data) || !is.data.frame(.data))
+    return(eval_data_dot(sys.call(), arg = '.data',
+      abort_msg = gettext("`.data` must be a `data.frame`.")))
 
-  if (inherits(data, "GRP_df")) {
-    is_x_grp_df <- TRUE
-    gvars <- fgroup_vars(data, return = "names")
-    gvars <- lapply(gvars, as.name)
-  } else {
-    is_x_grp_df <- FALSE
+  # Similar to select_()...
+  # Treat data.trames as data.tables
+  to_dtrm <- is.data.trame(.data)
+  if (to_dtrm) {
+    let_data.trame_to_data.table(.data)
+    on.exit(let_data.table_to_data.trame(.data))
   }
-  if (is_dtt(data)) {
-    res <- collect(drop_na(data, ...))
-    res <- as_dtt(res)
-  } else {
-    res <- drop_na(data, ...)
+  if (!isTRUE(.na.attr) && !isFALSE(.na.attr))
+    stop("{.arg .na.attr} must be {.code TRUE} or {.code FALSE}, not {.obj_type_friendly {(.na.attr)}} ({.val {(.na.attr)}}).")
+
+  if (!is.numeric(.prop) || length(.prop) != 1L || .prop < 0 || .prop > 1)
+    stop("{.arg .prop} must be a single number [0, 1], not {.obj_type_friendly {(.prop)}} ({.val {(.prop)}}).")
+
+  # If no selection is provided
+  if (missing(...)) # Drop NA using columns
+    return(na_omit(.data, na.attr = .na.attr, prop = .prop))
+
+  # Process dots to args
+  args <- formula_select(..., .fast.allowed.funs = c(":", "-", "c"))
+
+  # Arguments cannot be named
+  dots_names <- names(args$dots)
+  has_names <- dots_names != ""
+  if (!is.null(dots_names) && any(has_names)) {
+    if (sum(has_names) == 1L) {
+      msg <- gettext("Problematic argument:")
+    } else {# Several named items
+      msg <- gettext("Problematic arguments:")
+    }
+    # Get correct expressions
+    exprs <- lapply(list(...)[has_names], expr_text)
+    exprs <- paste(names(exprs), exprs, sep = " = ")
+    # Must still rework ' = expr' in 'expr'
+    exprs <- sub("^ = ", "", exprs)
+    exprs <- sub("([^ ])~([^ ])", "\\1 ~ \\2", exprs) # x~y -> x ~ y
+    names(exprs) <- rep_along(exprs, "*")
+    msgs <- c(gettext(
+      "Arguments in {.code ...} cannot be named or use naming formulas like {.code name ~ expr}."),
+      x = msg, exprs)
+    cli_abort(msgs, call = stop_top_call())
   }
-  if (is_x_grp_df)
-    res <- do.call('fgroup_by', c(list(.X = res), gvars))
+
+  if (args$are_formulas) {
+    #message(gettextf("Using tidyselect with `%s`",
+    #  paste(args$dots, collapse = ", ")))
+    eval_select2 <- function(..., data)
+      eval_select(expr(c(...)), data = data, allow_rename = FALSE,
+        error_call = stop_top_call())
+    loc <- do.call('eval_select2', c(args$dots, list(data = .data)))
+    res <- na_omit(.data, cols = loc, na.attr = .na.attr, prop = .prop)
+    #names(res) <- names(loc)
+
+  } else {# no formulas with collapse
+    res <- na_omit(.data, cols = unlist(args$dots), na.attr = .na.attr,
+      prop = .prop)
+    # Should we rename here?
+  }
+  if (to_dtrm)
+    let_data.table_to_data.trame(res)
+
   res
-}, class = c("function", "sciviews_fn"), comment = .src_sciviews("tidyr::drop_na"))
+}, class = c("function", "sciviews_fn"),
+  comment = .src_sciviews("tidyr::drop_na"))
 
 #' @export
 #' @rdname sciviews_functions
