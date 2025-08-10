@@ -2727,7 +2727,7 @@ replace_na_ <- structure(function(.data = (.), replace, ..., v = NULL) {
     if (is.null(rep_cols)) # Nothing is named!
       return(.data)
 
-    if (length(replace) == 1L && rep_cols[1] == "everywhere") {
+    if (length(replace) == 1L && rep_cols[1] == ".everywhere") {
       replace <- replace[[1]]
       if (length(replace) != 1L)
         stop("Replacement for {.code data} must a {.cls list} with length 1 items, not length {length(replace)}.")
@@ -2752,26 +2752,79 @@ replace_na_ <- structure(function(.data = (.), replace, ..., v = NULL) {
 }, class = c("function", "sciviews_fn"),
   comment = .src_sciviews("tidyr::replace_na"))
 
+# TODO: collapse::pivot_longer() is monothread currently, see data.table::melt()
+# or {tidytable} for an alternative.
+# TODO: manage the arguments names_sep, names_pattern, names_ptypes,
+# values_ptypes, names_transform, values_transform, and names_repair!
 #' @export
 #' @rdname sciviews_functions
-pivot_longer_ <- structure(function(data, cols, names_to = "name",
-values_to = "value", ...) {
+#' @param cols_vary character. Either "fastest" or "slowest". If "fastest"
+#'   (default), keep individual rows from `cols` close together. If "slowest",
+#'   keeps individual columns from `cols' close together.
+#' @param names_prefix character. A regular expression used to remove matching text from the start of each variable name.
+#' @param values_drop_na logical. If `TRUE`, drop rows with only `NA`s in the
+#'   `values_to` column.
+#' @param factor logical. If `TRUE`, convert the names and labels into factors,
+#'   if `FALSE` (default) leave then as character strings (but slower for
+#'   subsequent filtering).
+pivot_longer_ <- structure(function(.data = (.) , cols, ...,
+    cols_vary = "fastest", names_to = "name", names_prefix = NULL,
+    values_to = "value", values_drop_na = FALSE, factor = FALSE) {
 
   .__top_call__. <- TRUE
 
-  # For now, we use same function as txxx() counterpart... still must rework
-  if (inherits(data, c("tbl_db", "dtplyr_step")))
-    stop("You must collect results from a tidy function before using a sciviews one.")
+  # Implicit data-dot mechanism
+  if (missing(.data) || !is.data.frame(.data))
+    return(eval_data_dot(sys.call(), arg = '.data',
+      abort_msg = gettext("`.data` must be a `data.frame`.")))
 
-  # Object is always ungrouped => we don't care of the groups!
-  is_x_dtf <- is_dtf(data)
-  is_x_dtt <- is_dtt(data)
-  res <-  do.call('pivot_longer', list(data = data, cols = substitute(cols),
-    names_to = names_to, values_to = values_to, ...))
-  if (is_x_dtf)
-    res <- as_dtf(res)
-  if (is_x_dtt)
-    res <- as_dtt(collect(res))
+  if (cols_vary != "fastest" && cols_vary != "slowest")
+    stop("{.arg cols_vary} must be \"fastest\" or \"slowest\", not {.obj_type_friendly {cols_vary}} ({.val {cols_vary}}).")
+
+  # TODO: handle the case where names_to is 0; or NULL or length > 1
+  if (!is.character(names_to))
+    stop("{.arg names_to} must be a character vector or `NULL`, not {.obj_type_friendly {names_to}} ({.val {names_to}}).")
+  if (length(names_to) != 1L)
+    stop("{.fun pivot_longer_} only accepts {.arg names_to} of length 1 not of length {length(names_to)}.")
+
+  if (!is.character(values_to))
+    stop("{.arg values_to} must be a character vector or `NULL`, not {.obj_type_friendly {values_to}} ({.val {values_to}}).")
+  if (length(values_to) != 1L)
+    stop("{.arg values_to} must have size 1 not size {length(values_to)}.")
+
+  if (isTRUE(factor))
+    factor <- c("names", "labels") # This the value expected by collapse::pivot()
+
+  # cols is tidy selected if a formula
+  if (is_formula(cols))
+    cols <- eval_select(f_rhs(cols), data = .data, allow_rename = FALSE,
+      error_call = stop_top_call())
+
+  # Rework cols names if names_prefix is provided
+  if (!missing(names_prefix)) {
+    if (!is.character(names_prefix) || length(names_prefix) != 1L)
+      stop("{.arg names_prefix} must be a single string, not {.obj_type_friendly {names_prefix}} ({.val {names_prefix}}).")
+    if (!startsWith(names_prefix, "^"))
+      names_prefix <- paste0("^", names_prefix)
+     names(.data)[cols] <- sub(names_prefix, "", names(.data)[cols])
+  }
+
+  res <- pivot(.data, values = cols, names = list(names_to, values_to),
+    how = "longer",
+    na.rm = if (cols_vary == "slowest") values_drop_na else FALSE,
+    factor = factor)
+
+  # Change order if cols_vary == "fastest"
+  if (cols_vary == "fastest") {
+    ncols <- length(cols)
+    seqcolsm1 <- 0:(ncols - 1)
+    nrows <- nrow(.data)
+    seqrows <- 1:nrows
+    res <- res[rep(seqrows, each = ncols) + rep(seqcolsm1 * nrows, nrows), ]
+    if (isTRUE(values_drop_na))
+      res <- na_omit(res, values_to)
+  }
+
   res
 }, class = c("function", "sciviews_fn"),
   comment = .src_sciviews("tidyr::pivot_longer"))

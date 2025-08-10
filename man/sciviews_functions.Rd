@@ -324,7 +324,17 @@ drop_na_(.data = (.), ..., .na.attr = FALSE, .prop = 0)
 
 replace_na_(.data = (.), replace, ..., v = NULL)
 
-pivot_longer_(data, cols, names_to = "name", values_to = "value", ...)
+pivot_longer_(
+  .data = (.),
+  cols,
+  ...,
+  cols_vary = "fastest",
+  names_to = "name",
+  names_prefix = NULL,
+  values_to = "value",
+  values_drop_na = FALSE,
+  factor = FALSE
+)
 
 pivot_wider_(data, names_from = name, values_from = value, ...)
 
@@ -546,16 +556,29 @@ otherwise, a list of values, one per column of the data frame.}
 
 \item{v}{a vector where to replace NAs.}
 
-\item{data}{A data frame, or for \code{replace_na()} a vector or a data frame.}
-
 \item{cols}{A selection of the columns using tidy-select syntax,
 see\code{\link[tidyr:pivot_longer]{tidyr::pivot_longer()}}.}
+
+\item{cols_vary}{character. Either "fastest" or "slowest". If "fastest"
+(default), keep individual rows from \code{cols} close together. If "slowest",
+keeps individual columns from `cols' close together.}
 
 \item{names_to}{A character vector with the name or names of the columns for
 the names.}
 
+\item{names_prefix}{character. A regular expression used to remove matching text from the start of each variable name.}
+
 \item{values_to}{A string with the name of the column that receives the
 values.}
+
+\item{values_drop_na}{logical. If \code{TRUE}, drop rows with only \code{NA}s in the
+\code{values_to} column.}
+
+\item{factor}{logical. If \code{TRUE}, convert the names and labels into factors,
+if \code{FALSE} (default) leave then as character strings (but slower for
+subsequent filtering).}
+
+\item{data}{A data frame, or for \code{replace_na()} a vector or a data frame.}
 
 \item{names_from}{The column or columns containing the names (use tidy
 selection and do not quote the names).}

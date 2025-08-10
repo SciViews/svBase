@@ -1,8 +1,12 @@
 # svBase To Do list
 
+-   Look at {tidytable}
+
 -   `filter()` by group.
 
 -   `.before=` and `.after=` for `mutate()`.
+
+-   `pivot_longer()` with multiple columns.
 
 -   `fquantile()` and `frange()` operate on vectors only, but it would be useful to get a function that returns only one quantile in the fast stat functions. Also `fcumsum()`, `flag()`, ... => make a category for these additional functions.
 
