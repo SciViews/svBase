@@ -2678,31 +2678,76 @@ drop_na_ <- structure(function(.data = (.), ..., .na.attr = FALSE, .prop = 0) {
 }, class = c("function", "sciviews_fn"),
   comment = .src_sciviews("tidyr::drop_na"))
 
+# There is tidyr::replace_na and collapse::replace_na
+# Make sure we use the correct one
+repl_na <- collapse::replace_na
+
+# TODO: replace NULL list elements in a data frame
+# (see last example of ?tidyr::replace_na)
+# data= is renamed .data= for consistency
+# To allow the data-dot mechanism, .data= could only be a data frame. However,
+# tidyr::replace_na() also accepts a vector. Here, you must indicate v= ...
+# in that case!
 #' @export
 #' @rdname sciviews_functions
-replace_na_ <- structure(function(data, replace, ...) {
+#' @param v a vector where to replace NAs.
+replace_na_ <- structure(function(.data = (.), replace, ..., v = NULL) {
 
   .__top_call__. <- TRUE
 
-  # For now, we use same function as txxx() counterpart... still must rework
-  if (inherits(data, c("tbl_db", "dtplyr_step")))
-    stop("You must collect results from a tidy function before using a sciviews one.")
+  if (!missing(v)) {# This is the replacement in a vector
+    # If nothing to replace, return the unmofdifed object
+    if (missing(replace) && !missing(.data))
+      replace <- .data
+    if (is.null(replace) || length(replace) == 0) # Nothing to replace
+      return(v)
+    if (is.list(replace))
+      stop("Replacement for vector {.code v} cannot be a {.cls list}.")
+    if (length(replace) != 1L)
+      stop("Replacement for vector {.code v} must be length 1, not length {length(replace)}.")
+    return(repl_na(v, value = replace, ...))
+  }
 
-  if (inherits(data, "GRP_df")) {
-    is_x_grp_df <- TRUE
-    gvars <- fgroup_vars(data, return = "names")
-    gvars <- lapply(gvars, as.name)
-  } else {
-    is_x_grp_df <- FALSE
-  }
-  if (is_dtt(data)) {
-    res <- collect(replace_na(as_dtbl(data), replace, ...))
-    res <- as_dtt(res)
-  } else {
-    res <- replace_na(data, replace, ...)
-  }
-  if (is_x_grp_df)
-    res <- do.call('fgroup_by', c(list(.X = res), gvars))
+  # Now, the case of a data frame
+  # Implicit data-dot mechanism
+  if (missing(.data) || !is.data.frame(.data))
+    return(eval_data_dot(sys.call(), arg = '.data',
+      abort_msg = gettext(
+        "`.data` must be a `data.frame` or a use `v = vector`.")))
+
+  # If nothing to replace, return the unmofdifed object
+  if (missing(replace) || length(replace) == 0)
+    return(.data)
+
+  if (!is.list(replace))
+    stop("{.arg replace} for {.cls data.frame} must be a {.cls list} not {.obj_type_friendly {replace}} ({.val {replace}}).")
+
+    # Faster alternative: a list with a single item named everywhere -> apply to all
+    rep_cols <- names(replace)
+    if (is.null(rep_cols)) # Nothing is named!
+      return(.data)
+
+    if (length(replace) == 1L && rep_cols[1] == "everywhere") {
+      replace <- replace[[1]]
+      if (length(replace) != 1L)
+        stop("Replacement for {.code data} must a {.cls list} with length 1 items, not length {length(replace)}.")
+      return(repl_na(.data, value = replace, ...))
+    }
+
+    # This is not very efficient, but OK for now (for loop)
+    # Note: variables not in .data or not named are silently ignored!
+    res <- .data
+    dat_cols <- names(.data)
+    for (i in 1:length(rep_cols)) {# >= 1, because tested for 0 above!
+      col <- rep_cols[i]
+      if (anyv(dat_cols, col)) {# Ignore wrong columns, like tidyr::replace_na
+        val <- replace[[i]]
+        if (length(val) != 1)
+          stop("Replacement for {.code data${col}} must be a {.cls list} with length 1 items, not length {length(val)}.")
+          res <- repl_na(res, cols = col, value = val, ...)
+      }
+    }
+
   res
 }, class = c("function", "sciviews_fn"),
   comment = .src_sciviews("tidyr::replace_na"))

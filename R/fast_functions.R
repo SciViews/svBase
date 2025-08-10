@@ -172,13 +172,13 @@ list_fstat_functions <- function() {
 #' @export
 #' @rdname fstat_functions
 fn <- function(x, ...) {
-  fnobs(replace_NA(x), ...)
+  fnobs(replace_na(x), ...)
 }
 
 #' @export
 #' @rdname fstat_functions
 fna <- function(x, ...) {
-  fnobs(replace_NA(x), ...) - fnobs(x, ...)
+  fnobs(replace_na(x), ...) - fnobs(x, ...)
 }
 
 # #' @export

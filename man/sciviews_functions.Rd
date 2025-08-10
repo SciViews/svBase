@@ -322,7 +322,7 @@ distinct_(.data = (.), ..., .keep_all = FALSE, .method = "auto")
 
 drop_na_(.data = (.), ..., .na.attr = FALSE, .prop = 0)
 
-replace_na_(data, replace, ...)
+replace_na_(.data = (.), replace, ..., v = NULL)
 
 pivot_longer_(data, cols, names_to = "name", values_to = "value", ...)
 
@@ -541,10 +541,12 @@ cases. For compatibility reasons this is exactly the same format as
 \item{.prop}{numeric. The proportion missing values in each case for the case
 to be considered as missing required to keep a}
 
-\item{data}{A data frame, or for \code{replace_na()} a vector or a data frame.}
-
 \item{replace}{If \code{data} is a vector, a unique value to replace \code{NA}s,
 otherwise, a list of values, one per column of the data frame.}
+
+\item{v}{a vector where to replace NAs.}
+
+\item{data}{A data frame, or for \code{replace_na()} a vector or a data frame.}
 
 \item{cols}{A selection of the columns using tidy-select syntax,
 see\code{\link[tidyr:pivot_longer]{tidyr::pivot_longer()}}.}
