@@ -53,7 +53,7 @@
 #' @param .sort If `TRUE` groups are sorted.
 #' @param sort If `TRUE` largest group will be shown on top.
 #' @param .drop Are levels with no observations dropped (`TRUE` by default).
-#' @param sort_cat Are levels sorted (`TRUE` by default).
+#' @param add Add counts to the data frame (`FALSE` by default).
 #' @param decreasing Is sorting done in decreasing order (`FALSE` by default)?
 #' @param .decreasing Is sorting done in decreasing order (`FALSE` by default)?
 #' @param name The name of the new column in the output (`n` by default, and no
@@ -1746,11 +1746,15 @@ bind_rows_ <- structure(function(..., .id = NULL, .use_names = TRUE,
     return(data.trame())
 
   # If ..1 is a list and ...length == 1, use it, otherwise, use list(...)
-  if ((is.list(..1) && !is.data.frame(..1)) && ...length() == 1) {
+  if ((is.list(..1) && !is.data.frame(..1)) && ...length() == 1L) {
+    if (!length(..1))
+      return(data.trame())
     arg_list <- ..1
   } else {
     arg_list <- list(...)
   }
+  if (length(arg_list) == 1L)
+    warning("Binding only one data frame is a nonsense. Did you forgot the `.` (not a data-dot function)?")
   # Ungroup if it is grouped (note: dplyr::bind_rows don't do that!)
   # This is because dplyr::bind_rows() does not support data.frames grouped
   # with collapse::fgroup_by()
@@ -1825,6 +1829,8 @@ bind_cols_ <- structure(function(...,
   # This is because dplyr::bind_rows() does not support data.frames grouped
   # with collapse::fgroup_by()
   arg_list <- list(...)
+  if (length(arg_list) == 1L)
+    warning("Binding only one data frame is a nonsense. Did you forgot the `.` (not a data-dot function)?")
   first_arg <- arg_list[[1]]
   if (is_grouped_df(first_arg))
     arg_list[[1]] <- fungroup(first_arg)
@@ -2224,7 +2230,7 @@ slice_tail_ <- structure(function(.data = (.), ..., n = 1L, prop, by = NULL,
 #' @export
 #' @rdname sciviews_functions
 count_ <- structure(function(.data = (.), ..., wt = NULL, name = "n",
-    sort = FALSE, decreasing = TRUE, .drop = TRUE) {
+    sort = FALSE, decreasing = TRUE, .drop = TRUE, add = FALSE) {
 
   .__top_call__. <- TRUE
 
@@ -2232,14 +2238,6 @@ count_ <- structure(function(.data = (.), ..., wt = NULL, name = "n",
   if (missing(.data) || !is.data.frame(.data))
     return(eval_data_dot(sys.call(), arg = '.data', abort_msg =
         gettext("`.data` must be a `data.frame`.")))
-
-  is_grouped <- is_grouped_df(.data)
-  if (missing(...) && !is_grouped) {# Just return the number of row
-    res <- .data[1L, 1L]
-    names(res) <- name
-    res[[name]] <- nrow(.data)
-    return(res)
-  }
 
   # Apparently, I don't need to transform a data.trame into a data.table here
   # Treat data.trames as data.tables
@@ -2291,6 +2289,27 @@ count_ <- structure(function(.data = (.), ..., wt = NULL, name = "n",
     stop("{.arg .drop} must be {.code TRUE} or {.code FALSE}, not {.obj_type_friendly {.drop}} ({.val {.drop}}).")
   }
 
+  if (!isTRUE(add) && !isFALSE(add))
+    stop("{.arg add} must be {.code TRUE} or {.code FALSE}, not {.obj_type_friendly {sort}} ({.val {sort}}).")
+
+  is_grouped <- is_grouped_df(.data)
+  if (missing(...) && !is_grouped) {# Just return the number of row
+    if (is.null(wt)) {
+      n <- nrow(.data)
+    } else {
+      n <- fsum(.data[[as.character(wt)]], na.rm = TRUE)
+    }
+    if (isTRUE(add)) {
+      res <- .data
+      res[[name]] <- n
+    } else {# Just return n
+      res <- .data[1L, 1L]
+      names(res) <- name
+      res[[name]] <- nrow(.data)
+    }
+    return(res)
+  }
+
   # If there are named items, we mutate data with these expressions
   dots_names <- names(args$dots)
   if (!is.null(dots_names)) {
@@ -2317,14 +2336,14 @@ count_ <- structure(function(.data = (.), ..., wt = NULL, name = "n",
       args$dots <- unique(c(gvars, args$dots))
     }
     res <- do.call('fcount', c(args$dots, list(x = data2, w = substitute(wt),
-      name = name, add = FALSE, sort = TRUE, decreasing = FALSE)),
+      name = name, add = add, sort = TRUE, decreasing = FALSE)),
       envir = args$env)
   } else {# SE evaluation
     if (is_grouped)
       args$dots <- unique(c(as.list(fgroup_vars(.data, return = "names")),
         args$dots))
     res <- fcountv(data2, cols = unlist(args$dots), w = wt, name = name,
-      add = FALSE, sort = TRUE, decreasing = FALSE)
+      add = add, sort = TRUE, decreasing = FALSE)
   }
 
   # sort= argument of dplyr::count sorts the frequency column indeed, not the
@@ -2347,198 +2366,61 @@ count_ <- structure(function(.data = (.), ..., wt = NULL, name = "n",
 }, class = c("function", "sciviews_fn"),
   comment = .src_sciviews("dplyr::count"))
 
-
-
-# @export
-# @rdname sciviews_functions
-# count_ <- structure(function(x, ..., wt = NULL, sort = FALSE, name = NULL,
-# .drop = dplyr::group_by_drop_default(x), sort_cat = TRUE, decreasing = FALSE) {
-#
-#   .__top_call__. <- TRUE
-#
-#   # TODO: .drop = FALSE not implemented yet
-#   if (isFALSE(.drop))
-#     stop(".drop = FALSE not implemented yet in scount(), use count() instead")
-#   # TODO: this does not work yet -> send an error message
-#   # starwars %>% scount(birth_decade = round(birth_year, -1))
-#   check <- try(rlang::check_dots_unnamed(), silent = TRUE)
-#   if (inherits(check, "try-error"))
-#     stop("scount() does not use computed values for ... yet, use count() instead")
-#   # TODO: align arguments with dplyr::count, currently, it is .drop = TRUE
-#   # but must implement .drop = FALSE too (shows 0 for levels that have no cases)
-#   # TODO: allow pronouns .data and .env
-#   if (is.null(name))
-#     name <- "n" # Default value is N in collapse, but n in dplyr
-#   # In case there are no groups defined, return just the number of rows
-#   if (!...length() && is.null(attr(x, "groups"))) {
-#     if (!missing(wt)) {
-#       swt <- substitute(wt)
-#       if (is.symbol(swt)) {
-#         res <- data.frame(n = sum(x[[as.character(swt)]], na.rm = TRUE))
-#       } else {
-#         if (length(wt) != NROW(x))
-#           stop("'wt' must be same length as the number of rows in 'x', or the name of a column in 'x'")
-#         res <- data.frame(n = sum(wt, na.rm = TRUE))
-#       }
-#     } else {
-#       res <- data.frame(n = NROW(x))
-#     }
-#     names(res) <- name
-#     return(default_dtx(res))
-#   }
-#   if (is.symbol(substitute(wt))) {
-#     res <- inject(fcount(x, ..., w = !!substitute(wt), sort = sort_cat,
-#       name = name, decreasing = decreasing, add = FALSE))
-#   } else {
-#     res <- fcount(x, ..., w = wt, sort = sort_cat,
-#       name = name, decreasing = decreasing, add = FALSE)
-#   }
-#   # sort= argument of dplyr::count sorts the frequency column indeed, not the
-#   # category column(s)
-#   if (isTRUE(sort))
-#     res <- res[order(res[[name]], decreasing = TRUE), ]
-#     # TODO: use data.table::setorder() instead
-#   default_dtx(res)
-# }, class = c("function", "sciviews_fn"),
-#   comment = .src_sciviews("collapse::fcount"))
-
 #' @export
 #' @rdname sciviews_functions
-tally_ <- structure(function(x, wt = NULL, sort = FALSE, name = NULL,
-sort_cat = TRUE, decreasing = FALSE) {
-
+tally_ <- structure(function(.data = (.), wt = NULL, name = "n", sort = FALSE,
+    decreasing = TRUE) {
   .__top_call__. <- TRUE
 
-  # Same as scount(), but without ...; grouping must be done with sgroup_by()
-  if (is.null(name))
-    name <- "n" # Default value is N in collapse, but n in dplyr
-  # In case there are no groups defined, return just the number of rows
-  if (is.null(attr(x, "groups"))) {
-    if (!missing(wt)) {
-      swt <- substitute(wt)
-      if (is.symbol(swt)) {
-        res <- data.frame(n = sum(x[[as.character(swt)]], na.rm = TRUE))
-      } else {
-        if (length(wt) != NROW(x))
-          stop("'wt' must be same length as the number of rows in 'x', or the name of a column in 'x'")
-        res <- data.frame(n = sum(wt, na.rm = TRUE))
-      }
-    } else {
-      res <- data.frame(n = NROW(x))
-    }
-    names(res) <- name
-    return(default_dtx(res))
+  # Implicit data-dot mechanism
+  if (missing(.data) || !is.data.frame(.data)) {
+    call <- sys.call()
+    # Directly call count_ here
+    call[[1]] <- as.symbol('count_')
+    return(eval_data_dot(sys.call(), arg = '.data', abort_msg =
+        gettext("`.data` must be a `data.frame`.")))
   }
-  if (is.symbol(substitute(wt))) {
-    res <- inject(fcount(x, w = !!substitute(wt), sort = sort_cat, name = name,
-      decreasing = decreasing, add = FALSE))
-  } else {
-    res <- fcount(x, w = wt, sort = sort_cat, name = name,
-      decreasing = decreasing, add = FALSE)
-  }
-  # sort= argument of dplyr::tally()sorts the frequency column indeed, not the
-  # category column(s)
-  if (isTRUE(sort))
-    res <- res[order(res[[name]], decreasing = TRUE), ]
-  # TODO: use data.table::setorder() instead
-  default_dtx(res)
+  count_(.data = .data, wt = wt, name = name, sort = sort,
+    decreasing = decreasing, add = FALSE)
+
 }, class = c("function", "sciviews_fn"),
-  comment = .src_sciviews("collapse::fcount"))
+  comment = .src_sciviews("dplyr::tally"))
 
 #' @export
 #' @rdname sciviews_functions
-add_count_ <- structure(function(x, ..., wt = NULL, sort = FALSE, name = NULL,
-  .drop = NULL, sort_cat = TRUE, decreasing = FALSE) {
+add_count_ <- structure(function(.data = (.), ..., wt = NULL, name = "n",
+    sort = FALSE, decreasing = TRUE, .drop = TRUE) {
 
   .__top_call__. <- TRUE
+
+  # Implicit data-dot mechanism
+  if (missing(.data) || !is.data.frame(.data))
+    return(eval_data_dot(sys.call(), arg = '.data', abort_msg =
+        gettext("`.data` must be a `data.frame`.")))
 
   if (!missing(.drop))
-    warning("the .drop= argument is deprecated in (s)add_count()")
-  # TODO: this does not work yet -> send an error message
-  # starwars %>% scount(birth_decade = round(birth_year, -1))
-  check <- try(rlang::check_dots_unnamed(), silent = TRUE)
-  if (inherits(check, "try-error"))
-    stop("sadd_count() does not use computed values for ... yet, use add_count() instead")
-  # TODO: align arguments with dplyr::count, currently, it is .drop = TRUE
-  # but must implement .drop = FALSE too (shows 0 for levels that have no cases)
-  # TODO: allow pronouns .data and .env
-  if (is.null(name))
-    name <- "n" # Default value is N in collapse, but n in dplyr
-  # In case there are no groups defined, return just the number of rows
-  if (!...length() && is.null(attr(x, "groups"))) {
-    n <- numeric(0)
-    if (!missing(wt)) {
-      swt <- substitute(wt)
-      if (is.symbol(swt)) {
-        x[[name]] <- sum(x[[as.character(swt)]], na.rm = TRUE)
-      } else {
-        if (length(wt) != NROW(x))
-          stop("'wt' must be same length as the number of rows in 'x', or the name of a column in 'x'")
-        x[[name]] <- sum(wt, na.rm = TRUE)
-      }
-    } else {
-      x[[name]] <- NROW(x)
-    }
-    return(default_dtx(x))
-  }
-  if (is.symbol(substitute(wt))) {
-    res <- inject(fcount(x, ..., w = !!substitute(wt), sort = sort_cat,
-      name = name, decreasing = decreasing, add = TRUE))
-  } else {
-    res <- fcount(x, ..., w = wt, sort = sort_cat,
-      name = name, decreasing = decreasing, add = TRUE)
-  }
-  # sort= argument of dplyr::add_count sorts the frequency column indeed, not
-  # the category column(s)
-  if (isTRUE(sort))
-    res <- res[order(res[[name]], decreasing = TRUE), ]
-  # TODO: use data.table::setorder()
-  default_dtx(res)
+    warning("the `.drop` argument is deprecated in `add_count_()`")
+
+  do.call('count_', list(.data = .data, ..., wt = substitute(wt), name = name,
+    sort = sort, decreasing = decreasing, add = TRUE), envir = parent.frame())
+
 }, class = c("function", "sciviews_fn"),
-  comment = .src_sciviews("collapse::fcount"))
+  comment = .src_sciviews("dplyr::add_count"))
 
 #' @export
 #' @rdname sciviews_functions
-add_tally_ <- structure(function(x, wt = NULL, sort = FALSE, name = NULL,
-sort_cat = TRUE, decreasing = FALSE) {
+add_tally_ <- structure(function(.data = (.), wt = NULL, name = "n",
+    sort = FALSE, decreasing = TRUE) {
 
   .__top_call__. <- TRUE
 
-  # TODO: align arguments with dplyr::count, currently, it is .drop = TRUE
-  # but must implement .drop = FALSE too (shows 0 for levels that have no cases)
-  # TODO: allow pronouns .data and .env
-  if (is.null(name))
-    name <- "n" # Default value is N in collapse, but n in dplyr
-  # In case there are no groups defined, return just the number of rows
-  if (is.null(attr(x, "groups"))) {
-    n <- numeric(0)
-    if (!missing(wt)) {
-      swt <- substitute(wt)
-      if (is.symbol(swt)) {
-        x[[name]] <- sum(x[[as.character(swt)]], na.rm = TRUE)
-      } else {
-        if (length(wt) != NROW(x))
-          stop("'wt' must be same length as the number of rows in 'x', or the name of a column in 'x'")
-        x[[name]] <- sum(wt, na.rm = TRUE)
-      }
-    } else {
-      x[[name]] <- NROW(x)
-    }
-    return(default_dtx(x))
-  }
-  if (is.symbol(substitute(wt))) {
-    res <- inject(fcount(x, w = !!substitute(wt), sort = sort_cat,
-      name = name, decreasing = decreasing, add = TRUE))
-  } else {
-    res <- fcount(x, w = wt, sort = sort_cat,
-      name = name, decreasing = decreasing, add = TRUE)
-  }
-  # sort= argument of dplyr::add_tally sorts the frequency column indeed, not
-  # the category column(s)
-  if (isTRUE(sort))
-    res <- res[order(res[[name]], decreasing = TRUE), ]
-  # TODO: use data.table::setorder() instead
-  default_dtx(res)
+  # Implicit data-dot mechanism
+  if (missing(.data) || !is.data.frame(.data))
+    return(eval_data_dot(sys.call(), arg = '.data', abort_msg =
+        gettext("`.data` must be a `data.frame`.")))
+
+  do.call('count_', list(.data = .data, wt = substitute(wt), name = name,
+    sort = sort, decreasing = decreasing, add = TRUE), envir = parent.frame())
 }, class = c("function", "sciviews_fn"),
   comment = .src_sciviews("collapse::fcount"))
 

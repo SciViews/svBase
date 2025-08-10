@@ -300,37 +300,23 @@ count_(
   name = "n",
   sort = FALSE,
   decreasing = TRUE,
+  .drop = TRUE,
+  add = FALSE
+)
+
+tally_(.data = (.), wt = NULL, name = "n", sort = FALSE, decreasing = TRUE)
+
+add_count_(
+  .data = (.),
+  ...,
+  wt = NULL,
+  name = "n",
+  sort = FALSE,
+  decreasing = TRUE,
   .drop = TRUE
 )
 
-tally_(
-  x,
-  wt = NULL,
-  sort = FALSE,
-  name = NULL,
-  sort_cat = TRUE,
-  decreasing = FALSE
-)
-
-add_count_(
-  x,
-  ...,
-  wt = NULL,
-  sort = FALSE,
-  name = NULL,
-  .drop = NULL,
-  sort_cat = TRUE,
-  decreasing = FALSE
-)
-
-add_tally_(
-  x,
-  wt = NULL,
-  sort = FALSE,
-  name = NULL,
-  sort_cat = TRUE,
-  decreasing = FALSE
-)
+add_tally_(.data = (.), wt = NULL, name = "n", sort = FALSE, decreasing = TRUE)
 
 distinct_(.data, ..., .keep_all = FALSE)
 
@@ -544,7 +530,7 @@ or \code{prop} but not both simultaneously. If none is provided, \code{n = 1} is
 
 \item{decreasing}{Is sorting done in decreasing order (\code{FALSE} by default)?}
 
-\item{sort_cat}{Are levels sorted (\code{TRUE} by default).}
+\item{add}{Add counts to the data frame (\code{FALSE} by default).}
 
 \item{.keep_all}{If \code{TRUE} keep all variables in \code{.data}.}
 
