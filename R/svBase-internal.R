@@ -9,6 +9,10 @@
 # Need this for R CMD check to pass
 . <- NULL
 
+# Internal options
+.op <- new.env()
+.op$verbose <- FALSE
+
 # We use our own stop_() and warning_(), but renamed
 stop <- svMisc::stop_
 warning <- svMisc::warning_
@@ -17,7 +21,8 @@ warning <- svMisc::warning_
 formula_masking <- function(..., .max.args = NULL, .must.be.named = FALSE,
     .make.names = FALSE, .no.se = FALSE,
     .no.se.msg = gettext("Standard evaluation is not allowed."),
-    .envir = parent.frame(2L), .frame = parent.frame()) {
+    .envir = parent.frame(2L), .frame = parent.frame(),
+    .verbose = .op$verbose) {
 
   .__top_call__. <- TRUE
   .make.names <- isTRUE(.make.names)
@@ -38,7 +43,8 @@ formula_masking <- function(..., .max.args = NULL, .must.be.named = FALSE,
 
   # Check number or arguments
   if (!is.null(.max.args)) {
-    if (!is.numeric(.max.args) || length(.max.args) != 1 || .max.args < 1)
+    if (!is.numeric(.max.args) || length(.max.args) != 1 || is.na(.max.args) ||
+        .max.args < 1)
       stop("{.arg .max.args} must be a single positive {.cls integer}, not {.max.args}.")
     # Check that the number of arguments is not too large
     if (ldots > .max.args)
@@ -46,25 +52,54 @@ formula_masking <- function(..., .max.args = NULL, .must.be.named = FALSE,
   }
 
   are_formulas <- is_formula(first_item)
+
   if (are_formulas) {# Everything is supposed to be formulas
+    # The environment where to expand macros is .envir if it contains
+    # .__top_call__. == TRUE, otherwise, no macro expansion is done.
+    if (isTRUE(.envir$.__top_call__.)) {
+      macro_env <- .envir
+      all_vars <- names(macro_env)
+      nvars <- length(all_vars)
+    } else {# No macro expansion)
+      nvars <- 0L
+    }
+
     # The environment where to evaluate them is extracted from the first formula
     .envir <- f_env(first_item)
 
     # Extract expressions from the rhs of the formulas
     # Formulas are converted into expressions in extracting the right-hand side
     # (and if there are left-hand side, they become the name)
-    f_to_expr <- function(x) {
+    f_to_expr <- function(x, env) {
       if (is_formula(x)) {
+        if (nvars) {# Perform macro expansion now
+          vars <- all_vars[fmatch(all.vars(x), all_vars,
+            nomatch = 0L)] # Same as intersect(all.vars(x), all_vars) but faster
+          macros <- list()
+          for (var in vars) {
+            macro <- macro_env[[var]]
+            if (is_formula(macro)) {# TODO: also deal with lhs!!!
+              macros[[var]] <- f_rhs(macro)
+            #} else {
+            #  macros[[var]] <- macro
+            }
+            if (length(macros)) {
+              x <- do.call(substitute, list(x, macros)) # Do macro expansion
+              if (isTRUE(.verbose))
+                message("Macro expanded expression: ", expr_text(x))
+            }
+          }
+        }
         f_rhs(x)
-      } else {
+
+      } else {# Not a formula
         stop("You cannot mix standard evaluation and formulas.")
       }
     }
     if (ldots == 1) {
-      args <- dots
-      args[[1]] <- f_to_expr(first_item)
+      args <- list(f_to_expr(first_item, env = parent.frame(3L)))
     } else {
-      args <- lapply(dots, f_to_expr)
+      args <- lapply(dots, f_to_expr, env = parent.frame(4L))
     }
 
     # Check names and possibly get names also from the formulas
@@ -74,6 +109,7 @@ formula_masking <- function(..., .max.args = NULL, .must.be.named = FALSE,
     for (i in 1:ldots) {
       dots_i <- dots[[i]]
       lhs <- f_lhs(dots_i)
+      # TODO: also a replacement mechanism here ?
       if (!is.null(lhs) && names_args[i] == "")
         names_args[i] <- eval_bare(lhs, env = .envir)
 
@@ -109,9 +145,9 @@ formula_masking <- function(..., .max.args = NULL, .must.be.named = FALSE,
 # formula_select is the equivalent of tidy-select, but using formulas
 # There is a fast subset of tidy-select handled by {collapse}, but for more
 # complex cases, we rely on tidyselect::eval_select().
-formula_select <- function(..., .fast.allowed.funs = NULL,
-    .max.args = NULL, .must.be.named = FALSE, .make.names = FALSE,
-    .no.se = FALSE, .no.se.msg = gettext("Standard evaluation is not allowed."),
+formula_select <- function(..., .fast.allowed.funs = NULL, .max.args = NULL,
+    .must.be.named = FALSE, .make.names = FALSE, .no.se = FALSE,
+    .no.se.msg = gettext("Standard evaluation is not allowed."),
     .envir = parent.frame(2L), .frame = parent.frame()) {
 
   .__top_call__. <- TRUE

@@ -336,14 +336,14 @@ pivot_longer_(
   factor = FALSE
 )
 
-pivot_wider_(data, names_from = name, values_from = value, ...)
+pivot_wider_(.data = (.), names_from = name, values_from = value, ...)
 
-uncount_(data, weights, .remove = TRUE, .id = NULL)
+uncount_(.data = (.), weights, .remove = TRUE, .id = NULL)
 
-unite_(data, col, ..., sep = "_", remove = TRUE, na.rm = FALSE)
+unite_(.data = (.), col, ..., sep = "_", remove = TRUE, na.rm = FALSE)
 
 separate_(
-  data,
+  .data = (.),
   col,
   into,
   sep = "[^[:alnum:]]+",
@@ -352,12 +352,12 @@ separate_(
   ...
 )
 
-separate_rows_(data, ..., sep = "[^[:alnum:].]+", convert = FALSE)
+separate_rows_(.data = (.), ..., sep = "[^[:alnum:].]+", convert = FALSE)
 
-fill_(data, ..., .direction = c("down", "up", "downup", "updown"))
+fill_(.data = (.), ..., .direction = c("down", "up", "downup", "updown"))
 
 extract_(
-  data,
+  .data = (.),
   col,
   into,
   regex = "([[:alnum:]]+)",
@@ -578,8 +578,6 @@ values.}
 if \code{FALSE} (default) leave then as character strings (but slower for
 subsequent filtering).}
 
-\item{data}{A data frame, or for \code{replace_na()} a vector or a data frame.}
-
 \item{names_from}{The column or columns containing the names (use tidy
 selection and do not quote the names).}
 
@@ -611,6 +609,8 @@ default), \code{"up"}, or \code{"downup"} (first down, then up), \code{"updown"}
 
 \item{regex}{A regular expression used to extract the desired values (use one
 group with \code{(} and \verb{)} for each element of \code{into}).}
+
+\item{data}{A data frame, or for \code{replace_na()} a vector or a data frame.}
 }
 \value{
 See corresponding "non-SciViews" function for the full help page with

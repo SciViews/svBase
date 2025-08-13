@@ -24,7 +24,7 @@
 #' @importFrom data.trame as.data.trame data.trame is.data.trame let_data.trame_to_data.table let_data.table_to_data.trame
 #' @importFrom tibble as_tibble is_tibble tibble tribble
 #' @importFrom tidyselect eval_select
-#' @importFrom svMisc assign_temp eval_data_dot expr_funs stop_ stop_top_call temp_env warning_
+#' @importFrom svMisc assign_temp expr_funs stop_ prepare_data_dot prepare_data_dot2 recall_with_data_dot recall_with_data_dot2 stop_top_call temp_env warning_
 #' @importFrom dplyr across add_count add_tally anti_join arrange bind_cols bind_rows collect count distinct filter full_join group_by inner_join is_grouped_df left_join mutate pull rename rename_with semi_join right_join select summarise tally transmute ungroup
 #' @importFrom tidyr drop_na extract fill pivot_longer pivot_wider separate separate_rows uncount unite
 #' @importFrom collapse add_vars allNA anyv ckmatch fcount fcountv fgroup_vars fndistinct fnobs fmatch fmutate fselect fsum fsummarise frename  fslicev fsubset fungroup funique get_collapse get_vars group_by_vars greorder GRP GRPid GRPN gsplit join na_omit na_rm replace_na pivot roworder roworderv seq_row setv ss fgroup_by whichv

@@ -213,12 +213,8 @@ print.grouped_df <- function(x, ...) {
 #'   logical.
 group_vars_ <- function(.data = (.), return = "names") {
 
-  .__top_call__. <- TRUE
-
-  # Implicit data-dot mechanism
-  if (missing(.data) || !is.data.frame(.data))
-    return(eval_data_dot(sys.call(), arg = '.data', abort_msg =
-        gettext("`.data` must be a `data.frame`.")))
+  if (!prepare_data_dot(.data))
+    return(recall_with_data_dot())
 
   if (!is_grouped_df(.data)) {
     switch(as.character(return),
@@ -245,12 +241,8 @@ group_vars_ <- function(.data = (.), return = "names") {
 #' @export
 #' @rdname sciviews_functions
 group_rows_ <- function(.data = (.)) {
-  .__top_call__. <- TRUE
-
-  # Implicit data-dot mechanism
-  if (missing(.data))
-    return(eval_data_dot(sys.call(), arg = '.data', abort_msg =
-        gettext("`.data` must be a `data.frame`.")))
+  if (!prepare_data_dot(.data))
+    return(recall_with_data_dot())
 
   if (!is_grouped_df(.data)) {
     # This is to reutrn a <list_of<integer>> like dplyr::group_rows() does
@@ -272,12 +264,8 @@ group_rows_ <- function(.data = (.)) {
 #' @export
 #' @rdname sciviews_functions
 group_data_ <- function(.data = (.)) {
-  .__top_call__. <- TRUE
-
-  # Implicit data-dot mechanism
-  if (missing(.data))
-    return(eval_data_dot(sys.call(), arg = '.data', abort_msg =
-      gettext("`.data` must be a `data.frame`.")))
+  if (!prepare_data_dot(.data))
+    return(recall_with_data_dot())
 
   if (!is_grouped_df(.data)) {
     res <- tibble(.rows = 1L)
@@ -295,12 +283,8 @@ group_data_ <- function(.data = (.)) {
 #' @export
 #' @rdname sciviews_functions
 group_indices_ <- function(.data = (.), ...) {
-  .__top_call__. <- TRUE
-
-  # Implicit data-dot mechanism
-  if (missing(.data))
-    return(eval_data_dot(sys.call(), arg = '.data', abort_msg =
-        gettext("`.data` must be a `data.frame`.")))
+  if (!prepare_data_dot(.data))
+    return(recall_with_data_dot())
 
   if (!missing(...))
     check_dots_empty()
@@ -315,12 +299,8 @@ group_indices_ <- function(.data = (.), ...) {
 #' @export
 #' @rdname sciviews_functions
 group_keys_ <- function(.data = (.), ...) {
-  .__top_call__. <- TRUE
-
-  # Implicit data-dot mechanism
-  if (missing(.data))
-    return(eval_data_dot(sys.call(), arg = '.data', abort_msg =
-        gettext("`.data` must be a `data.frame`.")))
+  if (!prepare_data_dot(.data))
+    return(recall_with_data_dot())
 
   if (!missing(...))
     check_dots_empty()
@@ -335,12 +315,8 @@ group_keys_ <- function(.data = (.), ...) {
 #' @export
 #' @rdname sciviews_functions
 groups_ <- function(.data = (.)) {
-  .__top_call__. <- TRUE
-
-  # Implicit data-dot mechanism
-  if (missing(.data))
-    return(eval_data_dot(sys.call(), arg = '.data', abort_msg =
-        gettext("`.data` must be a `data.frame`.")))
+  if (!prepare_data_dot(.data))
+    return(recall_with_data_dot())
 
   if (!is_grouped_df(.data)) {
     list()
@@ -352,12 +328,8 @@ groups_ <- function(.data = (.)) {
 #' @export
 #' @rdname sciviews_functions
 group_size_ <- function(.data = (.)) {
-  .__top_call__. <- TRUE
-
-  # Implicit data-dot mechanism
-  if (missing(.data))
-    return(eval_data_dot(sys.call(), arg = '.data', abort_msg =
-        gettext("`.data` must be a `data.frame`.")))
+  if (!prepare_data_dot(.data))
+    return(recall_with_data_dot())
 
   if (!is_grouped_df(.data)) {
     nrow(.data)
@@ -369,12 +341,8 @@ group_size_ <- function(.data = (.)) {
 #' @export
 #' @rdname sciviews_functions
 n_groups_ <- function(.data = (.)) {
-  .__top_call__. <- TRUE
-
-  # Implicit data-dot mechanism
-  if (missing(.data))
-    return(eval_data_dot(sys.call(), arg = '.data', abort_msg =
-        gettext("`.data` must be a `data.frame`.")))
+  if (!prepare_data_dot(.data))
+    return(recall_with_data_dot())
 
   if (!is_grouped_df(.data)) {
     1L
@@ -393,12 +361,8 @@ group_by_ <- structure(function(.data = (.), ..., .add = FALSE, .drop = NULL,
     .sort = get_collapse("sort"), .decreasing = FALSE, .na.last = TRUE,
     .return.groups = TRUE, .return.order = .sort, .method = "auto") {
 
-  .__top_call__. <- TRUE
-
-  # Implicit data-dot mechanism
-  if (missing(.data) || !is.data.frame(.data))
-    return(eval_data_dot(sys.call(), arg = '.data', abort_msg =
-      gettext("`.data` must be a `data.frame`.")))
+  if (!prepare_data_dot(.data))
+    return(recall_with_data_dot())
 
   # If no grouping variables provided
   if (missing(...)) {
@@ -535,12 +499,8 @@ group_by_ <- structure(function(.data = (.), ..., .add = FALSE, .drop = NULL,
 ungroup_ <- structure(function(.data = (.), ..., .na.last = TRUE,
     .method = "auto") {
 
-  .__top_call__. <- TRUE
-
-  # Implicit data-dot mechanism
-  if (missing(.data) || !is.data.frame(.data))
-    return(eval_data_dot(sys.call(), arg = '.data', abort_msg =
-      gettext("`.data` must be a `data.frame`.")))
+  if (!prepare_data_dot(.data))
+    return(recall_with_data_dot())
 
   # Treat data.trames as data.tables
   to_dtrm <- is.data.trame(.data)
@@ -622,12 +582,8 @@ ungroup_ <- structure(function(.data = (.), ..., .na.last = TRUE,
 #' @rdname sciviews_functions
 rename_ <- structure(function(.data = (.), ...) {
 
-  .__top_call__. <- TRUE
-
-  # Implicit data-dot mechanism
-  if (missing(.data) || !is.data.frame(.data))
-    return(eval_data_dot(sys.call(), arg = '.data', abort_msg =
-        gettext("`.data` must be a `data.frame`.")))
+  if (!prepare_data_dot(.data))
+    return(recall_with_data_dot())
 
   # If no renaming arguments, return .data
   if (missing(...))
@@ -694,12 +650,8 @@ rename_ <- structure(function(.data = (.), ...) {
 rename_with_ <- structure(function(.data = (.), .fn,
     .cols = ~everything(), ...) {
 
-  .__top_call__. <- TRUE
-
-  # Implicit data-dot mechanism
-  if (missing(.data) || !is.data.frame(.data))
-    return(eval_data_dot(sys.call(), arg = '.data', abort_msg =
-        gettext("`.data` must be a `data.frame`.")))
+  if (!prepare_data_dot(.data))
+    return(recall_with_data_dot())
 
   # Special case .cols = ~everything()
   if (length(.cols) == 2L && substitute(.cols) == quote(~everything())) {
@@ -739,7 +691,7 @@ rename_with_ <- structure(function(.data = (.), .fn,
   if (missing(.fn))
     stop("Argument {.arg .fn} is missing, with no default.")
   if (is_formula(.fn)) {
-    if (is_formula(.fn, lhs = FALSE)) { # Check for lhs absence
+    if (is_formula(.fn, lhs = FALSE)) {# Check for lhs absence
       # The convention being to use `.x` for the argument, we put names in .x
       # and the execute the call on it
       .call <- f_rhs(.fn)
@@ -788,12 +740,8 @@ rename_with_ <- structure(function(.data = (.), .fn,
 #' @rdname sciviews_functions
 filter_ <- structure(function(.data = (.), ..., .by = NULL, .preserve = FALSE) {
 
-  .__top_call__. <- TRUE
-
-  # Implicit data-dot mechanism
-  if (missing(.data) || !is.data.frame(.data))
-    return(eval_data_dot(sys.call(), arg = '.data', abort_msg =
-        gettext("`.data` must be a `data.frame`.")))
+  if (!prepare_data_dot(.data))
+    return(recall_with_data_dot())
 
   # Case missing(...), just return the data frame
   if (missing(...))
@@ -889,12 +837,8 @@ filter_ <- structure(function(.data = (.), ..., .by = NULL, .preserve = FALSE) {
 #' @rdname sciviews_functions
 select_ <- structure(function(.data = (.), ...) {
 
-  .__top_call__. <- TRUE
-
-  # Implicit data-dot mechanism
-  if (missing(.data) || !is.data.frame(.data))
-    return(eval_data_dot(sys.call(), arg = '.data',
-      abort_msg = gettext("`.data` must be a `data.frame`.")))
+  if (!prepare_data_dot(.data))
+    return(recall_with_data_dot())
 
   # Treat data.trames as data.tables
   to_dtrm <- is.data.trame(.data)
@@ -908,7 +852,7 @@ select_ <- structure(function(.data = (.), ...) {
     return(.data[0L, , drop = FALSE])
 
   # Process dots to args
-  args <- formula_select(..., .fast.allowed.funs = c(":", "-", "c"))
+  args <- formula_select(..., .fast.allowed.funs = c(":", "-", "c", "("))
   if (!args$fastselect) {
     #message(gettextf("Using tidyselect with `%s`",
     #  paste(args$dots, collapse = ", ")))
@@ -920,13 +864,14 @@ select_ <- structure(function(.data = (.), ...) {
     res <- .data[, loc, drop = FALSE]
     names(res) <- names(loc)
 
+
   } else {# fastselect with collapse
     if (args$are_formulas) {
       # Other return modes not supported (yet)
       res <- do.call('fselect', c(list(.x = .data, return = "data"), args$dots),
         envir = args$env)
     } else {
-      res <- get_vars(.data, args$dots, rename = TRUE)
+      res <- get_vars(.data, unlist(args$dots), rename = TRUE)
     }
     if (to_dtrm)
       let_data.table_to_data.trame(res)
@@ -942,12 +887,8 @@ select_ <- structure(function(.data = (.), ...) {
 mutate_ <- structure(function(.data = (.), ..., .by = NULL,
     .keep = "all", .before = NULL, .after = NULL, .cols = NULL) {
 
-  .__top_call__. <- TRUE
-
-  # Implicit data-dot mechanism
-  if (missing(.data) || !is.data.frame(.data))
-    return(eval_data_dot(sys.call(), arg = '.data', abort_msg =
-        gettext("`.data` must be a `data.frame`.")))
+  if (!prepare_data_dot(.data))
+    return(recall_with_data_dot())
 
   if (!is.character(.keep))
     stop("{.arg .keep} must be a string or character vector.")
@@ -1012,9 +953,7 @@ mutate_ <- structure(function(.data = (.), ..., .by = NULL,
 #' @export
 #' @rdname sciviews_functions
 transmute_ <- structure(function(.data, ...) {
-
   .__top_call__. <- TRUE
-
   do.call(mutate_, list(.data, ..., .keep = "none"), envir = parent.frame())
 }, class = c("function", "sciviews_fn"),
   comment = .src_sciviews("dplyr::transmute"))
@@ -1029,12 +968,8 @@ transmute_ <- structure(function(.data, ...) {
 summarise_ <- structure(function(.data = (.), ..., .by = NULL,
     .groups = "drop_last", .keep.group_vars = TRUE, .cols = NULL) {
 
-  .__top_call__. <- TRUE
-
-  # Implicit data-dot mechanism
-  if (missing(.data) || !is.data.frame(.data))
-    return(eval_data_dot(sys.call(), arg = '.data', abort_msg =
-        gettext("`.data` must be a `data.frame`.")))
+  if (!prepare_data_dot(.data))
+    return(recall_with_data_dot())
 
   # For grouped data, compute the grouping variables that must be returned
   is_grouped <- is_grouped_df(.data)
@@ -1140,8 +1075,7 @@ reframe_ <- structure(function(.data, ..., .by = NULL, .groups = "drop",
   call <- sys.call()
   call[[1]] <- as.symbol('summarise_') # Use summarise_() instead
   if (missing(.data) || !is.data.frame(.data))
-    return(eval_data_dot(sys.call(), arg = '.data', abort_msg =
-        gettext("`.data` must be a `data.frame`.")))
+    return(recall_with_data_dot(call))
 
   # Use summarise_() with same arguments
   eval_bare(call, env = parent.frame())
@@ -1155,13 +1089,9 @@ comment = .src_sciviews("collapse::fsummarise"))
 arrange_ <- structure(function(.data = (.), ..., .by_group = FALSE,
   .locale = "C", .decreasing = FALSE) {
 
-  .__top_call__. <- TRUE
   .__dplyr_error_call__. <- environment()
-
-  # Implicit data-dot mechanism
-  if (missing(.data) || !is.data.frame(.data))
-    return(eval_data_dot(sys.call(), arg = '.data', abort_msg =
-        gettext("`.data` must be a `data.frame`.")))
+  if (!prepare_data_dot(.data))
+    return(recall_with_data_dot())
 
   # Case missing(...), or no rows, or only one row, just return the data frame
   if (missing(...) || nrow(.data) < 2L)
@@ -1314,12 +1244,8 @@ arrange_ <- structure(function(.data = (.), ..., .by_group = FALSE,
 #' @rdname sciviews_functions
 pull_ <- structure(function(.data = (.), var = -1, name = NULL, ...) {
 
-  .__top_call__. <- TRUE
-
-  # Implicit data-dot mechanism
-  if (missing(.data) || !is.data.frame(.data))
-    return(eval_data_dot(sys.call(), arg = '.data', abort_msg =
-        gettext("`.data` must be a `data.frame`.")))
+  if (!prepare_data_dot(.data))
+    return(recall_with_data_dot())
 
   ## For now, we use same function as txxx() counterpart... still must rework
   #if (inherits(.data, c("tbl_db", "dtplyr_step")))
@@ -1568,12 +1494,8 @@ right_join_ <- structure(function(x = (.), y, by = NULL, copy = FALSE,
     multiple = "all", unmatched = "drop", relationship = NULL, sort = FALSE,
     verbose = 0, column = NULL, attr = NULL) {
 
-  .__top_call__. <- TRUE
-
-  # Implicit data-dot mechanism
-  if (missing(x) || (is.data.frame(x) && (missing(y) || !is.data.frame(y))))
-    return(eval_data_dot(sys.call(), arg = 'x', abort_msg =
-        gettext("`x` and `y` must be `data.frame`s.")))
+  if (!prepare_data_dot2(x, y))
+    return(recall_with_data_dot2())
 
   if (!missing(...))
     check_dots_empty()
@@ -1595,12 +1517,8 @@ full_join_ <- structure(function(x = (.), y, by = NULL, copy = FALSE,
   multiple = "all", relationship = NULL, sort = FALSE,
   verbose = 0, column = NULL, attr = NULL) {
 
-  .__top_call__. <- TRUE
-
-  # Implicit data-dot mechanism
-  if (missing(x) || (is.data.frame(x) && (missing(y) || !is.data.frame(y))))
-    return(eval_data_dot(sys.call(), arg = 'x', abort_msg =
-        gettext("`x` and `y` must be `data.frame`s.")))
+  if (!prepare_data_dot2(x, y))
+    return(recall_with_data_dot2())
 
   if (!missing(...))
     check_dots_empty()
@@ -1622,12 +1540,8 @@ left_join_ <- structure(function(x = (.), y, by = NULL, copy = FALSE,
   multiple = "all", unmatched = "drop", relationship = NULL, sort = FALSE,
   verbose = 0, column = NULL, attr = NULL) {
 
-  .__top_call__. <- TRUE
-
-  # Implicit data-dot mechanism
-  if (missing(x) || (is.data.frame(x) && (missing(y) || !is.data.frame(y))))
-    return(eval_data_dot(sys.call(), arg = 'x', abort_msg =
-        gettext("`x` and `y` must be `data.frame`s.")))
+  if (!prepare_data_dot2(x, y))
+    return(recall_with_data_dot2())
 
   if (!missing(...))
     check_dots_empty()
@@ -1649,12 +1563,8 @@ inner_join_ <- structure(function(x = (.), y, by = NULL, copy = FALSE,
   multiple = "all", unmatched = "drop", relationship = NULL, sort = FALSE,
   verbose = 0, column = NULL, attr = NULL) {
 
-  .__top_call__. <- TRUE
-
-  # Implicit data-dot mechanism
-  if (missing(x) || (is.data.frame(x) && (missing(y) || !is.data.frame(y))))
-    return(eval_data_dot(sys.call(), arg = 'x', abort_msg =
-        gettext("`x` and `y` must be `data.frame`s.")))
+  if (!prepare_data_dot2(x, y))
+    return(recall_with_data_dot2())
 
   if (!missing(...))
     check_dots_empty()
@@ -1677,12 +1587,8 @@ semi_join_ <- structure(function(x = (.), y, by = NULL, copy = FALSE, ...,
     na_matches = c("na", "never"), sort = FALSE, verbose = 0, column = NULL,
   attr = NULL) {
 
-  .__top_call__. <- TRUE
-
-  # Implicit data-dot mechanism
-  if (missing(x) || (is.data.frame(x) && (missing(y) || !is.data.frame(y))))
-    return(eval_data_dot(sys.call(), arg = 'x', abort_msg =
-        gettext("`x` and `y` must be `data.frame`s.")))
+  if (!prepare_data_dot2(x, y))
+    return(recall_with_data_dot2())
 
   if (!missing(...))
     check_dots_empty()
@@ -1704,12 +1610,8 @@ anti_join_ <- structure(function(x = (.), y, by = NULL, copy = FALSE, ...,
   na_matches = c("na", "never"), sort = FALSE, verbose = 0, column = NULL,
   attr = NULL) {
 
-  .__top_call__. <- TRUE
-
-  # Implicit data-dot mechanism
-  if (missing(x) || (is.data.frame(x) && (missing(y) || !is.data.frame(y))))
-    return(eval_data_dot(sys.call(), arg = 'x', abort_msg =
-        gettext("`x` and `y` must be `data.frame`s.")))
+  if (!prepare_data_dot2(x, y))
+    return(recall_with_data_dot2())
 
   if (!missing(...))
     check_dots_empty()
@@ -1846,12 +1748,8 @@ bind_cols_ <- structure(function(...,
 #' @rdname sciviews_functions
 slice_ <- structure(function(.data = (.), ..., .by = NULL, .preserve = NULL) {
 
-  .__top_call__. <- TRUE
-
-  # Implicit data-dot mechanism
-  if (missing(.data) || !is.data.frame(.data))
-    return(eval_data_dot(sys.call(), arg = '.data', abort_msg =
-        gettext("`.data` must be a `data.frame`.")))
+  if (!prepare_data_dot(.data))
+    return(recall_with_data_dot())
 
   if (!missing(.preserve))
     warning("`.preserve` argument is not used in `slice_()`. ",
@@ -1979,12 +1877,8 @@ slice_ <- structure(function(.data = (.), ..., .by = NULL, .preserve = NULL) {
 slice_head_ <- structure(function(.data = (.), ..., n = 1L, prop, by = NULL,
     sort = TRUE) {
 
-  .__top_call__. <- TRUE
-
-  # Implicit data-dot mechanism
-  if (missing(.data) || !is.data.frame(.data))
-    return(eval_data_dot(sys.call(), arg = '.data', abort_msg =
-        gettext("`.data` must be a `data.frame`.")))
+  if (!prepare_data_dot(.data))
+    return(recall_with_data_dot())
 
   if (!missing(...)) {
     if (...length() == 1L && is.null(...names()))
@@ -2060,12 +1954,8 @@ slice_head_ <- structure(function(.data = (.), ..., n = 1L, prop, by = NULL,
 slice_tail_ <- structure(function(.data = (.), ..., n = 1L, prop, by = NULL,
   sort = TRUE) {
 
-  .__top_call__. <- TRUE
-
-  # Implicit data-dot mechanism
-  if (missing(.data) || !is.data.frame(.data))
-    return(eval_data_dot(sys.call(), arg = '.data', abort_msg =
-        gettext("`.data` must be a `data.frame`.")))
+  if (!prepare_data_dot(.data))
+    return(recall_with_data_dot())
 
   if (!missing(...)) {
     if (...length() == 1L && is.null(...names()))
@@ -2142,12 +2032,8 @@ slice_tail_ <- structure(function(.data = (.), ..., n = 1L, prop, by = NULL,
 # slice_min_ <- structure(function(.data = (.), order_by = NULL, ..., n = 1L,
 #     prop, by = NULL, with_ties = TRUE, na_rm = FALSE, sort = TRUE) {
 #
-#   .__top_call__. <- TRUE
-#
-#   # Implicit data-dot mechanism
-#   if (missing(.data) || !is.data.frame(.data))
-#     return(eval_data_dot(sys.call(), arg = '.data', abort_msg =
-#         gettext("`.data` must be a `data.frame`.")))
+#   if (!prepare_data_dot(.data))
+#     return(recall_with_data_dot())
 #
 #   if (!missing(...)) {
 #     if (...length() == 1L && is.null(...names()))
@@ -2232,12 +2118,8 @@ slice_tail_ <- structure(function(.data = (.), ..., n = 1L, prop, by = NULL,
 count_ <- structure(function(.data = (.), ..., wt = NULL, name = "n",
     sort = FALSE, decreasing = TRUE, .drop = TRUE, add = FALSE) {
 
-  .__top_call__. <- TRUE
-
-  # Implicit data-dot mechanism
-  if (missing(.data) || !is.data.frame(.data))
-    return(eval_data_dot(sys.call(), arg = '.data', abort_msg =
-        gettext("`.data` must be a `data.frame`.")))
+  if (!prepare_data_dot(.data))
+    return(recall_with_data_dot())
 
   # Apparently, I don't need to transform a data.trame into a data.table here
   # Treat data.trames as data.tables
@@ -2377,8 +2259,7 @@ tally_ <- structure(function(.data = (.), wt = NULL, name = "n", sort = FALSE,
     call <- sys.call()
     # Directly call count_ here
     call[[1]] <- as.symbol('count_')
-    return(eval_data_dot(sys.call(), arg = '.data', abort_msg =
-        gettext("`.data` must be a `data.frame`.")))
+    return(recall_with_data_dot(call))
   }
   count_(.data = .data, wt = wt, name = name, sort = sort,
     decreasing = decreasing, add = FALSE)
@@ -2391,12 +2272,8 @@ tally_ <- structure(function(.data = (.), wt = NULL, name = "n", sort = FALSE,
 add_count_ <- structure(function(.data = (.), ..., wt = NULL, name = "n",
     sort = FALSE, decreasing = TRUE, .drop = TRUE) {
 
-  .__top_call__. <- TRUE
-
-  # Implicit data-dot mechanism
-  if (missing(.data) || !is.data.frame(.data))
-    return(eval_data_dot(sys.call(), arg = '.data', abort_msg =
-        gettext("`.data` must be a `data.frame`.")))
+  if (!prepare_data_dot(.data))
+    return(recall_with_data_dot())
 
   if (!missing(.drop))
     warning("the `.drop` argument is deprecated in `add_count_()`")
@@ -2412,12 +2289,8 @@ add_count_ <- structure(function(.data = (.), ..., wt = NULL, name = "n",
 add_tally_ <- structure(function(.data = (.), wt = NULL, name = "n",
     sort = FALSE, decreasing = TRUE) {
 
-  .__top_call__. <- TRUE
-
-  # Implicit data-dot mechanism
-  if (missing(.data) || !is.data.frame(.data))
-    return(eval_data_dot(sys.call(), arg = '.data', abort_msg =
-        gettext("`.data` must be a `data.frame`.")))
+  if (!prepare_data_dot(.data))
+    return(recall_with_data_dot())
 
   do.call('count_', list(.data = .data, wt = substitute(wt), name = name,
     sort = sort, decreasing = decreasing, add = TRUE), envir = parent.frame())
@@ -2432,12 +2305,8 @@ add_tally_ <- structure(function(.data = (.), wt = NULL, name = "n",
 # ndistinct_ <- structure(function(.data = (.), ..., .keep_all = FALSE,
 #     .op = NULL, .na.rm = FALSE) {
 #
-#   .__top_call__. <- TRUE
-#
-#   # Implicit data-dot mechanism
-#   if (missing(.data) || !is.data.frame(.data))
-#     return(eval_data_dot(sys.call(), arg = '.data', abort_msg =
-#         gettext("`.data` must be a `data.frame`.")))
+#   if (!prepare_data_dot(.data))
+#     return(recall_with_data_dot())
 #
 #   # Apparently, I don't need to transform a data.trame into a data.table here
 #   # Treat data.trames as data.tables
@@ -2512,12 +2381,8 @@ add_tally_ <- structure(function(.data = (.), wt = NULL, name = "n",
 distinct_ <- structure(function(.data = (.), ..., .keep_all = FALSE,
     .method = "auto") {
 
-  .__top_call__. <- TRUE
-
-  # Implicit data-dot mechanism
-  if (missing(.data) || !is.data.frame(.data))
-    return(eval_data_dot(sys.call(), arg = '.data', abort_msg =
-        gettext("`.data` must be a `data.frame`.")))
+  if (!prepare_data_dot(.data))
+    return(recall_with_data_dot())
 
   # Apparently, I don't need to transform a data.trame into a data.table here
   # Treat data.trames as data.tables
@@ -2607,12 +2472,8 @@ distinct_ <- structure(function(.data = (.), ..., .keep_all = FALSE,
 #' to be considered as missing required to keep a
 drop_na_ <- structure(function(.data = (.), ..., .na.attr = FALSE, .prop = 0) {
 
-  .__top_call__. <- TRUE
-
-  # Implicit data-dot mechanism
-  if (missing(.data) || !is.data.frame(.data))
-    return(eval_data_dot(sys.call(), arg = '.data',
-      abort_msg = gettext("`.data` must be a `data.frame`.")))
+  if (!prepare_data_dot(.data))
+    return(recall_with_data_dot())
 
   # Similar to select_()...
   # Treat data.trames as data.tables
@@ -2709,11 +2570,9 @@ replace_na_ <- structure(function(.data = (.), replace, ..., v = NULL) {
   }
 
   # Now, the case of a data frame
-  # Implicit data-dot mechanism
-  if (missing(.data) || !is.data.frame(.data))
-    return(eval_data_dot(sys.call(), arg = '.data',
-      abort_msg = gettext(
-        "`.data` must be a `data.frame` or a use `v = vector`.")))
+  if (!prepare_data_dot(.data))
+    return(recall_with_data_dot(abort_msg = gettext(
+      "`.data` must be a `data.frame` or a use `v = vector`.")))
 
   # If nothing to replace, return the unmofdifed object
   if (missing(replace) || length(replace) == 0)
@@ -2771,12 +2630,8 @@ pivot_longer_ <- structure(function(.data = (.) , cols, ...,
     cols_vary = "fastest", names_to = "name", names_prefix = NULL,
     values_to = "value", values_drop_na = FALSE, factor = FALSE) {
 
-  .__top_call__. <- TRUE
-
-  # Implicit data-dot mechanism
-  if (missing(.data) || !is.data.frame(.data))
-    return(eval_data_dot(sys.call(), arg = '.data',
-      abort_msg = gettext("`.data` must be a `data.frame`.")))
+  if (!prepare_data_dot(.data))
+    return(recall_with_data_dot())
 
   if (cols_vary != "fastest" && cols_vary != "slowest")
     stop("{.arg cols_vary} must be \"fastest\" or \"slowest\", not {.obj_type_friendly {cols_vary}} ({.val {cols_vary}}).")
@@ -2829,25 +2684,26 @@ pivot_longer_ <- structure(function(.data = (.) , cols, ...,
 }, class = c("function", "sciviews_fn"),
   comment = .src_sciviews("tidyr::pivot_longer"))
 
-# This is needed for R CMD check otherwise itwill complain
+# This is needed for R CMD check otherwise it will complain
 name <- NULL
 value <- NULL
 
 #' @export
 #' @rdname sciviews_functions
-pivot_wider_ <- structure(function(data, names_from = name,
+pivot_wider_ <- structure(function(.data = (.), names_from = name,
     values_from = value, ...) {
 
-  .__top_call__. <- TRUE
+  if (!prepare_data_dot(.data))
+    return(recall_with_data_dot())
 
   # For now, we use same function as txxx() counterpart... still must rework
-  if (inherits(data, c("tbl_db", "dtplyr_step")))
+  if (inherits(.data, c("tbl_db", "dtplyr_step")))
     stop("You must collect results from a tidy function before using a sciviews one.")
 
   # Sometimes groups are kept, sometimes not... for now, we do not care.
-  is_x_dtf <- is_dtf(data)
-  is_x_dtt <- is_dtt(data)
-  res <- do.call('pivot_wider', list(data = fungroup(data),
+  is_x_dtf <- is_dtf(.data)
+  is_x_dtt <- is_dtt(.data)
+  res <- do.call('pivot_wider', list(.data = fungroup(.data),
     names_from = substitute(names_from),
     values_from = substitute(values_from), ...))
   if (is_x_dtf)
@@ -2860,19 +2716,20 @@ pivot_wider_ <- structure(function(data, names_from = name,
 
 #' @export
 #' @rdname sciviews_functions
-uncount_ <- structure(function(data, weights, .remove = TRUE, .id = NULL) {
+uncount_ <- structure(function(.data = (.), weights, .remove = TRUE, .id = NULL) {
 
-  .__top_call__. <- TRUE
+  if (!prepare_data_dot(.data))
+    return(recall_with_data_dot())
 
   # For now, we use same function as txxx() counterpart... still must rework
-  if (inherits(data, c("tbl_db", "dtplyr_step")))
+  if (inherits(.data, c("tbl_db", "dtplyr_step")))
     stop("You must collect results from a tidy function before using a sciviews one.")
 
   # Sometimes groups are kept, sometimes not... for now, we do not care
   # (we always ungroup).
-  is_x_dtf <- is_dtf(data)
-  is_x_dtt <- is_dtt(data)
-  res <- do.call('uncount', list(data = fungroup(data),
+  is_x_dtf <- is_dtf(.data)
+  is_x_dtt <- is_dtt(.data)
+  res <- do.call('uncount', list(.data = fungroup(.data),
     weights = substitute(weights), .remove = .remove, .id = .id))
   if (is_x_dtf)
     res <- as_dtf(res)
@@ -2883,20 +2740,21 @@ uncount_ <- structure(function(data, weights, .remove = TRUE, .id = NULL) {
 
 #' @export
 #' @rdname sciviews_functions
-unite_ <- structure(function(data, col, ..., sep = "_", remove = TRUE,
+unite_ <- structure(function(.data = (.), col, ..., sep = "_", remove = TRUE,
     na.rm = FALSE) {
 
-  .__top_call__. <- TRUE
+  if (!prepare_data_dot(.data))
+    return(recall_with_data_dot())
 
   # For now, we use same function as txxx() counterpart... still must rework
-  if (inherits(data, c("tbl_db", "dtplyr_step")))
+  if (inherits(.data, c("tbl_db", "dtplyr_step")))
     stop("You must collect results from a tidy function before using a sciviews one.")
 
   # Sometimes groups are kept, sometimes not... for now, we do not care
   # (we always ungroup).
-  is_x_dtf <- is_dtf(data)
-  is_x_dtt <- is_dtt(data)
-  res <- inject(unite(data = as_dtbl(fungroup(data)), col = !!substitute(col),
+  is_x_dtf <- is_dtf(.data)
+  is_x_dtt <- is_dtt(.data)
+  res <- inject(unite(.data = as_dtbl(fungroup(.data)), col = !!substitute(col),
     ..., sep = sep, remove = remove, na.rm = na.rm))
   if (is_x_dtf)
     res <- as_dtf(res)
@@ -2907,20 +2765,21 @@ unite_ <- structure(function(data, col, ..., sep = "_", remove = TRUE,
 
 #' @export
 #' @rdname sciviews_functions
-separate_ <- structure(function(data, col, into, sep = "[^[:alnum:]]+",
+separate_ <- structure(function(.data = (.), col, into, sep = "[^[:alnum:]]+",
     remove = TRUE, convert = FALSE, ...) {
 
-  .__top_call__. <- TRUE
+  if (!prepare_data_dot(.data))
+    return(recall_with_data_dot())
 
   # For now, we use same function as txxx() counterpart... still must rework
-  if (inherits(data, c("tbl_db", "dtplyr_step")))
+  if (inherits(.data, c("tbl_db", "dtplyr_step")))
     stop("You must collect results from a tidy function before using a sciviews one.")
 
   # Sometimes groups are kept, sometimes not... for now, we do not care
   # (we always ungroup).
-  is_x_dtf <- is_dtf(data)
-  is_x_dtt <- is_dtt(data)
-  res <- do.call('separate', list(data = as_dtbl(fungroup(data)),
+  is_x_dtf <- is_dtf(.data)
+  is_x_dtt <- is_dtt(.data)
+  res <- do.call('separate', list(.data = as_dtbl(fungroup(.data)),
     col = substitute(col), into = into, sep = sep, remove = remove,
     convert = convert, ...))
   if (is_x_dtf)
@@ -2932,20 +2791,21 @@ separate_ <- structure(function(data, col, into, sep = "[^[:alnum:]]+",
 
 #' @export
 #' @rdname sciviews_functions
-separate_rows_ <- structure(function(data, ..., sep = "[^[:alnum:].]+",
+separate_rows_ <- structure(function(.data = (.), ..., sep = "[^[:alnum:].]+",
     convert = FALSE) {
 
-  .__top_call__. <- TRUE
+  if (!prepare_data_dot(.data))
+    return(recall_with_data_dot())
 
   # For now, we use same function as txxx() counterpart... still must rework
-  if (inherits(data, c("tbl_db", "dtplyr_step")))
+  if (inherits(.data, c("tbl_db", "dtplyr_step")))
     stop("You must collect results from a tidy function before using a sciviews one.")
 
   # Sometimes groups are kept, sometimes not... for now, we do not care
   # (we always ungroup).
-  is_x_dtf <- is_dtf(data)
-  is_x_dtt <- is_dtt(data)
-  res <- separate_rows(data = as_dtbl(fungroup(data)), ..., sep = sep,
+  is_x_dtf <- is_dtf(.data)
+  is_x_dtt <- is_dtt(.data)
+  res <- separate_rows(.data = as_dtbl(fungroup(.data)), ..., sep = sep,
     convert = convert)
   if (is_x_dtf)
     res <- as_dtf(res)
@@ -2956,27 +2816,28 @@ separate_rows_ <- structure(function(data, ..., sep = "[^[:alnum:].]+",
 
 #' @export
 #' @rdname sciviews_functions
-fill_ <- structure(function(data, ...,
+fill_ <- structure(function(.data = (.), ...,
     .direction = c("down", "up", "downup", "updown")) {
 
-  .__top_call__. <- TRUE
+  if (!prepare_data_dot(.data))
+    return(recall_with_data_dot())
 
   # For now, we use same function as txxx() counterpart... still must rework
-  if (inherits(data, c("tbl_db", "dtplyr_step")))
+  if (inherits(.data, c("tbl_db", "dtplyr_step")))
     stop("You must collect results from a tidy function before using a sciviews one.")
 
-  if (inherits(data, "GRP_df")) {
+  if (inherits(.data, "GRP_df")) {
     is_x_grp_df <- TRUE
-    gvars <- fgroup_vars(data, return = "names")
+    gvars <- fgroup_vars(.data, return = "names")
     gvars <- lapply(gvars, as.name)
   } else {
     is_x_grp_df <- FALSE
   }
-  if (is_dtt(data)) {
-    res <- collect(fill(as_dtbl(data), ..., .direction = .direction))
+  if (is_dtt(.data)) {
+    res <- collect(fill(as_dtbl(.data), ..., .direction = .direction))
     res <- as_dtt(res)
   } else {
-    res <- fill(data, ..., .direction = .direction)
+    res <- fill(.data, ..., .direction = .direction)
   }
   if (is_x_grp_df)
     res <- do.call('fgroup_by', c(list(.X = res), gvars))
@@ -2985,29 +2846,30 @@ fill_ <- structure(function(data, ...,
 
 #' @export
 #' @rdname sciviews_functions
-extract_ <- structure(function(data, col, into, regex = "([[:alnum:]]+)",
+extract_ <- structure(function(.data = (.), col, into, regex = "([[:alnum:]]+)",
     remove = TRUE, convert = FALSE, ...) {
 
-  .__top_call__. <- TRUE
+  if (!prepare_data_dot(.data))
+    return(recall_with_data_dot())
 
   # For now, we use same function as txxx() counterpart... still must rework
-  if (inherits(data, c("tbl_db", "dtplyr_step")))
+  if (inherits(.data, c("tbl_db", "dtplyr_step")))
     stop("You must collect results from a tidy function before using a sciviews one.")
 
-  if (inherits(data, "GRP_df")) {
+  if (inherits(.data, "GRP_df")) {
     is_x_grp_df <- TRUE
-    gvars <- fgroup_vars(data, return = "names")
+    gvars <- fgroup_vars(.data, return = "names")
     gvars <- lapply(gvars, as.name)
   } else {
     is_x_grp_df <- FALSE
   }
-  if (is_dtt(data)) {
+  if (is_dtt(.data)) {
 
-    res <- do.call('extract', list(as_dtbl(data), col = substitute(col),
+    res <- do.call('extract', list(as_dtbl(.data), col = substitute(col),
       into = into, regex = regex, remove = remove, convert = convert, ...))
     res <- as_dtt(collect(res))
   } else {
-    res <- do.call('extract', list(data, col = substitute(col), into = into,
+    res <- do.call('extract', list(.data, col = substitute(col), into = into,
       regex = regex, remove = remove, convert = convert, ...))
   }
   if (is_x_grp_df)
