@@ -351,7 +351,7 @@ pivot_wider_(
   sort = FALSE
 )
 
-uncount_(.data = (.), weights, .remove = TRUE, .id = NULL)
+uncount_(.data = (.), weights, ..., .remove = TRUE, .id = NULL)
 
 unite_(.data = (.), col, ..., sep = "_", remove = TRUE, na.rm = FALSE)
 
@@ -610,7 +610,7 @@ selection and do not quote the names).}
 also be a formula calling an external function with first argument being \code{.x}
 like \code{~fmedian(.x, na.rm = TRUE)}.`}
 
-\item{drop}{Trop unused factor levels or not.}
+\item{drop}{Drop unused factor levels or not.}
 
 \item{weights}{A vector of weight to use to "uncount" \code{data}.}
 

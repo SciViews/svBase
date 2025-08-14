@@ -28,7 +28,7 @@
 #' @importFrom dplyr across add_count add_tally anti_join arrange bind_cols bind_rows collect count distinct filter full_join group_by inner_join is_grouped_df left_join mutate pull rename rename_with semi_join right_join select summarise tally transmute ungroup
 #' @importFrom tidyr drop_na extract fill pivot_longer pivot_wider separate separate_rows uncount unite
 #' @importFrom collapse add_vars allNA anyv ckmatch fcount fcountv fgroup_vars fndistinct fnobs fmatch fmutate fselect fsum fsummarise frename  fslicev fsubset fungroup funique get_collapse get_vars group_by_vars greorder GRP GRPid GRPN gsplit join na_omit na_rm replace_na pivot roworder roworderv seq_row setv ss fgroup_by whichv
-#' @importFrom rlang `%||%` abort call2 caller_env check_dots_empty env_name eval_bare expr expr_deparse expr_text f_env f_name f_lhs f_rhs inject is_formula rep_along warn
+#' @importFrom rlang `%||%` abort call2 caller_env check_dots_empty env_name eval_bare expr expr_deparse expr_text f_env f_name f_lhs f_rhs inject is_formula is_integerish rep_along warn
 # @importFrom pillar tbl_sum
 #' @import zeallot
 ## usethis namespace: end

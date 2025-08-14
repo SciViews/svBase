@@ -2698,7 +2698,7 @@ value <- NULL
 #' "first", "last" (default), "count", "sum", "mean", "min", or "max". Could
 #' also be a formula calling an external function with first argument being `.x`
 #' like `~fmedian(.x, na.rm = TRUE)`.`
-#' @param drop Trop unused factor levels or not.
+#' @param drop Drop unused factor levels or not.
 #' @rdname sciviews_functions
 pivot_wider_ <- structure(function(.data = (.), ..., id_cols = NULL,
     id_expand = FALSE, names_from = name, names_prefix = "",
@@ -2773,25 +2773,61 @@ pivot_wider_ <- structure(function(.data = (.), ..., id_cols = NULL,
 
 #' @export
 #' @rdname sciviews_functions
-uncount_ <- structure(function(.data = (.), weights, .remove = TRUE, .id = NULL) {
+uncount_ <- structure(function(.data = (.), weights, ..., .remove = TRUE,
+    .id = NULL) {
 
   if (!prepare_data_dot(.data))
     return(recall_with_data_dot())
 
-  # For now, we use same function as txxx() counterpart... still must rework
-  if (inherits(.data, c("tbl_db", "dtplyr_step")))
-    stop("You must collect results from a tidy function before using a sciviews one.")
+  if (!missing(...))
+    check_dots_empty()
 
-  # Sometimes groups are kept, sometimes not... for now, we do not care
-  # (we always ungroup).
-  is_x_dtf <- is_dtf(.data)
-  is_x_dtt <- is_dtt(.data)
-  res <- do.call('uncount', list(.data = fungroup(.data),
-    weights = substitute(weights), .remove = .remove, .id = .id))
-  if (is_x_dtf)
-    res <- as_dtf(res)
-  if (is_x_dtt)
-    res <- as_dtt(collect(res))
+  if (is_formula(weights)) {
+    weights <- f_rhs(weights)
+    if (length(weights) != 1L)
+      stop("When {.arg weights} is a formula, it must be like {.code ~name}.")
+    weights <- as.character(weights)
+  }
+
+  if (is.character(weights)) {
+    if (length(weights) != 1 || is.na(weights) || !any(weights == names(.data)))
+      stop("{.arg weights} must be a single string (name of a column of .data), not {.obj_type_friendly {weights}} ({.val {weights}}).")
+    weights_is_col <- TRUE
+    weights_val <- .data[[weights]]
+  } else if (is.numeric(weights)) {
+    weights_is_col <- FALSE
+    if (length(weights) == 1L) {
+      weights_val <- rep_len(weights, nrow(.data))
+    } else {
+      weights_val <- weights
+    }
+    if (length(weights) != 1 && length(weights) != nrow(.data))
+      stop("{.arg weights} must be a single number or a vector of numbers with the same length as {.code .data}, not {.obj_type_friendly {weights}} ({.val {weights}}).")
+  } else {# It is supposed to be a vector of weights
+    stop("{.arg weights} must be a single string (name of a column of .data) or numeric values, not {.obj_type_friendly {weights}} ({.val {weights}}).")
+  }
+  if (anyNA(weights_val))
+    stop("{.arg weights} cannot contain {.val NA} values.")
+  if (any(weights_val < 0))
+    stop("{.arg weights} must be a vector of positive numbers.")
+  if (!is_integerish(weights_val))
+    stop("{.arg weights} must be a vector of round numbers, not {.obj_type_friendly {weights}} ({.val {weights}}).")
+
+  if (!isTRUE(.remove) && !isFALSE(.remove))
+    stop("{.arg .remove} must be {.code TRUE} or {.code FALSE}, not {.obj_type_friendly {(.remove)}} ({.val {(.remove)}}).")
+
+  ind <- rep.int(1:nrow(.data), weights_val)
+  res <- .data[ind, ]
+  if (.remove && weights_is_col)
+    res[[weights]] <- NULL
+
+  if (!is.null(.id)) {
+    if (!is.character(.id) || length(.id) != 1L)
+      stop("{.arg .id} must be a single string, not {.obj_type_friendly {(.id)}} ({.val {(.id)}}).")
+    seqind <- seq_along(ind)
+    res[[.id]] <- seqind - seqind[!duplicated(ind)][ind] + 1L
+  }
+
   res
 }, class = c("function", "sciviews_fn"), comment = .src_sciviews("tidyr::uncount"))
 
