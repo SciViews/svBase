@@ -2689,27 +2689,84 @@ name <- NULL
 value <- NULL
 
 #' @export
+#' @param id_cols A set of columns that uniquely identify each observation.
+#' @param id_expand logical. If `TRUE`, expand the `id_cols`.
+#' @param names_vary character. How the various column names are made: "fastest"
+#' (default), "slowest", "transpose", or "slowtranspose".
+#' @param values_fill Optionally, a scalar value to use for missing values.
+#' @param values_fn Either the name of an internal function (as a string) :
+#' "first", "last" (default), "count", "sum", "mean", "min", or "max". Could
+#' also be a formula calling an external function with first argument being `.x`
+#' like `~fmedian(.x, na.rm = TRUE)`.`
+#' @param drop Trop unused factor levels or not.
 #' @rdname sciviews_functions
-pivot_wider_ <- structure(function(.data = (.), names_from = name,
-    values_from = value, ...) {
+pivot_wider_ <- structure(function(.data = (.), ..., id_cols = NULL,
+    id_expand = FALSE, names_from = name, names_prefix = "",
+    names_vary = "fastest", values_from = value, values_fill = NULL,
+    values_fn = "last", drop = TRUE, sort = FALSE) {
 
   if (!prepare_data_dot(.data))
     return(recall_with_data_dot())
 
-  # For now, we use same function as txxx() counterpart... still must rework
-  if (inherits(.data, c("tbl_db", "dtplyr_step")))
-    stop("You must collect results from a tidy function before using a sciviews one.")
+  if (!missing(...))
+    check_dots_empty()
 
-  # Sometimes groups are kept, sometimes not... for now, we do not care.
-  is_x_dtf <- is_dtf(.data)
-  is_x_dtt <- is_dtt(.data)
-  res <- do.call('pivot_wider', list(.data = fungroup(.data),
-    names_from = substitute(names_from),
-    values_from = substitute(values_from), ...))
-  if (is_x_dtf)
-    res <- as_dtf(res)
-  if (is_x_dtt)
-    res <- as_dtt(collect(res))
+  transpose <- switch(names_vary, # Equivalent arguments in dplyr vs collapse
+    fastest = FALSE,
+    slowest = "columns",
+    transpose = "names", # Not in dplyr
+    slowtranspose = TRUE, # Not in dplyr
+    stop("{.arg names_vary} must be \"fastest\", \"slowest\", \"transpose\" or \"slowtranspose\", not {.obj_type_friendly {names_vary}} ({.val {names_vary}})."))
+
+  if (!isTRUE(drop) && !isFALSE(drop))
+    stop("{.arg drop} must be {.code TRUE} or {.code FALSE}, not {.obj_type_friendly {drop}} ({.val {drop}}).")
+
+  if (!isTRUE(sort) && !isFALSE(sort))
+    stop("{.arg sort} must be {.code TRUE} or {.code FALSE}, not {.obj_type_friendly {sort}} ({.val {sort}}).")
+
+  if (!is.character(names_from))
+    stop("{.arg names_from} must be a character vector, not {.obj_type_friendly {names_from}} ({.val {names_from}}).")
+  #if (length(names_from) != 1L)
+  #  stop("{.fun pivot_wider_} only accepts {.arg names_from} of length 1 not of length {length(names_from)}.")
+
+  if (!is.character(values_from))
+    stop("{.arg values_from} must be a character vector, not {.obj_type_friendly {values_from}} ({.val {values_from}}).")
+  #if (length(values_from) != 1L)
+  #  stop("{.arg values_from} must have size 1 not size {length(values_from)}.")
+
+  # id_cols is tidy selected if a formula
+  if (is_formula(id_cols))
+    id_cols <- eval_select(f_rhs(id_cols), data = .data, allow_rename = FALSE,
+      error_call = stop_top_call())
+
+  if (is.character(values_fn)) {
+    if (length(values_fn) != 1L || is.na(values_fn) || values_fn == "")
+      stop("{.arg values_fn} must be a single string or a formula, not {.obj_type_friendly {values_fn}} ({.val {values_fn}}).")
+    FUN <- values_fn
+    FUN.args <- NULL
+  } else if (is_formula(values_fn)) {# Rework into FUN and FUN.args
+    expr_fn <- f_rhs(values_fn)
+    if (length(expr_fn) < 2 && expr_fn[[2]] != ".x")
+      stop("When {.arg values_fn} is a formula it must call a function {.code ~fun(.x, ...)}.",
+      i = "example: {.code ~fmean(.x, na.rm = TRUE)}.")
+    fname <- as.character(expr_fn[[1]])
+    FUN <- get0(fname, envir = parent.frame(), mode = "function",
+      inherits = TRUE) # Get the function in the parent frame
+    if (is.null(FUN))
+      stop("When {.arg values_fn} is a formula it must call a function {.code ~fun(.x, ...)}.",
+        i = "example: {.code ~fmean(.x, na.rm = TRUE)}.",
+        x = " The function {.fun {fname}} is not found, or is not a function.")
+    FUN.args <- as.list(expr_fn[-(1:2)]) # Remove the two first element (.x))
+  } else {# Anything else...
+    stop("{.arg values_fn} must be a single string or a formula, not {.obj_type_friendly {values_fn}} ({.val {values_fn}}).")
+  }
+
+  # TODO: rework col names if names_prefix is provided
+
+  res <- pivot(.data, ids = id_cols, values = values_from, names = names_from,
+    how = "wider", fill = values_fill, transpose = transpose, FUN = FUN,
+    FUN.args = FUN.args, drop = drop, sort = sort)
+
   res
 }, class = c("function", "sciviews_fn"),
   comment = .src_sciviews("tidyr::pivot_wider"))

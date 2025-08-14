@@ -336,7 +336,20 @@ pivot_longer_(
   factor = FALSE
 )
 
-pivot_wider_(.data = (.), names_from = name, values_from = value, ...)
+pivot_wider_(
+  .data = (.),
+  ...,
+  id_cols = NULL,
+  id_expand = FALSE,
+  names_from = name,
+  names_prefix = "",
+  names_vary = "fastest",
+  values_from = value,
+  values_fill = NULL,
+  values_fn = "last",
+  drop = TRUE,
+  sort = FALSE
+)
 
 uncount_(.data = (.), weights, .remove = TRUE, .id = NULL)
 
@@ -578,10 +591,26 @@ values.}
 if \code{FALSE} (default) leave then as character strings (but slower for
 subsequent filtering).}
 
+\item{id_cols}{A set of columns that uniquely identify each observation.}
+
+\item{id_expand}{logical. If \code{TRUE}, expand the \code{id_cols}.}
+
 \item{names_from}{The column or columns containing the names (use tidy
 selection and do not quote the names).}
 
+\item{names_vary}{character. How the various column names are made: "fastest"
+(default), "slowest", "transpose", or "slowtranspose".}
+
 \item{values_from}{Idem for the column or columns that contain the values.}
+
+\item{values_fill}{Optionally, a scalar value to use for missing values.}
+
+\item{values_fn}{Either the name of an internal function (as a string) :
+"first", "last" (default), "count", "sum", "mean", "min", or "max". Could
+also be a formula calling an external function with first argument being \code{.x}
+like \code{~fmedian(.x, na.rm = TRUE)}.`}
+
+\item{drop}{Trop unused factor levels or not.}
 
 \item{weights}{A vector of weight to use to "uncount" \code{data}.}
 

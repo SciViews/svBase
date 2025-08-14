@@ -17,6 +17,21 @@
 stop <- svMisc::stop_
 warning <- svMisc::warning_
 
+# For a better handling of formula masking, we could use checkmate::qtest()
+# and annotate names like this:
+# .xxxxYYY..name where .xxxx is the supposed origin of the variable with:
+# - .data, .env0, .env1, .env2, .env3 ... for the function environment and its
+#   parents and .call for the caller environment as fro the first formula env
+# - YYY is the specification of the vairable as of qtest()
+# - May be soe information on the form of the item (name, symbol, formula,
+#   expression...)
+# - .. is the separator, followed by the actual name of the variable
+# Then formula_masking check each variable (e.g., are .data variables present in
+# the data frame and of the right type? Are values or formulas provided for
+# variables correct?) If not, it issues a meaningful error message. If
+# everything is OK, it manages replacement of the variables to obtain a valid
+# and working expression that is called in the .call environment.
+
 # Process ... -> could be a list of formulas, formulas, or SE expressions
 formula_masking <- function(..., .max.args = NULL, .must.be.named = FALSE,
     .make.names = FALSE, .no.se = FALSE,
