@@ -873,9 +873,9 @@ select_ <- structure(function(.data = (.), ...) {
     } else {
       res <- get_vars(.data, unlist(args$dots), rename = TRUE)
     }
-    if (to_dtrm)
-      let_data.table_to_data.trame(res)
   }
+  if (to_dtrm)
+    let_data.table_to_data.trame(res)
 
   res
 }, class = c("function", "sciviews_fn"),
@@ -2839,20 +2839,75 @@ unite_ <- structure(function(.data = (.), col, ..., sep = "_", remove = TRUE,
   if (!prepare_data_dot(.data))
     return(recall_with_data_dot())
 
-  # For now, we use same function as txxx() counterpart... still must rework
-  if (inherits(.data, c("tbl_db", "dtplyr_step")))
-    stop("You must collect results from a tidy function before using a sciviews one.")
+  # col could be a string, or a ñame formula
+  if (missing(col))
+    stop("{.arg col} is absent but must be supplied.")
+  if (is_formula(col)) {
+    col_name <- f_rhs(col)
+    if (length(col_name) != 1L)
+      stop("When {.arg col} is a formula, it must be like {.code ~var}.")
+    col_name <- as.character(col_name)
+  } else {
+    col_name <- col
+  }
+  if (!is.character(col_name) || length(col_name) != 1 || is.na(col_name))
+      stop("{.arg col} must be a single string (name of a column of .data) or a {.code ~var} formula.",
+      i = "It is {.obj_type_friendly {col}} ({.val {col}}).")
 
-  # Sometimes groups are kept, sometimes not... for now, we do not care
-  # (we always ungroup).
-  is_x_dtf <- is_dtf(.data)
-  is_x_dtt <- is_dtt(.data)
-  res <- inject(unite(.data = as_dtbl(fungroup(.data)), col = !!substitute(col),
-    ..., sep = sep, remove = remove, na.rm = na.rm))
-  if (is_x_dtf)
-    res <- as_dtf(res)
-  if (is_x_dtt)
-    res <- as_dtt(collect(res))
+  # If the data frame has no columns, return it unchanged
+  if (ncol(.data) == 0L)
+    return(.data)
+
+  if (missing(...)) {# If no columns provided, used them all
+    cols <- seq_along(.data)
+  } else {
+    # Use tidyselect to select columns with ...
+    args <- formula_select(..., .fast.allowed.funs = c(":", "-", "c", "("))
+    if (!args$fastselect) {
+      #message(gettextf("Using tidyselect with `%s`",
+      #  paste(args$dots, collapse = ", ")))
+      eval_select2 <- function(..., data)
+        eval_select(expr(c(...)), data = data, error_call = stop_top_call())
+      cols <- do.call('eval_select2', c(args$dots, list(data = .data)))
+
+    } else {# fastselect with collapse
+      if (args$are_formulas) {
+        cols <- do.call('fselect', c(list(.x = .data, return = "indices"),
+          args$dots), envir = args$env)
+      } else {
+        cols <- get_vars(.data, unlist(args$dots), return = "indices")
+      }
+    }
+    if (length(cols) == 0L)
+      stop("No columns selected with {.arg ...}.")
+  }
+
+  if (!is.character(sep) || length(sep) != 1L || is.na(sep))
+    stop("{.arg sep} must be a single string, not {.obj_type_friendly {sep}} ({.val {sep}}).")
+
+  if (isTRUE(na.rm)) {# This one is hard, because paste() does not ignore NAs!
+    # Replace NAs by a placeholder
+    tmp_data <- replace_na(.data[, cols], "@@@@@")
+    col_data <- do.call(paste, c(tmp_data, list(sep = sep)))
+    # Replace the placeholder by nothing, including sep
+    col_data <- gsub(paste0(sep, "@@@@@"), "", col_data, fixed = TRUE)
+    col_data <- sub(paste0("^", "@@@@@", sep, "?"), "", col_data, perl = TRUE)
+  } else if (isFALSE(na.rm)) {
+    col_data <- do.call(paste, c(.data[, cols], list(sep = sep)))
+  } else {
+    stop("{.arg na.rm} must be {.code TRUE} or {.code FALSE}, not {.obj_type_friendly {na.rm}} ({.val {na.rm}}).")
+  }
+  # New variable before first old one
+  add_vars_args <- list(x = .data, col_data, pos = cols[1])
+  names(add_vars_args)[2] <- col_name
+  res <- do.call(add_vars, add_vars_args)
+
+  if (isTRUE(remove)) {
+    res <- res[, -(cols + 1), drop = FALSE] # Remove columns
+  } else if (!isFALSE(remove)) {
+    stop("{.arg remove} must be {.code TRUE} or {.code FALSE}, not {.obj_type_friendly {remove}} ({.val {remove}}).")
+  }
+
   res
 }, class = c("function", "sciviews_fn"), comment = .src_sciviews("tidyr::unite"))
 
