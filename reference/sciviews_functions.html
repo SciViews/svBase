@@ -385,6 +385,8 @@ speedy and SciViews functions in the same pipeline.</p>
 <span></span>
 <span><span class="fu">unite_</span><span class="op">(</span>.data <span class="op">=</span> <span class="op">(</span><span class="va">.</span><span class="op">)</span>, <span class="va">col</span>, <span class="va">...</span>, sep <span class="op">=</span> <span class="st">"_"</span>, remove <span class="op">=</span> <span class="cn">TRUE</span>, na.rm <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span></span>
+<span><span class="fu">fill_</span><span class="op">(</span>.data <span class="op">=</span> <span class="op">(</span><span class="va">.</span><span class="op">)</span>, <span class="va">...</span>, .direction <span class="op">=</span> <span class="st">"down"</span><span class="op">)</span></span>
+<span></span>
 <span><span class="fu">separate_</span><span class="op">(</span></span>
 <span>  .data <span class="op">=</span> <span class="op">(</span><span class="va">.</span><span class="op">)</span>,</span>
 <span>  <span class="va">col</span>,</span>
@@ -396,8 +398,6 @@ speedy and SciViews functions in the same pipeline.</p>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">separate_rows_</span><span class="op">(</span>.data <span class="op">=</span> <span class="op">(</span><span class="va">.</span><span class="op">)</span>, <span class="va">...</span>, sep <span class="op">=</span> <span class="st">"[^[:alnum:].]+"</span>, convert <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">fill_</span><span class="op">(</span>.data <span class="op">=</span> <span class="op">(</span><span class="va">.</span><span class="op">)</span>, <span class="va">...</span>, .direction <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"down"</span>, <span class="st">"up"</span>, <span class="st">"downup"</span>, <span class="st">"updown"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">extract_</span><span class="op">(</span></span>
 <span>  .data <span class="op">=</span> <span class="op">(</span><span class="va">.</span><span class="op">)</span>,</span>
@@ -808,6 +808,12 @@ removed from <code>data</code>.</p></dd>
 <dd><p>If <code>TRUE</code>, <code>NA</code>s are eliminated before uniting the values.</p></dd>
 
 
+<dt id="arg--direction">.direction<a class="anchor" aria-label="anchor" href="#arg--direction"></a></dt>
+<dd><p>Direction in which to fill missing data: <code>"down"</code> (by
+default), <code>"up"</code>, or <code>"downup"</code> (first down, then up), <code>"updown"</code>
+(the opposite).</p></dd>
+
+
 <dt id="arg-into">into<a class="anchor" aria-label="anchor" href="#arg-into"></a></dt>
 <dd><p>Name of the new column to put separated variables. Use <code>NA</code> for
 items to drop.</p></dd>
@@ -816,12 +822,6 @@ items to drop.</p></dd>
 <dt id="arg-convert">convert<a class="anchor" aria-label="anchor" href="#arg-convert"></a></dt>
 <dd><p>If <code>'TRUE</code> resulting values are converted into numeric,
 integer or logical.</p></dd>
-
-
-<dt id="arg--direction">.direction<a class="anchor" aria-label="anchor" href="#arg--direction"></a></dt>
-<dd><p>Direction in which to fill missing data: <code>"down"</code> (by
-default), <code>"up"</code>, or <code>"downup"</code> (first down, then up), <code>"updown"</code>
-(the opposite).</p></dd>
 
 
 <dt id="arg-regex">regex<a class="anchor" aria-label="anchor" href="#arg-regex"></a></dt>
