@@ -54,9 +54,9 @@
 \alias{pivot_wider_}
 \alias{uncount_}
 \alias{unite_}
+\alias{fill_}
 \alias{separate_}
 \alias{separate_rows_}
-\alias{fill_}
 \alias{extract_}
 \title{SciViews functions (mainly from collapse and data.table) to manipulate data frames}
 \usage{
@@ -355,6 +355,8 @@ uncount_(.data = (.), weights, ..., .remove = TRUE, .id = NULL)
 
 unite_(.data = (.), col, ..., sep = "_", remove = TRUE, na.rm = FALSE)
 
+fill_(.data = (.), ..., .direction = "down")
+
 separate_(
   .data = (.),
   col,
@@ -366,8 +368,6 @@ separate_(
 )
 
 separate_rows_(.data = (.), ..., sep = "[^[:alnum:].]+", convert = FALSE)
-
-fill_(.data = (.), ..., .direction = c("down", "up", "downup", "updown"))
 
 extract_(
   .data = (.),
@@ -626,15 +626,15 @@ removed from \code{data}.}
 
 \item{na.rm}{If \code{TRUE}, \code{NA}s are eliminated before uniting the values.}
 
+\item{.direction}{Direction in which to fill missing data: \code{"down"} (by
+default), \code{"up"}, or \code{"downup"} (first down, then up), \code{"updown"}
+(the opposite).}
+
 \item{into}{Name of the new column to put separated variables. Use \code{NA} for
 items to drop.}
 
 \item{convert}{If \verb{'TRUE} resulting values are converted into numeric,
 integer or logical.}
-
-\item{.direction}{Direction in which to fill missing data: \code{"down"} (by
-default), \code{"up"}, or \code{"downup"} (first down, then up), \code{"updown"}
-(the opposite).}
 
 \item{regex}{A regular expression used to extract the desired values (use one
 group with \code{(} and \verb{)} for each element of \code{into}).}

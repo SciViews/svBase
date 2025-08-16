@@ -1,3 +1,6 @@
+# TODO: explore Tailcall, Exec and Recall for more efficiently calling functions
+# than do.call() (reusing the current environment), e.g., for data_dot mechanism
+
 #' SciViews functions (mainly from collapse and data.table) to manipulate data frames
 #'
 #' @description A SciViews::R version of the tidyverse functions in \{dplyr\}
@@ -2911,6 +2914,81 @@ unite_ <- structure(function(.data = (.), col, ..., sep = "_", remove = TRUE,
   res
 }, class = c("function", "sciviews_fn"), comment = .src_sciviews("tidyr::unite"))
 
+# TODO: .direction of same length as number of vars?
+#' @export
+#' @rdname sciviews_functions
+fill_ <- structure(function(.data = (.), ..., .direction = "down") {
+
+  if (!prepare_data_dot(.data))
+    return(recall_with_data_dot())
+
+  check_dots_unnamed()
+
+  if (length(.direction) != 1L || !is.character(.direction))
+    stop("{.arg .direction} must be a single string, not {.obj_type_friendly {(.direction)}} ({.val {(.direction)}}).")
+  dir <- switch(.direction[1],
+    down = "locf",
+    up = "focb",
+    downup = c("locf", "focb"),
+    updown = c("focb", "locf"),
+    stop("{.arg .direction} must be one of \"down\", \"up\", \"downup\" or \"updown\", not {.obj_type_friendly {(.direction)}} ({.val {(.direction)}})."))
+
+  if (missing(...)) # No variable to fill
+    return(.data)
+
+  args <- formula_select(..., .fast.allowed.funs = "")
+  if (!args$fastselect) {# Use tidyselect
+    eval_select2 <- function(..., data)
+      eval_select(expr(c(...)), data = data, error_call = stop_top_call())
+    cols <- do.call('eval_select2', c(args$dots, list(data = .data)))
+  } else {
+    cols <- unlist(args$dots)
+  }
+  if (is.list(cols)) # Thus happens when one provides formulas
+    cols <- sapply(cols, as.character)
+  if (is.numeric(cols)) {
+    if (max(cols) > ncol(.data)) {
+      wrong_indices <- cols[cols > ncol(.data)]
+      stop("Column indices cannot be larger than the number of columns in {.code .data}.",
+        x = "Problematic indice(s):",
+        `*` = "{.val {wrong_indices}}")
+    }
+  } else if (is.character(cols)) {
+    if (!all(cols %in% names(.data)))
+      stop("Can't select columns that don't exist.",
+        x = "Missing column(s):",
+        `*` = "{.val {cols[!cols %in% names(.data)]}}")
+  } else {
+    stop("{.arg ...} must be a character vector, numeric indices, or formulas not {.obj_type_friendly {cols}} ({.val {cols}}).")
+  }
+
+  if (is_grouped_df(.data)) {
+    fill_onegroup <- function(i, .data, cols, type) {
+      res <- repl_na(.data[i, ], cols = cols, type = type[1])
+      if (length(dir) > 1L) # Second direction
+        res <- repl_na(res, cols = cols, type = type[2])
+      res
+    }
+    res <- rbindlist(lapply(gsplit(g = .data), fill_onegroup, .data = .data,
+      cols = cols, type = dir))
+    res <- res[greorder(1:nrow(.data), g = .data), ] # Reorder the data
+    # Since rbindlist() produces a data.table, we eventually have to convert back
+    if (is_dtrm(.data)) {
+      let_data.table_to_data.trame(res)
+    } else if (is_dtbl(.data)) {
+      res <- qTBL(res)
+    } else if (is_dtf(.data)) {
+      res <- qDF(res)
+    }
+  } else {# Ungrouped data
+    res <- repl_na(.data, cols = cols, type = dir[1])
+    if (length(dir) > 1L) # Second direction
+      res <- repl_na(res, cols = cols, type = dir[2])
+  }
+
+  res
+}, class = c("function", "sciviews_fn"), comment = .src_sciviews("tidyr::fill"))
+
 #' @export
 #' @rdname sciviews_functions
 separate_ <- structure(function(.data = (.), col, into, sep = "[^[:alnum:]]+",
@@ -2964,38 +3042,8 @@ separate_rows_ <- structure(function(.data = (.), ..., sep = "[^[:alnum:].]+",
 
 #' @export
 #' @rdname sciviews_functions
-fill_ <- structure(function(.data = (.), ...,
-    .direction = c("down", "up", "downup", "updown")) {
-
-  if (!prepare_data_dot(.data))
-    return(recall_with_data_dot())
-
-  # For now, we use same function as txxx() counterpart... still must rework
-  if (inherits(.data, c("tbl_db", "dtplyr_step")))
-    stop("You must collect results from a tidy function before using a sciviews one.")
-
-  if (inherits(.data, "GRP_df")) {
-    is_x_grp_df <- TRUE
-    gvars <- fgroup_vars(.data, return = "names")
-    gvars <- lapply(gvars, as.name)
-  } else {
-    is_x_grp_df <- FALSE
-  }
-  if (is_dtt(.data)) {
-    res <- collect(fill(as_dtbl(.data), ..., .direction = .direction))
-    res <- as_dtt(res)
-  } else {
-    res <- fill(.data, ..., .direction = .direction)
-  }
-  if (is_x_grp_df)
-    res <- do.call('fgroup_by', c(list(.X = res), gvars))
-  res
-}, class = c("function", "sciviews_fn"), comment = .src_sciviews("tidyr::fill"))
-
-#' @export
-#' @rdname sciviews_functions
 extract_ <- structure(function(.data = (.), col, into, regex = "([[:alnum:]]+)",
-    remove = TRUE, convert = FALSE, ...) {
+  remove = TRUE, convert = FALSE, ...) {
 
   if (!prepare_data_dot(.data))
     return(recall_with_data_dot())
