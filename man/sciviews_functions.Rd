@@ -366,6 +366,7 @@ separate_(
   convert = FALSE,
   extra = "warn",
   fill = "warn",
+  fixed = FALSE,
   ...
 )
 
@@ -647,6 +648,9 @@ with the last one.}
 enough pieces: \code{"warn"} (default) issue a warning and fill with \code{NA}s at
 right, so does without warning \code{"right"}, and \code{"left"} fills with \code{NA}s at
 left.}
+
+\item{fixed}{logical. If \code{TRUE}, \code{sep} is a fixed string, otherwise it is a
+(perl) regular expression.}
 
 \item{regex}{A regular expression used to extract the desired values (use one
 group with \code{(} and \verb{)} for each element of \code{into}).}

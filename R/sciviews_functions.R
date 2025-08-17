@@ -2999,15 +2999,21 @@ fill_ <- structure(function(.data = (.), ..., .direction = "down") {
 #'   enough pieces: `"warn"` (default) issue a warning and fill with `NA`s at
 #'   right, so does without warning `"right"`, and `"left"` fills with `NA`s at
 #'   left.
+#' @param fixed logical. If `TRUE`, `sep` is a fixed string, otherwise it is a
+#'   (perl) regular expression.
 #' @rdname sciviews_functions
 separate_ <- structure(function(.data = (.), col, into, sep = "[^[:alnum:]]+",
-    remove = TRUE, convert = FALSE, extra = "warn", fill = "warn", ...) {
+    remove = TRUE, convert = FALSE, extra = "warn", fill = "warn",
+    fixed = FALSE, ...) {
 
   if (!prepare_data_dot(.data))
     return(recall_with_data_dot())
 
   if (!missing(...))
     check_dots_empty()
+
+  if (!isTRUE(fixed) && !isFALSE(fixed))
+    stop("{.arg fixed} must be {.code TRUE} or {.code FALSE}, not {.obj_type_friendly {fixed}} ({.val {fixed}}).")
 
   if (missing(col))
     stop("{.arg col} is absent but must be supplied.")
@@ -3057,7 +3063,7 @@ separate_ <- structure(function(.data = (.), col, into, sep = "[^[:alnum:]]+",
       stop("{.arg sep} must be a single string, not {.obj_type_friendly {sep}} ({.val {sep}}).")
 
     if (extra == "merge") {# We cannot use strsplit() unfortunately
-      matches <- gregexpr(sep, cdata, fixed = FALSE, perl = TRUE)
+      matches <- gregexpr(sep, cdata, fixed = fixed, perl = !fixed)
       # Drop matches past l_into and extend length of last match
       l_matches <- vlengths(matches)
       if (any(l_matches > l_into - 1L)) {
@@ -3074,7 +3080,7 @@ separate_ <- structure(function(.data = (.), col, into, sep = "[^[:alnum:]]+",
       }
       col_split <- regmatches(cdata, matches, invert = TRUE)
     } else {# Just use strsplit()
-      col_split <- strsplit(cdata, sep, fixed = FALSE, perl = TRUE)
+      col_split <- strsplit(cdata, sep, fixed = fixed, perl = !fixed)
     }
     split_lengths <- vlengths(col_split)
     # Where there is NA in cdata, we don't care if there is less or more items
