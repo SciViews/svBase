@@ -2842,7 +2842,7 @@ unite_ <- structure(function(.data = (.), col, ..., sep = "_", remove = TRUE,
   if (!prepare_data_dot(.data))
     return(recall_with_data_dot())
 
-  # col could be a string, or a ñame formula
+  # col could be a string, or a ~name formula
   if (missing(col))
     stop("{.arg col} is absent but must be supplied.")
   if (is_formula(col)) {
@@ -2989,29 +2989,170 @@ fill_ <- structure(function(.data = (.), ..., .direction = "down") {
   res
 }, class = c("function", "sciviews_fn"), comment = .src_sciviews("tidyr::fill"))
 
+# TODO: add a fixed argument, or accept fx()\fixed()
 #' @export
+#' @param extra When `sep` is a character vector what happens when there are too
+#'   many pieces: `"warn"` (default) issue a warning and drop extra items,
+#'   `"drop"` does the same without warning and `"merge"` merges the extra items
+#'   with the last one.
+#' @param fill When `sep` is a character vector what happens when there are not
+#'   enough pieces: `"warn"` (default) issue a warning and fill with `NA`s at
+#'   right, so does without warning `"right"`, and `"left"` fills with `NA`s at
+#'   left.
 #' @rdname sciviews_functions
 separate_ <- structure(function(.data = (.), col, into, sep = "[^[:alnum:]]+",
-    remove = TRUE, convert = FALSE, ...) {
+    remove = TRUE, convert = FALSE, extra = "warn", fill = "warn", ...) {
 
   if (!prepare_data_dot(.data))
     return(recall_with_data_dot())
 
-  # For now, we use same function as txxx() counterpart... still must rework
-  if (inherits(.data, c("tbl_db", "dtplyr_step")))
-    stop("You must collect results from a tidy function before using a sciviews one.")
+  if (!missing(...))
+    check_dots_empty()
 
-  # Sometimes groups are kept, sometimes not... for now, we do not care
-  # (we always ungroup).
-  is_x_dtf <- is_dtf(.data)
-  is_x_dtt <- is_dtt(.data)
-  res <- do.call('separate', list(.data = as_dtbl(fungroup(.data)),
-    col = substitute(col), into = into, sep = sep, remove = remove,
-    convert = convert, ...))
-  if (is_x_dtf)
-    res <- as_dtf(res)
-  if (is_x_dtt)
-    res <- as_dtt(collect(res))
+  if (missing(col))
+    stop("{.arg col} is absent but must be supplied.")
+  if (is_formula(col)) {
+    col_name <- f_rhs(col)
+    if (length(col_name) != 1L)
+      stop("When {.arg col} is a formula, it must be like {.code ~var}.")
+    if (!is.numeric(col_name))
+      col_name <- as.character(col_name)
+  } else {
+    col_name <- col
+  }
+  col_num <- NULL
+  if (is.numeric(col_name)) {
+    col_num <- col_name
+    if (!is_integerish(col_num) || length(col_num) != 1L)
+      stop("{.arg col} is a column number, but it must be a single integer, not {.obj_type_friendly {col_name}} ({.val {col_name}}).")
+    if (col_num < 1L || col_num > ncol(.data))
+      stop("{.arg col} is a column number, but it is not in the range [1, {ncol(.data)}].",
+        i = "It is {.val {col_num}}.")
+    col_name <- names(.data)[col_num]
+  } else if (!is.character(col_name) || length(col_name) != 1 || is.na(col_name))
+    stop("{.arg col} must be a single string (name of a column of .data) or a {.code ~var} formula.",
+      i = "It is {.obj_type_friendly {col}} ({.val {col}}).")
+  if (!any(col_name == names(.data)))
+    stop("{.code col = \"{col_name}\"} does not exist in {.code .data}.",
+      i = "Available columns are: {.val {names(.data)}}.")
+  if (is.null(col_num))
+    col_num <- (1:ncol(.data))[names(.data) == col_name]
+  cdata <- .data[[col_name]] # Column data
+
+  if (!is.character(into) || length(into) < 2L)
+    stop("{.arg into} must be a character vector of length >= 2, not {.obj_type_friendly {into}} ({.val {into}}).")
+  l_into <- length(into)
+
+  if (length(extra) != 1L || !is.character(extra) || is.na(extra) ||
+    !any(extra == c("warn", "drop", "merge")))
+    stop("{.arg extra} must be \"warn\", \"drop\" or \"merge\", not {.obj_type_friendly {extra}} ({.val {extra}}).")
+
+  if (length(fill) != 1L || !is.character(fill) || is.na(fill) ||
+    !any(fill == c("warn", "right", "left")))
+    stop("{.arg fill} must be \"warn\", \"right\" or \"left\", not {.obj_type_friendly {fill}} ({.val {fill}}).")
+
+  # sep determines how we work (character vs numeric)
+  if (is.character(sep)) {# Use regular expression to split the column
+    if (length(sep) != 1L || is.na(sep))
+      stop("{.arg sep} must be a single string, not {.obj_type_friendly {sep}} ({.val {sep}}).")
+
+    if (extra == "merge") {# We cannot use strsplit() unfortunately
+      matches <- gregexpr(sep, cdata, fixed = FALSE, perl = TRUE)
+      # Drop matches past l_into and extend length of last match
+      l_matches <- vlengths(matches)
+      if (any(l_matches > l_into - 1L)) {
+        matches <- lapply(matches, function(x) {
+          x2 <- x
+          if (length(x) > l_into - 1L) {
+            x2 <- x[1:(l_into - 1L)]
+            attributes(x2) <- attributes(x)
+            attr(x2, "match.length") <- attr(x, "match.length")[1:(l_into - 1)]
+            x2
+          }
+          x2
+        })
+      }
+      col_split <- regmatches(cdata, matches, invert = TRUE)
+    } else {# Just use strsplit()
+      col_split <- strsplit(cdata, sep, fixed = FALSE, perl = TRUE)
+    }
+    split_lengths <- vlengths(col_split)
+    # Where there is NA in cdata, we don't care if there is less or more items
+    # (like for dplyr::separate())
+    split_lengths[is.na(cdata)] <- l_into
+    if (any(split_lengths > l_into)) {
+      col_split <- switch(extra,
+        warn  = {
+          wrong_cols <- (1:length(split_lengths))[split_lengths > l_into]
+          if (length(wrong_cols) > 20L)
+            wrong_cols <- c(wrong_cols[1:20], "...")
+          warning(gettextf("Expected %d pieces. Additional pieces discarded in %d rows [%s].",
+            l_into, sum(split_lengths > l_into), paste(wrong_cols, collapse = ", ")))
+          lapply(col_split, function(x) x[1:l_into])
+        },
+        drop =  lapply(col_split, function(x) x[1:l_into]),
+        merge = col_split # already managed above
+      )
+    }
+    if (any(split_lengths < l_into)) {
+      col_split <- switch(fill,
+        warn  = {
+          wrong_cols <- (1:length(split_lengths))[split_lengths < l_into]
+          if (length(wrong_cols) > 20L)
+            wrong_cols <- c(wrong_cols[1:20], "...")
+          warning(gettextf("Expected %d pieces. Missing pieces filled with `NA` in %d rows [%s].",
+            l_into, sum(split_lengths < l_into), paste(wrong_cols, collapse = ", ")))
+          col_split
+        },
+        right = col_split, # Done automatically
+        left  = lapply(col_split, function(x) {
+          l <- length(x)
+          if (l == l_into) x else
+            c(rep(NA_character_, l_into - l), x)
+        })
+      )
+    }
+    cols <- unlist2d(col_split, idcols = FALSE)
+    # If there are less columns than l_into, create missing ones with NA
+    if (ncol(cols) < l_into) {
+      cols <- add_vars(cols, as.data.frame(matrix(NA_character_,
+        nrow = nrow(cols), ncol = l_into - ncol(cols))), pos = "end")
+    }
+    names(cols) <- into
+    # drop columns corresponding to into being NA
+    cols <- cols[!is.na(into)]
+
+  } else if (is.numeric(sep)) {# Separate by position
+    # Length of the vector must be length of into -1
+    length_sep <- length(into) - 1L
+    if (length(sep) != length_sep)
+      stop("When {.arg sep} is numeric, it must contain one less item than {.arg {into}}",
+        i = "It should be {length_sep} and it is {length(sep)}.")
+    # Note: negative numbers start from far right
+    stop("splitting with numbers not implemented yet...")
+
+  } else {# Wrong sep
+    stop("{.arg sep} must be a single string or a vector of numbers, not {.obj_type_friendly {sep}} ({.val {sep}}).")
+  }
+
+  if (isTRUE(convert)) {
+    cols <- type.convert(cols, as.is = TRUE) # TODO: add an argument to convert chars into factors
+  } else if (!isFALSE(convert)) {
+    stop("{.arg convert} must be {.code TRUE} or {.code FALSE}, not {.obj_type_friendly {convert}} ({.val {convert}}).")
+  }
+
+  # New variables are added after col_num
+  pos <- if (col_num == ncol(.data)) "end" else (col_num + 1L):(col_num + l_into)
+  add_vars_args <- list(x = .data, cols, pos = pos)
+  res <- do.call(add_vars, add_vars_args)
+
+  if (isTRUE(remove)) {
+    res <- res[, -col_num, drop = FALSE]
+  } else if (!isFALSE(remove)) {
+    stop("{.arg remove} must be {.code TRUE} or {.code FALSE}, not {.obj_type_friendly {remove}} ({.val {remove}}).")
+  }
+
+
   res
 }, class = c("function", "sciviews_fn"), comment = .src_sciviews("tidyr::separate"))
 

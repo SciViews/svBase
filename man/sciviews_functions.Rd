@@ -364,6 +364,8 @@ separate_(
   sep = "[^[:alnum:]]+",
   remove = TRUE,
   convert = FALSE,
+  extra = "warn",
+  fill = "warn",
   ...
 )
 
@@ -635,6 +637,16 @@ items to drop.}
 
 \item{convert}{If \verb{'TRUE} resulting values are converted into numeric,
 integer or logical.}
+
+\item{extra}{When \code{sep} is a character vector what happens when there are too
+many pieces: \code{"warn"} (default) issue a warning and drop extra items,
+\code{"drop"} does the same without warning and \code{"merge"} merges the extra items
+with the last one.}
+
+\item{fill}{When \code{sep} is a character vector what happens when there are not
+enough pieces: \code{"warn"} (default) issue a warning and fill with \code{NA}s at
+right, so does without warning \code{"right"}, and \code{"left"} fills with \code{NA}s at
+left.}
 
 \item{regex}{A regular expression used to extract the desired values (use one
 group with \code{(} and \verb{)} for each element of \code{into}).}
