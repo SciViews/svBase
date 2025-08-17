@@ -394,6 +394,8 @@ speedy and SciViews functions in the same pipeline.</p>
 <span>  sep <span class="op">=</span> <span class="st">"[^[:alnum:]]+"</span>,</span>
 <span>  remove <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  convert <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  extra <span class="op">=</span> <span class="st">"warn"</span>,</span>
+<span>  fill <span class="op">=</span> <span class="st">"warn"</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -822,6 +824,20 @@ items to drop.</p></dd>
 <dt id="arg-convert">convert<a class="anchor" aria-label="anchor" href="#arg-convert"></a></dt>
 <dd><p>If <code>'TRUE</code> resulting values are converted into numeric,
 integer or logical.</p></dd>
+
+
+<dt id="arg-extra">extra<a class="anchor" aria-label="anchor" href="#arg-extra"></a></dt>
+<dd><p>When <code>sep</code> is a character vector what happens when there are too
+many pieces: <code>"warn"</code> (default) issue a warning and drop extra items,
+<code>"drop"</code> does the same without warning and <code>"merge"</code> merges the extra items
+with the last one.</p></dd>
+
+
+<dt id="arg-fill">fill<a class="anchor" aria-label="anchor" href="#arg-fill"></a></dt>
+<dd><p>When <code>sep</code> is a character vector what happens when there are not
+enough pieces: <code>"warn"</code> (default) issue a warning and fill with <code>NA</code>s at
+right, so does without warning <code>"right"</code>, and <code>"left"</code> fills with <code>NA</code>s at
+left.</p></dd>
 
 
 <dt id="arg-regex">regex<a class="anchor" aria-label="anchor" href="#arg-regex"></a></dt>
