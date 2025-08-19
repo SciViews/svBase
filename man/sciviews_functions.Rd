@@ -56,8 +56,6 @@
 \alias{unite_}
 \alias{fill_}
 \alias{separate_}
-\alias{separate_rows_}
-\alias{extract_}
 \title{SciViews functions (mainly from collapse and data.table) to manipulate data frames}
 \usage{
 list_sciviews_functions()
@@ -369,18 +367,6 @@ separate_(
   fixed = FALSE,
   ...
 )
-
-separate_rows_(.data = (.), ..., sep = "[^[:alnum:].]+", convert = FALSE)
-
-extract_(
-  .data = (.),
-  col,
-  into,
-  regex = "([[:alnum:]]+)",
-  remove = TRUE,
-  convert = FALSE,
-  ...
-)
 }
 \arguments{
 \item{x}{A data frame (data.frame, data.table or tibble's tbl_df).}
@@ -651,9 +637,6 @@ left.}
 
 \item{fixed}{logical. If \code{TRUE}, \code{sep} is a fixed string, otherwise it is a
 (perl) regular expression.}
-
-\item{regex}{A regular expression used to extract the desired values (use one
-group with \code{(} and \verb{)} for each element of \code{into}).}
 
 \item{data}{A data frame, or for \code{replace_na()} a vector or a data frame.}
 }

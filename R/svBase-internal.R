@@ -118,7 +118,7 @@ formula_masking <- function(..., .max.args = NULL, .must.be.named = FALSE,
     }
 
     # Check names and possibly get names also from the formulas
-    names_args <- names(args)
+    names_args <- names(args) <- names(dots)
     if (is.null(names_args))
       names_args <- rep("", ldots)
     for (i in 1:ldots) {

@@ -94,8 +94,6 @@
 #' @param .direction Direction in which to fill missing data: `"down"` (by
 #'   default), `"up"`, or `"downup"` (first down, then up), `"updown"`
 #'   (the opposite).
-#' @param regex A regular expression used to extract the desired values (use one
-#'   group with `(` and `)` for each element of `into`).
 #'
 #' @note The [ssummarise()] function does not support `n()` as does
 #' [dplyr::summarise()]. You can use [fn()] instead, but then, you must give a
@@ -118,11 +116,13 @@
 #' # TODO...
 list_sciviews_functions <- function() {
   c("add_count_", "add_tally_", "anti_join", "arrange_", "bind_cols_",
-    "bind_rows_", "count_", "distinct_", "drop_na_", "extract_", "fill_",
+    "bind_rows_", "count_", "distinct_", "drop_na_", #"extract_", # TODO
+    "fill_",
     "filter_", "full_join_", "group_by_", "inner_join_", "join_", "left_join_",
     "mutate_", "pivot_longer_", "pivot_wider_", "pull_", "reframe_", "rename_",
     "rename_with_", "replace_na_", "right_join_", "select_", "semi_join",
-    "separate_", "separate_rows_", "slice_", "summarise_", "summarize_()",
+    "separate_", #"separate_rows_", # TODO
+    "slice_", "summarise_", "summarize_()",
     "tally_", "transmute_", "uncount_", "ungroup_", "unite_")
 }
 
@@ -758,6 +758,12 @@ filter_ <- structure(function(.data = (.), ..., .by = NULL, .preserve = FALSE) {
   #  on.exit(let_data.table_to_data.trame(.data))
   #}
 
+  # We do not support .preserve = TRUE
+  if (isTRUE(.preserve)) {
+    stop("Argument {.code .preserve = TRUE} is not supported in {.fun filter_}.",
+      i = "The groups are kept, but they are recalculated on the filtered data frame.")
+  }
+
   # Process dots with formula-masking
   is_grouped <- is_grouped_df(.data)
   if (is_grouped) {
@@ -814,12 +820,31 @@ filter_ <- structure(function(.data = (.), ..., .by = NULL, .preserve = FALSE) {
   # multiple times on each argument to filter_() to mimic filter()
   if (args$are_formulas) {# NSE argument, must us fsubset()
     # fsubset() does not support groups, so, we need to do the job ourselves
-    # TODO: implement it!
-    if (is_grouped)
-      stop("Filtering with grouped data frames is not implemented yet with {.fun filter_}.",
-        i = "Use {.fun filter} with {.fun group_by} instead.")
-    for (i in 1:...length())
-      res <- do.call('fsubset', list(.x = res, filters[[i]]), envir = args$env)
+    if (is_grouped) {
+      subset_onegroup <- function(i, gdata, filters, envir) {
+        gdata <- gdata[i, ]
+        for (i in 1:length(filters))
+          gdata <- do.call('fsubset', list(.x = gdata, filters[[i]]),
+            envir = envir)
+        gdata
+      }
+      # Since we drop rows, we cannot use greorder() after the treatment ->
+      # we add a temporary sorting variable that we will drop at the end
+      res <- add_vars(res, ._order_. = seq_len(nrow(res)))
+      res <- rowbind(lapply(gsplit(g = res), subset_onegroup, gdata = res,
+        filters = filters, envir = args$env))
+      # Can't use this one!
+      #res <- res[greorder(1:nrow(res), g = res), ] # Reorder the data
+      res <- roworderv(res, cols = '._order_.', decreasing = FALSE)
+      # Remove the temporary sorting variable
+      res$._order_. <- NULL
+      # Group again the results
+
+
+    } else {# No groups
+      for (i in 1:...length())
+        res <- do.call('fsubset', list(.x = res, filters[[i]]), envir = args$env)
+    }
   } else {# SE arguments, ss() is faster
     filter <- filters[[1L]]
     lfilters <- length(filters)
@@ -829,6 +854,8 @@ filter_ <- structure(function(.data = (.), ..., .by = NULL, .preserve = FALSE) {
     }
     res <- ss(res, filter)
   }
+  if (length(new_gvars)) # (re)set grouping
+    res <- group_by_vars(res, by = new_gvars)
   #if (to_dtrm)
   #  let_data.table_to_data.trame(res)
   res
@@ -2989,7 +3016,7 @@ fill_ <- structure(function(.data = (.), ..., .direction = "down") {
   res
 }, class = c("function", "sciviews_fn"), comment = .src_sciviews("tidyr::fill"))
 
-# TODO: add a fixed argument, or accept fx()\fixed()
+# TODO: separate with numbers using iotools::dstrfw() = mostly c code
 #' @export
 #' @param extra When `sep` is a character vector what happens when there are too
 #'   many pieces: `"warn"` (default) issue a warning and drop extra items,
@@ -3162,60 +3189,62 @@ separate_ <- structure(function(.data = (.), col, into, sep = "[^[:alnum:]]+",
   res
 }, class = c("function", "sciviews_fn"), comment = .src_sciviews("tidyr::separate"))
 
-#' @export
-#' @rdname sciviews_functions
-separate_rows_ <- structure(function(.data = (.), ..., sep = "[^[:alnum:].]+",
-    convert = FALSE) {
+# TODO...
+# @export
+# @rdname sciviews_functions
+# separate_rows_ <- structure(function(.data = (.), ..., sep = "[^[:alnum:].]+",
+#     convert = FALSE) {
+#
+#   if (!prepare_data_dot(.data))
+#     return(recall_with_data_dot())
+#
+#   # For now, we use same function as txxx() counterpart... still must rework
+#   if (inherits(.data, c("tbl_db", "dtplyr_step")))
+#     stop("You must collect results from a tidy function before using a sciviews one.")
+#
+#   # Sometimes groups are kept, sometimes not... for now, we do not care
+#   # (we always ungroup).
+#   is_x_dtf <- is_dtf(.data)
+#   is_x_dtt <- is_dtt(.data)
+#   res <- separate_rows(.data = as_dtbl(fungroup(.data)), ..., sep = sep,
+#     convert = convert)
+#   if (is_x_dtf)
+#     res <- as_dtf(res)
+#   if (is_x_dtt)
+#     res <- as_dtt(collect(res))
+#   res
+# }, class = c("function", "sciviews_fn"), comment = .src_sciviews("tidyr::unite"))
 
-  if (!prepare_data_dot(.data))
-    return(recall_with_data_dot())
-
-  # For now, we use same function as txxx() counterpart... still must rework
-  if (inherits(.data, c("tbl_db", "dtplyr_step")))
-    stop("You must collect results from a tidy function before using a sciviews one.")
-
-  # Sometimes groups are kept, sometimes not... for now, we do not care
-  # (we always ungroup).
-  is_x_dtf <- is_dtf(.data)
-  is_x_dtt <- is_dtt(.data)
-  res <- separate_rows(.data = as_dtbl(fungroup(.data)), ..., sep = sep,
-    convert = convert)
-  if (is_x_dtf)
-    res <- as_dtf(res)
-  if (is_x_dtt)
-    res <- as_dtt(collect(res))
-  res
-}, class = c("function", "sciviews_fn"), comment = .src_sciviews("tidyr::unite"))
-
-#' @export
-#' @rdname sciviews_functions
-extract_ <- structure(function(.data = (.), col, into, regex = "([[:alnum:]]+)",
-  remove = TRUE, convert = FALSE, ...) {
-
-  if (!prepare_data_dot(.data))
-    return(recall_with_data_dot())
-
-  # For now, we use same function as txxx() counterpart... still must rework
-  if (inherits(.data, c("tbl_db", "dtplyr_step")))
-    stop("You must collect results from a tidy function before using a sciviews one.")
-
-  if (inherits(.data, "GRP_df")) {
-    is_x_grp_df <- TRUE
-    gvars <- fgroup_vars(.data, return = "names")
-    gvars <- lapply(gvars, as.name)
-  } else {
-    is_x_grp_df <- FALSE
-  }
-  if (is_dtt(.data)) {
-
-    res <- do.call('extract', list(as_dtbl(.data), col = substitute(col),
-      into = into, regex = regex, remove = remove, convert = convert, ...))
-    res <- as_dtt(collect(res))
-  } else {
-    res <- do.call('extract', list(.data, col = substitute(col), into = into,
-      regex = regex, remove = remove, convert = convert, ...))
-  }
-  if (is_x_grp_df)
-    res <- do.call('fgroup_by', c(list(.X = res), gvars))
-  res
-}, class = c("function", "sciviews_fn"), comment = .src_sciviews("tidyr::extract"))
+# TODO...
+# @export
+# @rdname sciviews_functions
+# extract_ <- structure(function(.data = (.), col, into, regex = "([[:alnum:]]+)",
+#   remove = TRUE, convert = FALSE, ...) {
+#
+#   if (!prepare_data_dot(.data))
+#     return(recall_with_data_dot())
+#
+#   # For now, we use same function as txxx() counterpart... still must rework
+#   if (inherits(.data, c("tbl_db", "dtplyr_step")))
+#     stop("You must collect results from a tidy function before using a sciviews one.")
+#
+#   if (inherits(.data, "GRP_df")) {
+#     is_x_grp_df <- TRUE
+#     gvars <- fgroup_vars(.data, return = "names")
+#     gvars <- lapply(gvars, as.name)
+#   } else {
+#     is_x_grp_df <- FALSE
+#   }
+#   if (is_dtt(.data)) {
+#
+#     res <- do.call('extract', list(as_dtbl(.data), col = substitute(col),
+#       into = into, regex = regex, remove = remove, convert = convert, ...))
+#     res <- as_dtt(collect(res))
+#   } else {
+#     res <- do.call('extract', list(.data, col = substitute(col), into = into,
+#       regex = regex, remove = remove, convert = convert, ...))
+#   }
+#   if (is_x_grp_df)
+#     res <- do.call('fgroup_by', c(list(.X = res), gvars))
+#   res
+# }, class = c("function", "sciviews_fn"), comment = .src_sciviews("tidyr::extract"))
