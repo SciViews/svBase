@@ -265,7 +265,7 @@ ssummarise <- structure(function(.data, ...) {
 sfull_join <- structure(function(x, y, by = NULL, suffix = c(".x", ".y"),
 copy = FALSE, ...) {
   if (!missing(copy))
-    warning("This argument is here only for compatibility with tfull_join() but it does nothing here.")
+    warning("This argument is here only for compatibility with full_join() but it does nothing here.")
   # We transform x into a data.table, then restore the result into data.frame
   # or  tibble if needed
   is_x_dtf <- is_dtf(x)
@@ -287,7 +287,7 @@ copy = FALSE, ...) {
 sleft_join <- structure(function(x, y, by = NULL, suffix = c(".x", ".y"),
 copy = FALSE, ...) {
   if (!missing(copy))
-    warning("This argument is here only for compatibility with tleft_join() but it does nothing here.")
+    warning("This argument is here only for compatibility with left_join() but it does nothing here.")
   # We transform x into a data.table, then restore the result into data.frame
   # or  tibble if needed
   is_x_dtf <- is_dtf(x)
@@ -309,7 +309,7 @@ copy = FALSE, ...) {
 sright_join <- structure(function(x, y, by = NULL, suffix = c(".x", ".y"),
 copy = FALSE, ...) {
   if (!missing(copy))
-    warning("This argument is here only for compatibility with tright_join() but it does nothing here.")
+    warning("This argument is here only for compatibility with right_join() but it does nothing here.")
   # We transform x into a data.table, then restore the result into data.frame
   # or  tibble if needed
   is_x_dtf <- is_dtf(x)
@@ -331,7 +331,7 @@ copy = FALSE, ...) {
 sinner_join <- structure(function(x, y, by = NULL, suffix = c(".x", ".y"),
 copy = FALSE, ...) {
   if (!missing(copy))
-    warning("This argument is here only for compatibility with tinner_join() but it does nothing here.")
+    warning("This argument is here only for compatibility with inner_join() but it does nothing here.")
   # We transform x into a data.table, then restore the result into data.frame
   # or  tibble if needed
   is_x_dtf <- is_dtf(x)

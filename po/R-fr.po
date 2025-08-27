@@ -1,0 +1,207 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: svBase 1.7.0\n"
+"POT-Creation-Date: 2025-08-27 21:13\n"
+"PO-Revision-Date: 2025-08-27 22:01+0200\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: Poedit 3.7\n"
+
+msgid "Standard evaluation is not allowed."
+msgstr "L'évaluation standard n'est pas autorisée."
+
+msgid "If you provide a list of formulas, you cannot provide more."
+msgstr ""
+"Si vous fournissez une liste de formules, vous ne pouvez pas en fournir "
+"d’autre par ailleurs."
+
+msgid ""
+"{.arg .max.args} must be a single positive {.cls integer}, not {.max.args}."
+msgstr ""
+"{.arg .max.args} doit être un {.cls integer} positif unique, et non "
+"{.max.args}."
+
+msgid "You provided {ldots} arguments, but max allowed is {.max.args}."
+msgstr ""
+"Vous avez fourni {ldots} arguments, alors que le maximum autorisé est de "
+"{.max.args}."
+
+msgid "Macro expanded expression:"
+msgstr "Macro expression élargie :"
+
+msgid "You cannot mix standard evaluation and formulas."
+msgstr "Vous ne pouvez pas mélanger l'évaluation standard et les formules."
+
+msgid "All inputs must be named."
+msgstr "Toutes les entrées doivent être nommées."
+
+msgid "Use formulas instead."
+msgstr "Utilisez plutôt des formules."
+
+msgid "Natural language support is available on this system,"
+msgstr "Ce système offre une assistance en langage naturel,"
+
+msgid "but unable to properly switch language."
+msgstr "mais impossible de changer correctement de langue."
+
+msgid ""
+"Unable to switch to language '%s'. Using current language '%s' instead\n"
+"(displayed only once per session)."
+msgstr ""
+"Impossible de passer à la langue '%s'. Utilisation de la langue actuelle "
+"'%s' à la place\n"
+"(affiché une seule fois par session)."
+
+msgid "Test of svBase's `gettext()` and `gettextf()`:"
+msgstr "Test des fonctions `gettext()` et `gettextf()` de svBase :"
+
+msgid "This should be transtlated, if '%s' language is supported."
+msgstr "Ceci doit être traduit si la langue '%s' est prise en charge."
+
+msgid "This is message number %i"
+msgstr "Il s'agit du message numéro %i"
+
+msgid "`%s` must be a 'data.frame'."
+msgstr "`%s` doit être un \"data.frame\"."
+
+msgid "Implicit data-dot (.) not permitted"
+msgstr "Mécanisme « data-dot » implicite (.) pas autorisé"
+
+msgid "Data-dot mechanism activated, but no `.` object found."
+msgstr ""
+"Le mécanisme « data-dot » est activé, mais aucun objet `.` n'a été trouvé."
+
+msgid "Define `.` before calling this function, or provide `%s=` explicitly."
+msgstr ""
+"Définissez `.` avant d'appeler cette fonction, ou fournissez `%s=` "
+"explicitement."
+
+msgid "See {.help svMisc::data_dot_mechanism} for more infos."
+msgstr "Voir {.help svMisc::data_dot_mechanism} pour plus d'informations."
+
+msgid "`%s` and `%s` must both be 'data.frame'."
+msgstr "`%s` et `%s` doivent tous deux être des \"data.frame\"."
+
+msgid "You must provide .data"
+msgstr "Vous devez fournir des données .data"
+
+msgid "You must provide new_name = old_name (all named arguments)"
+msgstr "Vous devez fournir new_name = old_name (tous les arguments nommés)"
+
+msgid "Arguments and argument names do not match"
+msgstr "Les arguments et les noms d'arguments ne correspondent pas"
+
+msgid "This should not be called directly, see ?mutate_with."
+msgstr "Elle ne doit pas être appelée directement, voir ?mutate_with."
+
+msgid "Only supporting .cols = everything() for now, sorry."
+msgstr ""
+"Pour l'instant, nous ne prenons en charge que .cols = everything(), désolé."
+
+msgid "Can only rename with a function for now, sorry."
+msgstr "Pour l'instant, on ne peut renommer qu'avec une fonction, désolé."
+
+msgid ""
+"This argument is here only for compatibility with full_join() but it does "
+"nothing here."
+msgstr ""
+"Cet argument n'est présent que pour des raisons de compatibilité avec "
+"full_join(), mais il ne fait rien ici."
+
+msgid ""
+"This argument is here only for compatibility with left_join() but it does "
+"nothing here."
+msgstr ""
+"Cet argument n'est présent que pour des raisons de compatibilité avec "
+"left_join(), mais il ne fait rien ici."
+
+msgid ""
+"This argument is here only for compatibility with right_join() but it does "
+"nothing here."
+msgstr ""
+"Cet argument n'est présent que pour des raisons de compatibilité avec "
+"right_join(), mais il ne fait rien ici."
+
+msgid ""
+"This argument is here only for compatibility with inner_join() but it does "
+"nothing here."
+msgstr ""
+"Cet argument n'est présent que pour des raisons de compatibilité avec "
+"inner_join(), mais il ne fait rien ici."
+
+msgid "`.id` must be a scalar string"
+msgstr "`.id` doit être une chaîne scalaire"
+
+msgid ".drop = FALSE not implemented yet in scount(), use count() instead"
+msgstr ""
+".drop = FALSE pas encore implémenté dans scount(), utiliser count() à la "
+"place"
+
+msgid "scount() does not use computed values for ... yet, use count() instead"
+msgstr ""
+"scount() n'utilise pas encore les valeurs calculées pour ..., utilisez "
+"count() à la place"
+
+msgid ""
+"'wt' must be same length as the number of rows in 'x', or the name of a "
+"column in 'x'"
+msgstr ""
+"wt\" doit être de la même longueur que le nombre de lignes dans \"x\" ou que "
+"le nom d'une colonne dans \"x\""
+
+msgid "the .drop= argument is deprecated in (s)add_count()"
+msgstr "l'argument .drop= est obsolète dans (s)add_count()"
+
+msgid ""
+"sadd_count() does not use computed values for ... yet, use add_count() "
+"instead"
+msgstr ""
+"sadd_count() n'utilise pas encore les valeurs calculées pour ..., utilisez "
+"plutôt add_count()"
+
+msgid ""
+"You must collect results from a tidy function before using a speedy one."
+msgstr ""
+"Vous devez collecter les résultats d'une fonction ’tidy’ avant d'utiliser "
+"une fonction ‘speedy’."
+
+msgid ""
+"{.emph The data-dot mechanism was activated (see {.help "
+"svMisc::data_dot_mechanism}).}"
+msgstr ""
+"{.emph Le mécanisme «  data-dot » a été activé (voir {.help "
+"svMisc::data_dot_mechanism})"
+
+msgid "{.emph {.code .} is {object_info(.)}}"
+msgstr "{.emph {.code .} est {object_info(.)}}"
+
+msgid "a data frame with %d rows and %d columns: %s"
+msgstr "un data frame avec %d lignes et %d colonnes : %s"
+
+msgid "a list with %d elements"
+msgstr "une liste avec %d éléments"
+
+msgid "a vector of type '%s' and %d elements"
+msgstr "un vecteur de type '%s' et %d éléments"
+
+msgid "an object of class '%s'"
+msgstr "un objet de classe \"%s\""
+
+msgid "Type {.code {type}} not found for function {.fun {fun_str}}"
+msgstr "Type {.code {type}} non trouvé pour la fonction {.fun {fun_str}}"
+
+msgid "No type found for this function."
+msgstr "Aucun type n'a été trouvé pour cette fonction."
+
+msgid "Known types: {types}."
+msgstr "Types connus : {types}."
+
+msgid "You asked for only one item"
+msgid_plural "You asked for several items"
+msgstr[0] "Vous n'avez demandé qu'un seul item"
+msgstr[1] "Vous avez demandé plusieurs items"

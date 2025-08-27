@@ -1,6 +1,7 @@
 appveyor
 CMD
 destructuring
+de
 df
 dplyr
 dplyr's
@@ -14,6 +15,7 @@ Lifecycle
 na
 ORCID
 perl
+poEdit
 readr
 SciViews
 sciviews
@@ -22,8 +24,10 @@ sql
 src
 srcs
 subclassed
+subsettable
 svMisc
 svTidy
+tabularise
 tbl
 tibble
 tibble's

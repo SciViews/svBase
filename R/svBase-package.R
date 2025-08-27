@@ -21,6 +21,7 @@
 ## usethis namespace: start
 # @importFrom pillar tbl_sum
 #' @import zeallot
+#' @importFrom compiler cmpfun
 #' @importFrom cli cli_abort
 #' @importFrom collapse anyv fcount fgroup_by fgroup_vars fmatch fmutate fnobs frename fselect fsubset fsummarise fungroup qDF qDT qTBL replace_na
 #' @importFrom data.table as.data.table key rbindlist setattr setDT setkeyv
@@ -28,7 +29,8 @@
 #' @importFrom dplyr across add_count add_tally anti_join arrange bind_cols bind_rows collect count distinct filter full_join group_by inner_join is_grouped_df left_join mutate pull rename rename_with semi_join right_join select summarise tally transmute ungroup
 #' @importFrom lifecycle deprecated
 #' @importFrom rlang abort eval_bare expr_text f_env f_lhs f_name f_rhs inject is_formula rep_along
-#' @importFrom svMisc assign_temp stop_ warning_ expr_funs
+#' @importFrom svMisc expr_funs
+#' @importFrom utils .DollarNames apropos
 #' @importFrom tibble as_tibble is_tibble tibble tribble
 #' @importFrom tidyr drop_na extract fill pivot_longer pivot_wider separate separate_rows uncount unite
 ## usethis namespace: end

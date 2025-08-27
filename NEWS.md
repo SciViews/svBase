@@ -1,5 +1,11 @@
 # svBase 1.7.0
 
+-   Function `prepare_data_dot()`, `prepare_data_dot2()`, ``recall_with_data_dot()`, `recall_with_data_dot2()` and the man page `data_dot_mechanism` are moved from svMisc to here.
+
+-   Functions `stop_`, `warning_`, `stop_top_call()`, `object_info()`, `gettext_()`, `gettextf_()`, `ngettext_()` and `test_gettext_lang()` moved from svMisc to here.
+
+-   The code for subsettable functions (`fun$type()`) is moved from svMisc and tabularise to here.
+
 -   The SciViews functions are moved to the svTidy package.
 
 -   `formula_masking()` and `formula_select()` are now exported.
