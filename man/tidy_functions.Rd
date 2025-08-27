@@ -18,13 +18,14 @@ transmute_ungroup(.data, ...)
 }
 \arguments{
 \item{.data}{A data frame, data frame extension (e.g. a tibble), or a lazy
-data frame (e.g. from dbplyr or dtplyr). See \code{\link[=mutate]{mutate()}} for more details.}
+data frame (e.g. from dbplyr or dtplyr). See \code{\link[dplyr:mutate]{dplyr::mutate()}} for more
+details.}
 
 \item{...}{Arguments dependent to the context of the function and most of
 the time, not evaluated in a standard way (cf. the tidyverse approach).}
 
 \item{.keep}{Which columns to keep. The default is \code{"all"}, possible values
-are \code{"used"}, \code{"unused"}, or \code{"none"} (see \code{\link[=mutate]{mutate()}}).}
+are \code{"used"}, \code{"unused"}, or \code{"none"} (see \code{\link[dplyr:mutate]{dplyr::mutate()}}).}
 }
 \value{
 See corresponding "non-t" function for the full help page with
@@ -33,17 +34,23 @@ all the tidy(verse) functions that have their speedy "s" counterpart, see
 \link{speedy_functions}.
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+
+\emph{These function are deprecated to the benefit of the functions whose name
+ends with an underscore \verb{_} (e.g., \code{select()} -> \code{\link[svTidy:sciviews_functions]{svTidy::select_()}}) in the
+svTidy package}.
+
 The Tidyverse defines a coherent set of tools to manipulate
 data frames that use a non-standard evaluation and sometimes require extra
-care. These functions, like \code{\link[=mutate]{mutate()}} or \code{\link[=summarise]{summarise()}} are defined in the
-\{dplyr\} and \{tidyr\} packages. When using variants, like \{dtplyr\} for
-\strong{data.frame} objects, or \{dbplyr\} to work with external databases,
-successive commands in a pipeline are pooled together but not computed. One
-has to \code{\link[=collect]{collect()}} the result to get its final form. Most of the tidy
-functions that have their "speedy" counterpart prefixed with "s" are listed
-with\code{\link[=list_tidy_functions]{list_tidy_functions()}}. Their main usages are (excluding less used
-arguments, or those that are not compatibles with the speedy "s" counterpart
-functions):
+care. These functions, like \code{\link[dplyr:mutate]{dplyr::mutate()}} or \code{\link[dplyr:summarise]{dplyr::summarise()}} are
+defined in the \{dplyr\} and \{tidyr\} packages. When using variants, like
+\{dtplyr\} for \strong{data.frame} objects, or \{dbplyr\} to work with external
+databases, successive commands in a pipeline are pooled together but not
+computed. One has to \code{\link[dplyr:compute]{dplyr::collect()}} the result to get its final form.
+Most of the tidy functions that have their "speedy" counterpart prefixed with
+"s" are listed with\code{\link[=list_tidy_functions]{list_tidy_functions()}}. Their main usages are (excluding
+less used arguments, or those that are not compatibles with the speedy "s"
+counterpart functions):
 \itemize{
 \item \code{group_by(.data, ...)}
 \item \code{ungroup(.data)}
@@ -84,14 +91,14 @@ plus the functions defined here under.
 The help page here is very basic and it aims mainly to list all the
 tidy functions. For more complete help, see the \{dplyr\} or \{tidyr\}
 packages. From \{dplyr\}, the \code{\link[=slice]{slice()}} and \code{slice_xxx()} functions are not
-added yet because they are not available for \{dbplyr\}. Also \code{\link[=anti_join]{anti_join()}},
-\code{\link[=semi_join]{semi_join()}} and \code{\link[=nest_join]{nest_join()}} are not implemented yet.
-From \{dplyr\}, the \code{\link[=slice]{slice()}} and \code{slice_xxx()} functions are not added yet
-because they are not available for \{dbplyr\}. Also \code{\link[=anti_join]{anti_join()}},
-\code{\link[=semi_join]{semi_join()}} and \code{\link[=nest_join]{nest_join()}} are not implemented yet.
-From \{tidyr\} \code{\link[=expand]{expand()}}, \code{\link[=chop]{chop()}}, \code{\link[=unchop]{unchop()}}, \code{\link[=nest]{nest()}}, \code{\link[=unnest]{unnest()}},
-\code{\link[=unnest_longer]{unnest_longer()}}, \code{\link[=unnest_wider]{unnest_wider()}}, \code{\link[=hoist]{hoist()}}, \code{\link[=pack]{pack()}} and \code{\link[=unpack]{unpack()}} are
-not implemented yet.
+added yet because they are not available for \{dbplyr\}. Also
+\code{\link[dplyr:filter-joins]{dplyr::anti_join()}}, \code{\link[dplyr:filter-joins]{dplyr::semi_join()}} and \code{\link[dplyr:nest_join]{dplyr::nest_join()}} are not
+implemented yet. From \{dplyr\}, the \code{\link[dplyr:slice]{dplyr::slice()}} and \code{slice_xxx()}
+functions are not added yet because they are not available for \{dbplyr\}.
+From \{tidyr\} \code{\link[tidyr:expand]{tidyr::expand()}}, \code{\link[tidyr:chop]{tidyr::chop()}}, \code{\link[tidyr:chop]{tidyr::unchop()}},
+\code{\link[tidyr:nest]{tidyr::nest()}}, \code{\link[tidyr:unnest]{tidyr::unnest()}}, \code{\link[tidyr:unnest_longer]{tidyr::unnest_longer()}},
+\code{\link[tidyr:unnest_wider]{tidyr::unnest_wider()}}, \code{\link[tidyr:hoist]{tidyr::hoist()}}, \code{\link[tidyr:pack]{tidyr::pack()}} and
+\code{\link[tidyr:pack]{tidyr::unpack()}} are not implemented yet.
 }
 \examples{
 # TODO...

@@ -1,16 +1,23 @@
 #' Tidy functions (mainly from dplyr and tidyr) to manipulate data frames
 #'
-#' @description The Tidyverse defines a coherent set of tools to manipulate
+#' @description
+#' `r lifecycle::badge("deprecated")`
+#'
+#' *These function are deprecated to the benefit of the functions whose name
+#' ends with an underscore `_` (e.g., `select()` -> [svTidy::select_()]) in the
+#' svTidy package*.
+#'
+#' The Tidyverse defines a coherent set of tools to manipulate
 #' data frames that use a non-standard evaluation and sometimes require extra
-#' care. These functions, like [mutate()] or [summarise()] are defined in the
-#' \{dplyr\} and \{tidyr\} packages. When using variants, like \{dtplyr\} for
-#' **data.frame** objects, or \{dbplyr\} to work with external databases,
-#' successive commands in a pipeline are pooled together but not computed. One
-#' has to [collect()] the result to get its final form. Most of the tidy
-#' functions that have their "speedy" counterpart prefixed with "s" are listed
-#' with[list_tidy_functions()]. Their main usages are (excluding less used
-#' arguments, or those that are not compatibles with the speedy "s" counterpart
-#' functions):
+#' care. These functions, like [dplyr::mutate()] or [dplyr::summarise()] are
+#' defined in the \{dplyr\} and \{tidyr\} packages. When using variants, like
+#' \{dtplyr\} for **data.frame** objects, or \{dbplyr\} to work with external
+#' databases, successive commands in a pipeline are pooled together but not
+#' computed. One has to [dplyr::collect()] the result to get its final form.
+#' Most of the tidy functions that have their "speedy" counterpart prefixed with
+#' "s" are listed with[list_tidy_functions()]. Their main usages are (excluding
+#' less used arguments, or those that are not compatibles with the speedy "s"
+#' counterpart functions):
 #' - `group_by(.data, ...)`
 #' - `ungroup(.data)`
 #' - `rename(.data, ...)`
@@ -47,23 +54,24 @@
 
 #'
 #' @param .data A data frame, data frame extension (e.g. a tibble), or a lazy
-#' data frame (e.g. from dbplyr or dtplyr). See [mutate()] for more details.
+#' data frame (e.g. from dbplyr or dtplyr). See [dplyr::mutate()] for more
+#' details.
 #' @param ... Arguments dependent to the context of the function and most of
 #'   the time, not evaluated in a standard way (cf. the tidyverse approach).
 #' @param .keep Which columns to keep. The default is `"all"`, possible values
-#' are `"used"`, `"unused"`, or `"none"` (see [mutate()]).
+#' are `"used"`, `"unused"`, or `"none"` (see [dplyr::mutate()]).
 #'
 #' @note The help page here is very basic and it aims mainly to list all the
 #' tidy functions. For more complete help, see the \{dplyr\} or \{tidyr\}
 #' packages. From \{dplyr\}, the [slice()] and `slice_xxx()` functions are not
-#' added yet because they are not available for \{dbplyr\}. Also [anti_join()],
-#' [semi_join()] and [nest_join()] are not implemented yet.
-#' From \{dplyr\}, the [slice()] and `slice_xxx()` functions are not added yet
-#' because they are not available for \{dbplyr\}. Also [anti_join()],
-#' [semi_join()] and [nest_join()] are not implemented yet.
-#' From \{tidyr\} [expand()], [chop()], [unchop()], [nest()], [unnest()],
-#' [unnest_longer()], [unnest_wider()], [hoist()], [pack()] and [unpack()] are
-#' not implemented yet.
+#' added yet because they are not available for \{dbplyr\}. Also
+#' [dplyr::anti_join()], [dplyr::semi_join()] and [dplyr::nest_join()] are not
+#' implemented yet. From \{dplyr\}, the [dplyr::slice()] and `slice_xxx()`
+#' functions are not added yet because they are not available for \{dbplyr\}.
+#' From \{tidyr\} [tidyr::expand()], [tidyr::chop()], [tidyr::unchop()],
+#' [tidyr::nest()], [tidyr::unnest()], [tidyr::unnest_longer()],
+#' [tidyr::unnest_wider()], [tidyr::hoist()], [tidyr::pack()] and
+#' [tidyr::unpack()] are not implemented yet.
 #'
 #' @return See corresponding "non-t" function for the full help page with
 #' indication of the return values. [list_tidy_functions()] returns a list of
@@ -80,6 +88,9 @@
 #' @examples
 #' # TODO...
 list_tidy_functions <- function() {
+  lifecycle::deprecate_soft(when = "1.7.0",
+    what = "list_tidy_functions()",
+    with = I("corresponding functions in the svTidy package"))
   c("add_count", "add_tally", "arrange", "bind_cols", "bind_rows", "count",
     "distinct", "drop_na", "extract", "fill", "filter", "filter_ungroup",
     "full_join", "group_by", "inner_join", "left_join", "mutate",
@@ -128,6 +139,9 @@ list_tidy_functions <- function() {
 #' @export
 #' @rdname tidy_functions
 filter_ungroup <- function(.data, ...) {
+  lifecycle::deprecate_soft(when = "1.7.0",
+    what = "filter_ungroup()",
+    with = I("corresponding functions in the svTidy package"))
   ungroup(filter(.data, ...))
 }
 #tfilter_ungroup <- structure(function(.data, ...) {
@@ -150,6 +164,9 @@ filter_ungroup <- function(.data, ...) {
 #' @export
 #' @rdname tidy_functions
 mutate_ungroup <- function(.data, ..., .keep = "all") {
+  lifecycle::deprecate_soft(when = "1.7.0",
+    what = "mutate_ungroup()",
+    with = I("corresponding functions in the svTidy package"))
   ungroup(mutate(.data, ..., .keep = .keep))
 }
 #tmutate_ungroup <- structure(function(.data, ..., .keep = "all") {
@@ -165,6 +182,9 @@ mutate_ungroup <- function(.data, ..., .keep = "all") {
 #' @export
 #' @rdname tidy_functions
 transmute_ungroup <- function(.data, ...) {
+  lifecycle::deprecate_soft(when = "1.7.0",
+    what = "transmute_ungroup()",
+    with = I("corresponding functions in the svTidy package"))
   ungroup(transmute(.data, ...))
 }
 #ttransmute_ungroup <- structure(function(.data, ...) {

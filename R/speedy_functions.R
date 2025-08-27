@@ -1,18 +1,27 @@
 #' Speedy functions (mainly from collapse and data.table) to manipulate data frames
 #'
-#' @description The Tidyverse defines a coherent set of tools to manipulate
+#' @description
+#' `r lifecycle::badge("deprecated")`
+#'
+#' *These function are deprecated to the benefit of the functions whose name
+#' ends with an underscore `_` (e.g., `sselect()` -> [svTidy::select_()]) in the
+#' svTidy package*.
+#'
+#' The Tidyverse defines a coherent set of tools to manipulate
 #' data frames that use a non-standard evaluation and sometimes require extra
-#' care. These functions, like [mutate()] or [summarise()] are defined in the
-#' \{dplyr\} and \{tidyr\} packages. The \{collapse\} package proposes a couple
-#' of functions with similar interface, but with different and much faster code.
-#' For instance, [fselect()] is similar to [select()], or [fsummarise()] is
-#' similar to [summarise()]. Not all functions are implemented, arguments and
-#' argument names differ, and the behavior may be very different, like
-#' [frename()] which uses `old_name = new_name`, while [rename()] uses
-#' `new_name = old_name`! The speedy functions all are prefixed with an "s",
-#' like [smutate()], and build on the work initiated in \{collapse\} to propose
-#' a series of paired functions with the tidy ones. So, [smutate()] and
-#' [mutate()] are "speedy" and 'tidy" counterparts and they are used in a very
+#' care. These functions, like [dplyr::mutate()] or [dplyr::summarise()] are
+#' defined in the \{dplyr\} and \{tidyr\} packages. The \{collapse\} package
+#' provides a couple of functions with similar interface, but with different and
+#' much faster code.
+#' For instance, [collapse::fselect()] is similar to [dplyr::select()], or
+#' [collapse::fsummarise()] is similar to [dplyr::summarise()]. Not all
+#' functions are implemented, arguments and argument names differ, and the
+#' behavior may be very different, like [collapse::frename()] which uses
+#' `old_name = new_name`, while [dplyr::rename()] uses `new_name = old_name`!
+#' The speedy functions all are prefixed with an "s", like [smutate()], and
+#' build on the work initiated in \{collapse\} to propose a series of paired
+#' functions with the tidy ones. So, [smutate()] and [dplyr::mutate()] are
+#' "speedy" and "tidy" counterparts and they are used in a very
 #' similar, if not identical way. This notation using a "s" prefix is there to
 #' draw the attention on their particularities. Their classes are **function**
 #' and **speedy_fn**. Avoid mixing tidy, speedy and non-tidy/speedy functions in
@@ -31,7 +40,7 @@
 #'   the moment, only all existing columns, which means `.cols = everything()`
 #'   is implemented
 #' @param .keep Which columns to keep. The default is `"all"`, possible values
-#' are `"used"`, `"unused"`, or `"none"` (see [mutate()]).
+#' are `"used"`, `"unused"`, or `"none"` (see [dplyr::mutate()]).
 #' @param x A data frame (data.frame, data.table or tibble's tbl_df).
 #' @param y A second data frame.
 #' @param by A list of names of the columns to use for joining the two data
@@ -91,13 +100,14 @@
 #' @note The [ssummarise()] function does not support `n()` as does
 #' [dplyr::summarise()]. You can use [fn()] instead, but then, you must give a
 #' variable name as argument. The [fn()] alternative can also be used in
-#' [summarise()] for homogeneous syntax between the two.
-#' From \{dplyr\}, the [slice()] and `slice_xxx()` functions are not added yet
-#' because they are not available for \{dbplyr\}. Also [anti_join()],
-#' [semi_join()] and [nest_join()] are not implemented yet.
-#' From \{tidyr\} [expand()], [chop()], [unchop()], [nest()], [unnest()],
-#' [unnest_longer()], [unnest_wider()], [hoist()], [pack()] and [unpack()] are
-#' not implemented yet.
+#' [dplyr::summarise()] for homogeneous syntax between the two.
+#' From \{dplyr\}, the [dplyr::slice()] and `slice_xxx()` functions are not
+#' added yet because they are not available for \{dbplyr\}. Also
+#' [dplyr::anti_join()], [dplyr::semi_join()] and [dplyr::nest_join()] are not
+#' implemented yet. From \{tidyr\} [tidyr::expand()], [tidyr::chop()],
+#' [tidyr::unchop()], [tidyr::nest()], [tidyr::unnest()],
+#' [tidyr::unnest_longer()], [tidyr::unnest_wider()], [tidyr::hoist()],
+#' [tidyr::pack()] and [tidyr::unpack()] are not implemented yet.
 #'
 #' @return See corresponding "non-s" function for the full help page with
 #' indication of the return values.
@@ -108,6 +118,9 @@
 #' @examples
 #' # TODO...
 list_speedy_functions <- function() {
+  lifecycle::deprecate_soft(when = "1.7.0",
+    what = "list_speedy_functions()",
+    with = I("corresponding functions in the svTidy package"))
   c("sadd_count", "sadd_tally", "sarrange", "sbind_cols", "sbind_rows",
     "scount", "sdistinct", "sdrop_na", "sextract", "sfill", "sfilter",
     "sfilter_ungroup", "sfull_join", "sgroup_by", "sinner_join", "sleft_join",

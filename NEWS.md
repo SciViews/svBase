@@ -4,6 +4,8 @@
 
 -   `formula_masking()` and `formula_select()` are now exported.
 
+-   Speedy and tidy functions are deprecated. Refer to functions in the svTidy package for a new, faster, and with better error messages for a new implementation.
+
 # svBase 1.6.0
 
 -   First implementation of the SciViews functions (ending with an underscore `_` and with standard evaluation of their arguments, except in formulas and with implicit data-dot).

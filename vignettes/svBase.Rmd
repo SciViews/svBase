@@ -15,12 +15,7 @@ vignette: >
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(svBase)
 ```
 
-The {svBase} allows to rationalize the use of the three main "data frames" objects in R: **data.frame**, **data.table** and **tbl_df**.
-
-```{r}
-# TODO: example
-dtf <- data.frame(x = 1:3, y = 4:6)
-# ...
-```
+TODO...

@@ -176,7 +176,7 @@ the moment, only all existing columns, which means \code{.cols = everything()}
 is implemented}
 
 \item{.keep}{Which columns to keep. The default is \code{"all"}, possible values
-are \code{"used"}, \code{"unused"}, or \code{"none"} (see \code{\link[=mutate]{mutate()}}).}
+are \code{"used"}, \code{"unused"}, or \code{"none"} (see \code{\link[dplyr:mutate]{dplyr::mutate()}}).}
 
 \item{x}{A data frame (data.frame, data.table or tibble's tbl_df).}
 
@@ -270,19 +270,27 @@ See corresponding "non-s" function for the full help page with
 indication of the return values.
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+
+\emph{These function are deprecated to the benefit of the functions whose name
+ends with an underscore \verb{_} (e.g., \code{sselect()} -> \code{\link[svTidy:sciviews_functions]{svTidy::select_()}}) in the
+svTidy package}.
+
 The Tidyverse defines a coherent set of tools to manipulate
 data frames that use a non-standard evaluation and sometimes require extra
-care. These functions, like \code{\link[=mutate]{mutate()}} or \code{\link[=summarise]{summarise()}} are defined in the
-\{dplyr\} and \{tidyr\} packages. The \{collapse\} package proposes a couple
-of functions with similar interface, but with different and much faster code.
-For instance, \code{\link[=fselect]{fselect()}} is similar to \code{\link[=select]{select()}}, or \code{\link[=fsummarise]{fsummarise()}} is
-similar to \code{\link[=summarise]{summarise()}}. Not all functions are implemented, arguments and
-argument names differ, and the behavior may be very different, like
-\code{\link[=frename]{frename()}} which uses \code{old_name = new_name}, while \code{\link[=rename]{rename()}} uses
-\code{new_name = old_name}! The speedy functions all are prefixed with an "s",
-like \code{\link[=smutate]{smutate()}}, and build on the work initiated in \{collapse\} to propose
-a series of paired functions with the tidy ones. So, \code{\link[=smutate]{smutate()}} and
-\code{\link[=mutate]{mutate()}} are "speedy" and 'tidy" counterparts and they are used in a very
+care. These functions, like \code{\link[dplyr:mutate]{dplyr::mutate()}} or \code{\link[dplyr:summarise]{dplyr::summarise()}} are
+defined in the \{dplyr\} and \{tidyr\} packages. The \{collapse\} package
+provides a couple of functions with similar interface, but with different and
+much faster code.
+For instance, \code{\link[collapse:select_replace_vars]{collapse::fselect()}} is similar to \code{\link[dplyr:select]{dplyr::select()}}, or
+\code{\link[collapse:fsummarise]{collapse::fsummarise()}} is similar to \code{\link[dplyr:summarise]{dplyr::summarise()}}. Not all
+functions are implemented, arguments and argument names differ, and the
+behavior may be very different, like \code{\link[collapse:frename]{collapse::frename()}} which uses
+\code{old_name = new_name}, while \code{\link[dplyr:rename]{dplyr::rename()}} uses \code{new_name = old_name}!
+The speedy functions all are prefixed with an "s", like \code{\link[=smutate]{smutate()}}, and
+build on the work initiated in \{collapse\} to propose a series of paired
+functions with the tidy ones. So, \code{\link[=smutate]{smutate()}} and \code{\link[dplyr:mutate]{dplyr::mutate()}} are
+"speedy" and "tidy" counterparts and they are used in a very
 similar, if not identical way. This notation using a "s" prefix is there to
 draw the attention on their particularities. Their classes are \strong{function}
 and \strong{speedy_fn}. Avoid mixing tidy, speedy and non-tidy/speedy functions in
@@ -297,13 +305,14 @@ go to the help page of the non-"s" function with a message.
 The \code{\link[=ssummarise]{ssummarise()}} function does not support \code{n()} as does
 \code{\link[dplyr:summarise]{dplyr::summarise()}}. You can use \code{\link[=fn]{fn()}} instead, but then, you must give a
 variable name as argument. The \code{\link[=fn]{fn()}} alternative can also be used in
-\code{\link[=summarise]{summarise()}} for homogeneous syntax between the two.
-From \{dplyr\}, the \code{\link[=slice]{slice()}} and \code{slice_xxx()} functions are not added yet
-because they are not available for \{dbplyr\}. Also \code{\link[=anti_join]{anti_join()}},
-\code{\link[=semi_join]{semi_join()}} and \code{\link[=nest_join]{nest_join()}} are not implemented yet.
-From \{tidyr\} \code{\link[=expand]{expand()}}, \code{\link[=chop]{chop()}}, \code{\link[=unchop]{unchop()}}, \code{\link[=nest]{nest()}}, \code{\link[=unnest]{unnest()}},
-\code{\link[=unnest_longer]{unnest_longer()}}, \code{\link[=unnest_wider]{unnest_wider()}}, \code{\link[=hoist]{hoist()}}, \code{\link[=pack]{pack()}} and \code{\link[=unpack]{unpack()}} are
-not implemented yet.
+\code{\link[dplyr:summarise]{dplyr::summarise()}} for homogeneous syntax between the two.
+From \{dplyr\}, the \code{\link[dplyr:slice]{dplyr::slice()}} and \code{slice_xxx()} functions are not
+added yet because they are not available for \{dbplyr\}. Also
+\code{\link[dplyr:filter-joins]{dplyr::anti_join()}}, \code{\link[dplyr:filter-joins]{dplyr::semi_join()}} and \code{\link[dplyr:nest_join]{dplyr::nest_join()}} are not
+implemented yet. From \{tidyr\} \code{\link[tidyr:expand]{tidyr::expand()}}, \code{\link[tidyr:chop]{tidyr::chop()}},
+\code{\link[tidyr:chop]{tidyr::unchop()}}, \code{\link[tidyr:nest]{tidyr::nest()}}, \code{\link[tidyr:unnest]{tidyr::unnest()}},
+\code{\link[tidyr:unnest_longer]{tidyr::unnest_longer()}}, \code{\link[tidyr:unnest_wider]{tidyr::unnest_wider()}}, \code{\link[tidyr:hoist]{tidyr::hoist()}},
+\code{\link[tidyr:pack]{tidyr::pack()}} and \code{\link[tidyr:pack]{tidyr::unpack()}} are not implemented yet.
 }
 \examples{
 # TODO...
