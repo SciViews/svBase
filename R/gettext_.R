@@ -40,7 +40,7 @@
   # The function that retrieves one or more translated character strings in a
   # given language (may be different to current R language)
   gettext_lang <- compiler::cmpfun(
-    function(..., domain = NULL, trim = TRUE, lang = getOption("data.io_lang",
+    function(..., domain = NULL, trim = TRUE, lang = getOption("SciViews_lang",
       default = Sys.getenv("LANGUAGE", unset = "en"))) {
 
       if (missing(lang)) # Use default base::gettext()
@@ -94,7 +94,7 @@
 
   gettextf_lang <- compiler::cmpfun(
     function(fmt, ..., domain = NULL, trim = TRUE,
-      lang = getOption("data.io_lang", default =
+      lang = getOption("SciViews_lang", default =
           Sys.getenv("LANGUAGE", unset = "en"))) {
       if (missing(lang)) {
         sprintf(gettext_base(fmt, domain = domain, trim = trim), ...)
@@ -106,11 +106,13 @@
   )
 
   ngettext_lang <- compiler::cmpfun(
-    function(n, msg1, msg2, domain = NULL, lang = getOption("data.io_lang",
-      default = Sys.getenv("LANGUAGE", unset = "en"))) {
+    function(n, msg1, msg2, domain = NULL) {
+
+      def_lang <- getOption("SciViews_lang",
+        default = Sys.getenv("LANGUAGE", unset = "en"))
 
       if (is.null(domain)) {
-        lang <- ""
+        lang <- def_lang
       } else {# Try to separate domain dans lang (should be domain_lang)
         dom_lang <- strsplit(domain, "_", fixed = TRUE)[[1]]
         if (length(dom_lang) > 1L) {
@@ -119,7 +121,7 @@
             domain <- NULL
           lang <- dom_lang[2]
         } else {
-          lang <- ""
+          lang <- def_lang
         }
       }
 
@@ -260,7 +262,7 @@ ngettext_ <- .gettext_lang$ngettext
 
 #' @export
 #' @rdname gettext_
-test_gettext_lang <- function(lang = getOption("data.io_lang",
+test_gettext_lang <- function(lang = getOption("SciViews_lang",
   default = Sys.getenv("LANGUAGE", unset = "en")), n = 1) {
   # You should import gettext_(), gettextf_() and ngettext_() from svMisc and
   # rename them gettext, gettextf, and ngettext respectively instead of using

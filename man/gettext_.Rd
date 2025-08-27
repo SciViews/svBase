@@ -11,7 +11,7 @@ gettext_(
   ...,
   domain = NULL,
   trim = TRUE,
-  lang = getOption("data.io_lang", default = Sys.getenv("LANGUAGE", unset = "en"))
+  lang = getOption("SciViews_lang", default = Sys.getenv("LANGUAGE", unset = "en"))
 )
 
 gettextf_(
@@ -19,19 +19,13 @@ gettextf_(
   ...,
   domain = NULL,
   trim = TRUE,
-  lang = getOption("data.io_lang", default = Sys.getenv("LANGUAGE", unset = "en"))
+  lang = getOption("SciViews_lang", default = Sys.getenv("LANGUAGE", unset = "en"))
 )
 
-ngettext_(
-  n,
-  msg1,
-  msg2,
-  domain = NULL,
-  lang = getOption("data.io_lang", default = Sys.getenv("LANGUAGE", unset = "en"))
-)
+ngettext_(n, msg1, msg2, domain = NULL)
 
 test_gettext_lang(
-  lang = getOption("data.io_lang", default = Sys.getenv("LANGUAGE", unset = "en")),
+  lang = getOption("SciViews_lang", default = Sys.getenv("LANGUAGE", unset = "en")),
   n = 1
 )
 }
