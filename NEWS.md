@@ -1,5 +1,11 @@
 # svBase 1.7.0
 
+-   Functions `labelise()`/`labelize()`, `cl()`, `unlabelise()`/`unlabelize()`, `label()` and `label<-()` are moved here from data.io.
+
+-   Functions `aka()` and `section()` are moved here from svMisc.
+
+-   Functions `retarget()` and `expr_funs()` are moved from svMisc to here.
+
 -   Function `prepare_data_dot()`, `prepare_data_dot2()`, ``recall_with_data_dot()`, `recall_with_data_dot2()` and the man page `data_dot_mechanism` are moved from svMisc to here.
 
 -   Functions `stop_`, `warning_`, `stop_top_call()`, `object_info()`, `gettext_()`, `gettextf_()`, `ngettext_()` and `test_gettext_lang()` moved from svMisc to here.
