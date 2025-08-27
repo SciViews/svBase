@@ -23,6 +23,7 @@ src
 srcs
 subclassed
 svMisc
+svTidy
 tbl
 tibble
 tibble's

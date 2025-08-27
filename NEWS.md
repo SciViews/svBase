@@ -1,3 +1,9 @@
+# svBase 1.7.0
+
+-   The SciViews functions are moved to the svTidy package.
+
+-   `formula_masking()` and `formula_select()` are now exported.
+
 # svBase 1.6.0
 
 -   First implementation of the SciViews functions (ending with an underscore `_` and with standard evaluation of their arguments, except in formulas and with implicit data-dot).
