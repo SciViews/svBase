@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: svBase 1.7.0\n"
-"POT-Creation-Date: 2025-08-27 22:18\n"
-"PO-Revision-Date: 2025-08-27 22:18+0200\n"
+"POT-Creation-Date: 2025-08-27 23:51\n"
+"PO-Revision-Date: 2025-08-27 23:54+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -68,6 +68,53 @@ msgstr "Ceci doit être traduit si la langue '%s' est prise en charge."
 
 msgid "This is message number %i"
 msgstr "Il s'agit du message numéro %i"
+
+msgid "cannot assign a list to be a object label"
+msgstr "Impossible d’assigner une liste comme label d’un objet"
+
+msgid "{.arg label} must be {.cls character} of length 1"
+msgstr "{.arg label} doit être {.cls character} de longueur 1"
+
+msgid "x must be a data.frame"
+msgstr "x doit être un data.frame"
+
+msgid "Impossible to label variables of a {.cls data.frame} with no columns"
+msgstr ""
+"Impossible de libeller les variables d'un {.cls data.frame} sans colonnes"
+
+msgid ""
+"{.arg label} as unnamed {.cls list} must have the same length as {.arg x}"
+msgstr ""
+"{.arg label} comme {.cls list} non nommée doit avoir la même longueur que "
+"{.arg x}"
+
+msgid "The following label names are not in {.arg x}:"
+msgstr "Les noms de labels suivants ne figurent pas dans {.arg x} :"
+
+msgid "{missing_lvars}"
+msgstr "{missing_lvars}"
+
+msgid ""
+"{.arg units} must be a {.cls list} or {.cls character} of same length as "
+"{.arg x}"
+msgstr ""
+"{.arg units} doit être une {.cls list} ou un {.cls character} de même "
+"longueur que {.arg x}"
+
+msgid ""
+"{.arg units} as unnamed {.cls list} must have the same length as {.arg x}"
+msgstr ""
+"{.arg units} comme {.cls list} non nommée doit avoir la même longueur que "
+"{.arg x}"
+
+msgid "The following units names are not in {.arg x}:"
+msgstr "Les noms d'unités suivants ne figurent pas dans {.arg x} :"
+
+msgid "{missing_uvars}"
+msgstr "{missing_uvars}"
+
+msgid "{.arg x} must be a {.cls data.frame}"
+msgstr "{.arg x} doit être un {.cls data.frame}"
 
 msgid "`%s` must be a 'data.frame'."
 msgstr "`%s` doit être un \"data.frame\"."

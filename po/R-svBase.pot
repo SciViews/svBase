@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: svBase 1.7.0\n"
-"POT-Creation-Date: 2025-08-27 22:18\n"
+"POT-Creation-Date: 2025-08-27 23:51\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -54,6 +54,42 @@ msgid "This should be transtlated, if '%s' language is supported."
 msgstr ""
 
 msgid "This is message number %i"
+msgstr ""
+
+msgid "cannot assign a list to be a object label"
+msgstr ""
+
+msgid "{.arg label} must be {.cls character} of length 1"
+msgstr ""
+
+msgid "x must be a data.frame"
+msgstr ""
+
+msgid "Impossible to label variables of a {.cls data.frame} with no columns"
+msgstr ""
+
+msgid "{.arg label} as unnamed {.cls list} must have the same length as {.arg x}"
+msgstr ""
+
+msgid "The following label names are not in {.arg x}:"
+msgstr ""
+
+msgid "{missing_lvars}"
+msgstr ""
+
+msgid "{.arg units} must be a {.cls list} or {.cls character} of same length as {.arg x}"
+msgstr ""
+
+msgid "{.arg units} as unnamed {.cls list} must have the same length as {.arg x}"
+msgstr ""
+
+msgid "The following units names are not in {.arg x}:"
+msgstr ""
+
+msgid "{missing_uvars}"
+msgstr ""
+
+msgid "{.arg x} must be a {.cls data.frame}"
 msgstr ""
 
 msgid "`%s` must be a 'data.frame'."
