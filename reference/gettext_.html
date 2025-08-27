@@ -94,7 +94,7 @@ functions.</p>
 <span>  <span class="va">...</span>,</span>
 <span>  domain <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  trim <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  lang <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">getOption</a></span><span class="op">(</span><span class="st">"data.io_lang"</span>, default <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"LANGUAGE"</span>, unset <span class="op">=</span> <span class="st">"en"</span><span class="op">)</span><span class="op">)</span></span>
+<span>  lang <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">getOption</a></span><span class="op">(</span><span class="st">"SciViews_lang"</span>, default <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"LANGUAGE"</span>, unset <span class="op">=</span> <span class="st">"en"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">gettextf_</span><span class="op">(</span></span>
@@ -102,19 +102,13 @@ functions.</p>
 <span>  <span class="va">...</span>,</span>
 <span>  domain <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  trim <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  lang <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">getOption</a></span><span class="op">(</span><span class="st">"data.io_lang"</span>, default <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"LANGUAGE"</span>, unset <span class="op">=</span> <span class="st">"en"</span><span class="op">)</span><span class="op">)</span></span>
+<span>  lang <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">getOption</a></span><span class="op">(</span><span class="st">"SciViews_lang"</span>, default <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"LANGUAGE"</span>, unset <span class="op">=</span> <span class="st">"en"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">ngettext_</span><span class="op">(</span></span>
-<span>  <span class="va">n</span>,</span>
-<span>  <span class="va">msg1</span>,</span>
-<span>  <span class="va">msg2</span>,</span>
-<span>  domain <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  lang <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">getOption</a></span><span class="op">(</span><span class="st">"data.io_lang"</span>, default <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"LANGUAGE"</span>, unset <span class="op">=</span> <span class="st">"en"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="op">)</span></span>
+<span><span class="fu">ngettext_</span><span class="op">(</span><span class="va">n</span>, <span class="va">msg1</span>, <span class="va">msg2</span>, domain <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">test_gettext_lang</span><span class="op">(</span></span>
-<span>  lang <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">getOption</a></span><span class="op">(</span><span class="st">"data.io_lang"</span>, default <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"LANGUAGE"</span>, unset <span class="op">=</span> <span class="st">"en"</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  lang <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">getOption</a></span><span class="op">(</span><span class="st">"SciViews_lang"</span>, default <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"LANGUAGE"</span>, unset <span class="op">=</span> <span class="st">"en"</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  n <span class="op">=</span> <span class="fl">1</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
