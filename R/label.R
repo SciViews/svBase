@@ -3,9 +3,9 @@
 # We want the label version of Hmisc, but creating a 'labelled' S3  object
 # instead.
 # Also labelVector defines set_label() and get_label() but only for atomic
-# objects (no lists) and enforce the labelled class, and does not handle units.
+# objects (no lists), enforces the labelled class, and does not handle units.
 # Our labelise()/labelize() function deals with units and does not necessarily
-# enforces the class (and works with any object, except NULL).
+# enforce the class. It also works with any object except NULL.
 
 #' Set label (and units)
 #'
