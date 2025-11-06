@@ -150,7 +150,7 @@ recall_with_data_dot <- function(call, arg = '.data', value = quote((.)),
 
   # Check that "." exists
   pf <- parent.frame()
-  if (!exists('.', where = pf)) {
+  if (!exists('.', where = env)) {
     cli_abort(c(abort_msg3, i = abort_msg4, i = abort_msg5),
       .frame = abort_frame)
   }
