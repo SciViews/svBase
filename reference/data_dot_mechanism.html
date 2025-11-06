@@ -67,7 +67,7 @@ variable .SciViews.implicit.data.dot is set to
   </a>
 </li>
       </ul><div class="navbar-title">
-        <a class="navbar-brand" href="../index.html"><p class="h2">svBase <small>v1.7.0</small></p></a>
+        <a class="navbar-brand" href="../index.html"><p class="h2">svBase <small>v1.7.1</small></p></a>
       </div>
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
@@ -125,27 +125,23 @@ variable <code>.SciViews.implicit.data.dot</code> is set to
 <span class="r-in"><span><span class="co"># If .data is in '.', it can be omitted</span></span></span>
 <span class="r-in"><span><span class="va">.</span><span class="op">=</span> <span class="va">dtf1</span></span></span>
 <span class="r-in"><span><span class="fu">my_subset</span><span class="op">(</span><span class="fl">1</span>, <span class="st">'y'</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in recall_with_data_dot():</span> Data-dot mechanism activated, but no `.` object found.</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Define `.` before calling this function, or provide `.data=` explicitly.</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> See `?svMisc::data_dot_mechanism()` for more infos.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> .env has .__top_call__., .env, ., .data, i, j</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 4</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># This mechanism is potentially confusing. You can inactivate it anywhere:</span></span></span>
 <span class="r-in"><span><span class="va">.SciViews.implicit.data.dot</span> <span class="op">&lt;-</span> <span class="cn">FALSE</span></span></span>
 <span class="r-in"><span><span class="co"># This time next call is wrong</span></span></span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/try.html" class="external-link">try</a></span><span class="op">(</span><span class="fu">my_subset</span><span class="op">(</span><span class="fl">1</span>, <span class="st">'y'</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Error in recall_with_data_dot() : </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Data-dot mechanism activated, but no `.` object found.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Define `.` before calling this function, or provide `.data=` explicitly.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> See `?svMisc::data_dot_mechanism()` for more infos.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> .env has .__top_call__., .env, ., .data, i, j</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 4</span>
 <span class="r-in"><span><span class="co"># You must indicate '.' explicitly in that case:</span></span></span>
 <span class="r-in"><span><span class="fu">my_subset</span><span class="op">(</span><span class="va">.</span>, <span class="fl">1</span>, <span class="st">'y'</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> .env has .__top_call__., .env, ., .data, i, j</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 4</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/rm.html" class="external-link">rm</a></span><span class="op">(</span><span class="va">.SciViews.implicit.data.dot</span><span class="op">)</span> <span class="co"># Reactivate it</span></span></span>
 <span class="r-in"><span><span class="fu">my_subset</span><span class="op">(</span><span class="fl">1</span>, <span class="st">'y'</span><span class="op">)</span> <span class="co"># Implicit again</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in recall_with_data_dot():</span> Data-dot mechanism activated, but no `.` object found.</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Define `.` before calling this function, or provide `.data=` explicitly.</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> See `?svMisc::data_dot_mechanism()` for more infos.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> .env has .__top_call__., .env, ., .data, i, j</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 4</span>
 <span class="r-in"><span><span class="co"># Note that, if you have not defined '.' and try to use it, you got</span></span></span>
 <span class="r-in"><span><span class="co"># an error:</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/rm.html" class="external-link">rm</a></span><span class="op">(</span><span class="va">.</span><span class="op">)</span></span></span>
