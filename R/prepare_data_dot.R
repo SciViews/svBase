@@ -149,13 +149,13 @@ recall_with_data_dot <- function(call, arg = '.data', value = quote((.)),
   names(call)[2] <- arg
 
   # Check that "." exists
-  if (!exists('.')) {
+  pf <- parent.frame()
+  if (!exists('.', where = pf)) {
     cli_abort(c(abort_msg3, i = abort_msg4, i = abort_msg5),
       .frame = abort_frame)
   }
 
   # Indicate that the data-dot mechanisms was triggered
-  pf <- parent.frame()
   pf$._data_dot_. <- TRUE
 
   Exec(call, env)

@@ -1,3 +1,7 @@
+# svBase 1.7.1
+
+-   Bug correction in `recall_woth_data_dot()`: search from the parent frame for `.`.
+
 # svBase 1.7.0
 
 -   Functions `labelise()`/`labelize()`, `cl()`, `unlabelise()`/`unlabelize()`, `label()` and `label<-()` are moved here from data.io.
