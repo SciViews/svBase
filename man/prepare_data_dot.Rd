@@ -20,9 +20,10 @@ recall_with_data_dot(
   abort_msg2 = gettext("Implicit data-dot (.) not permitted"),
   abort_msg3 = gettext("Data-dot mechanism activated, but no `.` object found."),
   abort_msg4 =
-    gettextf("Define `.` before calling this function, or provide `\%s=` explicitly.",
+    gettext("{.code {deparse(call0)}} rewritten as:\\n{.code {deparse(call)}}"),
+  abort_msg5 = gettextf("Define `.` before this call, or provide `\%s=` explicitly.",
     arg),
-  abort_msg5 = gettextf("See {.help svMisc::data_dot_mechanism} for more infos."),
+  abort_msg6 = gettextf("See {.help svBase::data_dot_mechanism} for more infos."),
   abort_frame = parent.frame()
 )
 
@@ -36,9 +37,10 @@ recall_with_data_dot2(
   abort_msg2 = gettext("Implicit data-dot (.) not permitted"),
   abort_msg3 = gettext("Data-dot mechanism activated, but no `.` object found."),
   abort_msg4 =
-    gettextf("Define `.` before calling this function, or provide `\%s=` explicitly.",
+    gettext("{.code {deparse(call0)}} rewritten as:\\n{.code {deparse(call)}}"),
+  abort_msg5 = gettextf("Define `.` before this call, or provide `\%s=` explicitly.",
     arg),
-  abort_msg5 = gettextf("See {.help svMisc::data_dot_mechanism} for more infos."),
+  abort_msg6 = gettextf("See {.help svBase::data_dot_mechanism} for more infos."),
   abort_frame = parent.frame()
 )
 }
@@ -70,9 +72,11 @@ case data-dot-injection is not permitted (when
 
 \item{abort_msg3}{An error message when \code{.} is not found.}
 
-\item{abort_msg4}{An additional explanation when \code{.}is not found.}
+\item{abort_msg4}{Before and after data-dot replacement message.}
 
-\item{abort_msg5}{A hint to read the documentation of the data-dot mechanism.}
+\item{abort_msg5}{An additional explanation when \code{.}is not found.}
+
+\item{abort_msg6}{A hint to read the documentation of the data-dot mechanism.}
 
 \item{abort_frame}{The environment to use for the error message, by default,
 the caller environment (should rarely be changed).}

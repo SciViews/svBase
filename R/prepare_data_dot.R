@@ -23,8 +23,9 @@
 #'   case data-dot-injection is not permitted (when
 #'   `.SciViews.implicit.data.dot != TRUE`, see example).
 #' @param abort_msg3 An error message when `.` is not found.
-#' @param abort_msg4 An additional explanation when `.`is not found.
-#' @param abort_msg5 A hint to read the documentation of the data-dot mechanism.
+#' @param abort_msg4 Before and after data-dot replacement message.
+#' @param abort_msg5 An additional explanation when `.`is not found.
+#' @param abort_msg6 A hint to read the documentation of the data-dot mechanism.
 #' @param abort_frame The environment to use for the error message, by default,
 #'   the caller environment (should rarely be changed).
 #'
@@ -122,21 +123,28 @@ prepare_data_dot2 <- function(x, y, is_top_call = TRUE) {
 #' @export
 recall_with_data_dot <- function(call, arg = '.data', value = quote((.)),
   env = parent.frame(2L),
-  abort_msg = gettextf("`%s` must be a 'data.frame'.", arg),
-  abort_msg2 = gettext("Implicit data-dot (.) not permitted"),
-  abort_msg3 = gettext("Data-dot mechanism activated, but no `.` object found."),
-  abort_msg4 = gettextf("Define `.` before calling this function, or provide `%s=` explicitly.", arg),
-  abort_msg5 = gettextf("See {.help svMisc::data_dot_mechanism} for more infos."),
+  abort_msg =
+    gettextf("`%s` must be a 'data.frame'.", arg),
+  abort_msg2 =
+    gettext("Implicit data-dot (.) not permitted"),
+  abort_msg3 =
+    gettext("Data-dot mechanism activated, but no `.` object found."),
+  abort_msg4 =
+    gettext("{.code {deparse(call0)}} rewritten as:\n{.code {deparse(call)}}"),
+  abort_msg5 =
+    gettextf("Define `.` before this call, or provide `%s=` explicitly.", arg),
+  abort_msg6 =
+    gettextf("See {.help svBase::data_dot_mechanism} for more infos."),
   abort_frame = parent.frame()) {
 
   if (missing(call))
-    call <- sys.call(-1L)
+    call0 <- call <- sys.call(-1L)
 
   if (isFALSE(.SciViews.implicit.data.dot))
-    abort(c(abort_msg, x = abort_msg2), .frame = abort_frame)
+    abort(c(abort_msg, x = abort_msg2), call = abort_frame)
 
   if (any(names(call) == arg))
-    abort(abort_msg, .frame = abort_frame)
+    abort(abort_msg, call = abort_frame)
 
   # Inject arg = value in first position
   l <- length(call)
@@ -149,13 +157,13 @@ recall_with_data_dot <- function(call, arg = '.data', value = quote((.)),
   names(call)[2] <- arg
 
   # Check that "." exists
-  pf <- parent.frame()
   if (!exists('.', where = env)) {
-    cli_abort(c(abort_msg3, i = abort_msg4, i = abort_msg5),
-      .frame = abort_frame)
+    cli_abort(c(abort_msg3, x = abort_msg4, i = abort_msg5, i = abort_msg6),
+      call = abort_frame)
   }
 
   # Indicate that the data-dot mechanisms was triggered
+  pf <- parent.frame()
   pf$._data_dot_. <- TRUE
 
   Exec(call, env)
@@ -165,21 +173,28 @@ recall_with_data_dot <- function(call, arg = '.data', value = quote((.)),
 #' @export
 recall_with_data_dot2 <- function(call, arg = 'x', arg2 = 'y',
   value = quote((.)), env = parent.frame(2L),
-  abort_msg = gettextf("`%s` and `%s` must both be 'data.frame'.", arg, arg2),
-  abort_msg2 = gettext("Implicit data-dot (.) not permitted"),
-  abort_msg3 = gettext("Data-dot mechanism activated, but no `.` object found."),
-  abort_msg4 = gettextf("Define `.` before calling this function, or provide `%s=` explicitly.", arg),
-  abort_msg5 = gettextf("See {.help svMisc::data_dot_mechanism} for more infos."),
+  abort_msg =
+    gettextf("`%s` and `%s` must both be 'data.frame'.", arg, arg2),
+  abort_msg2 =
+    gettext("Implicit data-dot (.) not permitted"),
+  abort_msg3 =
+    gettext("Data-dot mechanism activated, but no `.` object found."),
+  abort_msg4 =
+    gettext("{.code {deparse(call0)}} rewritten as:\n{.code {deparse(call)}}"),
+  abort_msg5 =
+    gettextf("Define `.` before this call, or provide `%s=` explicitly.", arg),
+  abort_msg6 =
+    gettextf("See {.help svBase::data_dot_mechanism} for more infos."),
   abort_frame = parent.frame()) {
 
   if (missing(call))
-    call <- sys.call(-1L)
+    call0 <- call <- sys.call(-1L)
 
   if (isFALSE(.SciViews.implicit.data.dot))
     abort(c(abort_msg, x = abort_msg2), .frame = abort_frame)
 
   if (any(names(call) == arg))
-    abort(abort_msg, .frame = abort_frame)
+    abort(abort_msg, call = abort_frame)
 
   # Inject arg = value in first position
   l <- length(call)
@@ -192,9 +207,9 @@ recall_with_data_dot2 <- function(call, arg = 'x', arg2 = 'y',
   names(call)[2] <- arg
 
   # Check that "." exists
-  if (!exists('.')) {
-    cli_abort(c(abort_msg3, x = abort_msg4, i = abort_msg5),
-      .frame = abort_frame)
+  if (!exists('.', where = env)) {
+    cli_abort(c(abort_msg3, x = abort_msg4, i = abort_msg5, i = abort_msg6),
+      call = abort_frame)
   }
 
   Exec(call, env)

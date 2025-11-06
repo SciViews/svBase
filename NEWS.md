@@ -1,6 +1,6 @@
 # svBase 1.7.1
 
--   Bug correction in `recall_woth_data_dot()`: search from the parent frame for `.`.
+-   Bug correction in `recall_with_data_dot()`/`recall_with_data_dot2()`: search from the parent frame for `.` + better error message.
 
 # svBase 1.7.0
 
