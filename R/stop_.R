@@ -86,7 +86,7 @@ stop_ <- function(..., call. = FALSE, domain = NULL, class = NULL,
     last_call <- sys.call(-1L)
   first_arg <- last_call[[2]]
   if (is.null(first_arg)) first_arg <- ""
-  data_dot <-  (first_arg == '(.)') # data-dot mechanisms is likeley activated
+  data_dot <-  (first_arg == '(.)') # data-dot mechanisms is likely activated
   # Enhance the message
   if (data_dot)
     message <- c(message, i = gettext(

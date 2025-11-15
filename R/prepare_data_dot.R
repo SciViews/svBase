@@ -132,7 +132,7 @@ recall_with_data_dot <- function(call, arg = '.data', value = quote((.)),
   abort_msg4 =
     gettext("{.code {deparse(call0)}} rewritten as:\n{.code {deparse(call)}}"),
   abort_msg5 =
-    gettextf("Define `.` before this call, or provide `%s=` explicitly.", arg),
+    gettextf("Define `.` before this call, or provide `%s =` explicitly.", arg),
   abort_msg6 =
     gettextf("See {.help svBase::data_dot_mechanism} for more infos."),
   abort_frame = parent.frame()) {
@@ -182,7 +182,7 @@ recall_with_data_dot2 <- function(call, arg = 'x', arg2 = 'y',
   abort_msg4 =
     gettext("{.code {deparse(call0)}} rewritten as:\n{.code {deparse(call)}}"),
   abort_msg5 =
-    gettextf("Define `.` before this call, or provide `%s=` explicitly.", arg),
+    gettextf("Define `.` before this call, or provide `%s =` explicitly.", arg),
   abort_msg6 =
     gettextf("See {.help svBase::data_dot_mechanism} for more infos."),
   abort_frame = parent.frame()) {

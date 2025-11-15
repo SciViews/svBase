@@ -21,7 +21,7 @@ recall_with_data_dot(
   abort_msg3 = gettext("Data-dot mechanism activated, but no `.` object found."),
   abort_msg4 =
     gettext("{.code {deparse(call0)}} rewritten as:\\n{.code {deparse(call)}}"),
-  abort_msg5 = gettextf("Define `.` before this call, or provide `\%s=` explicitly.",
+  abort_msg5 = gettextf("Define `.` before this call, or provide `\%s =` explicitly.",
     arg),
   abort_msg6 = gettextf("See {.help svBase::data_dot_mechanism} for more infos."),
   abort_frame = parent.frame()
@@ -38,7 +38,7 @@ recall_with_data_dot2(
   abort_msg3 = gettext("Data-dot mechanism activated, but no `.` object found."),
   abort_msg4 =
     gettext("{.code {deparse(call0)}} rewritten as:\\n{.code {deparse(call)}}"),
-  abort_msg5 = gettextf("Define `.` before this call, or provide `\%s=` explicitly.",
+  abort_msg5 = gettextf("Define `.` before this call, or provide `\%s =` explicitly.",
     arg),
   abort_msg6 = gettextf("See {.help svBase::data_dot_mechanism} for more infos."),
   abort_frame = parent.frame()
