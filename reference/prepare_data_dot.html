@@ -100,7 +100,7 @@ argument.</p>
 <span>  abort_msg3 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/gettext.html" class="external-link">gettext</a></span><span class="op">(</span><span class="st">"Data-dot mechanism activated, but no `.` object found."</span><span class="op">)</span>,</span>
 <span>  abort_msg4 <span class="op">=</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/gettext.html" class="external-link">gettext</a></span><span class="op">(</span><span class="st">"{.code {deparse(call0)}} rewritten as:\n{.code {deparse(call)}}"</span><span class="op">)</span>,</span>
-<span>  abort_msg5 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">gettextf</a></span><span class="op">(</span><span class="st">"Define `.` before this call, or provide `%s=` explicitly."</span>,</span>
+<span>  abort_msg5 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">gettextf</a></span><span class="op">(</span><span class="st">"Define `.` before this call, or provide `%s =` explicitly."</span>,</span>
 <span>    <span class="va">arg</span><span class="op">)</span>,</span>
 <span>  abort_msg6 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">gettextf</a></span><span class="op">(</span><span class="st">"See {.help svBase::data_dot_mechanism} for more infos."</span><span class="op">)</span>,</span>
 <span>  abort_frame <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sys.parent.html" class="external-link">parent.frame</a></span><span class="op">(</span><span class="op">)</span></span>
@@ -117,7 +117,7 @@ argument.</p>
 <span>  abort_msg3 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/gettext.html" class="external-link">gettext</a></span><span class="op">(</span><span class="st">"Data-dot mechanism activated, but no `.` object found."</span><span class="op">)</span>,</span>
 <span>  abort_msg4 <span class="op">=</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/gettext.html" class="external-link">gettext</a></span><span class="op">(</span><span class="st">"{.code {deparse(call0)}} rewritten as:\n{.code {deparse(call)}}"</span><span class="op">)</span>,</span>
-<span>  abort_msg5 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">gettextf</a></span><span class="op">(</span><span class="st">"Define `.` before this call, or provide `%s=` explicitly."</span>,</span>
+<span>  abort_msg5 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">gettextf</a></span><span class="op">(</span><span class="st">"Define `.` before this call, or provide `%s =` explicitly."</span>,</span>
 <span>    <span class="va">arg</span><span class="op">)</span>,</span>
 <span>  abort_msg6 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">gettextf</a></span><span class="op">(</span><span class="st">"See {.help svBase::data_dot_mechanism} for more infos."</span><span class="op">)</span>,</span>
 <span>  abort_frame <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sys.parent.html" class="external-link">parent.frame</a></span><span class="op">(</span><span class="op">)</span></span>
@@ -271,7 +271,7 @@ called <code>x</code>and <code>y</code>.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Error in my_subset(2, "y") : </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Data-dot mechanism activated, but no `.` object found.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BB0000;">✖</span> `my_subset(2, "y")` rewritten as: `my_subset(.data = (.), 2, "y")`</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Define `.` before this call, or provide `.data=` explicitly.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Define `.` before this call, or provide `.data =` explicitly.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> See `?svBase::data_dot_mechanism()` for more infos.</span>
 </code></pre></div>
     </div>
