@@ -1,3 +1,7 @@
+# svBase 1.7.2
+
+-   `unlabelise()` now eliminate labels of the variables in a data.frame (`self = FALSE` by default), and returns an object of the same class.
+
 # svBase 1.7.1
 
 -   Bug correction in `recall_with_data_dot()`/`recall_with_data_dot2()`: search from the parent frame for `.` + better error message.

@@ -99,6 +99,7 @@ labelize <- labelise
 #'   or variables within that `data.frame` (`self = FALSE`)? In the later case,
 #'   `label=` and `units=` must be either lists or character vectors of the same
 #'   length as `x`, or be named with the names of several or all `x` variables.
+#'   For `unlabelise()`, the default is `self = FALSE`.
 #' @method labelise data.frame
 `labelise.data.frame` <- function(x, label, units = NULL, as_labelled = FALSE,
   self = TRUE, ...) {
@@ -202,7 +203,7 @@ unlabelize <- unlabelise
 #' @export
 #' @rdname labelise
 #' @method unlabelise data.frame
-`unlabelise.data.frame` <- function(x, self = TRUE, ...) {
+`unlabelise.data.frame` <- function(x, self = FALSE, ...) {
   if (!is.data.frame(x))
     stop("{.arg x} must be a {.cls data.frame}")
 
@@ -215,7 +216,11 @@ unlabelize <- unlabelise
     cl <- class(x)
     class(x) <- cl[cl != "labelled"]
   } else {# self = FALSE, unlabelise variables within the data.frame
-    x <- lapply(x, unlabelise)
+    nc <- NCOL(x)
+    if (nc) {
+      for ( i in 1:NCOL(x))
+        x[[i]] <- unlabelise(x[[i]])
+    }
   }
   x
 }

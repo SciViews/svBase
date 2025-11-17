@@ -28,7 +28,7 @@ unlabelize(x, ...)
 
 \method{unlabelise}{default}(x, ...)
 
-\method{unlabelise}{data.frame}(x, self = TRUE, ...)
+\method{unlabelise}{data.frame}(x, self = FALSE, ...)
 }
 \arguments{
 \item{x}{An object.}
@@ -48,7 +48,8 @@ other hand, labelled objects are not always correctly handled by R code.}
 \item{self}{Do we label the \code{data.frame} itself (\code{self = TRUE}, by default)
 or variables within that \code{data.frame} (\code{self = FALSE})? In the later case,
 \verb{label=} and \verb{units=} must be either lists or character vectors of the same
-length as \code{x}, or be named with the names of several or all \code{x} variables.}
+length as \code{x}, or be named with the names of several or all \code{x} variables.
+For \code{unlabelise()}, the default is \code{self = FALSE}.}
 }
 \value{
 The \code{x} object plus a \code{label} attribute, and possibly, a \code{units}
