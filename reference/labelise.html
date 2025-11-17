@@ -61,7 +61,7 @@ the label in axes labels for plots. cl() is a shortcut for concatenate
   </a>
 </li>
       </ul><div class="navbar-title">
-        <a class="navbar-brand" href="../index.html"><p class="h2">svBase <small>v1.7.1</small></p></a>
+        <a class="navbar-brand" href="../index.html"><p class="h2">svBase <small>v1.7.2</small></p></a>
       </div>
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
@@ -108,7 +108,7 @@ the label in axes labels for plots. <code>cl()</code> is a shortcut for concaten
 <span><span class="fu">unlabelise</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'data.frame'</span></span>
-<span><span class="fu">unlabelise</span><span class="op">(</span><span class="va">x</span>, self <span class="op">=</span> <span class="cn">TRUE</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">unlabelise</span><span class="op">(</span><span class="va">x</span>, self <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -143,7 +143,8 @@ other hand, labelled objects are not always correctly handled by R code.</p></dd
 <dd><p>Do we label the <code>data.frame</code> itself (<code>self = TRUE</code>, by default)
 or variables within that <code>data.frame</code> (<code>self = FALSE</code>)? In the later case,
 <code>label=</code> and <code>units=</code> must be either lists or character vectors of the same
-length as <code>x</code>, or be named with the names of several or all <code>x</code> variables.</p></dd>
+length as <code>x</code>, or be named with the names of several or all <code>x</code> variables.
+For <code>unlabelise()</code>, the default is <code>self = FALSE</code>.</p></dd>
 
 </dl></div>
     <div id="value">

@@ -3,7 +3,7 @@ pkgdown: 2.2.0
 pkgdown_sha: ~
 articles:
   svBase: svBase.html
-last_built: 2025-11-15T10:26Z
+last_built: 2025-11-17T13:40Z
 urls:
   reference: https://www.sciviews.org/svBase/reference
   article: https://www.sciviews.org/svBase/articles
