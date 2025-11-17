@@ -17,7 +17,8 @@
 #' lead to a lost of `label` and `units` attributes for all variables. On the
 #' other hand, labelled objects are not always correctly handled by R code.
 #' @param ... Further arguments: items to be concatenated in a vector using
-#' `c(...)` for `cl()`.
+#' `c(...)` for `cl()`. Columns where label should be eliminated for
+#' `unlabelise()`.
 #'
 #' @description Set the `label`, as well as the `units` attributes to an object.
 #' The label can be used for better display as plot axes labels, or as table
@@ -203,7 +204,7 @@ unlabelize <- unlabelise
 #' @export
 #' @rdname labelise
 #' @method unlabelise data.frame
-`unlabelise.data.frame` <- function(x, self = FALSE, ...) {
+`unlabelise.data.frame` <- function(x, ..., self = FALSE) {
   if (!is.data.frame(x))
     stop("{.arg x} must be a {.cls data.frame}")
 
@@ -217,9 +218,26 @@ unlabelize <- unlabelise
     class(x) <- cl[cl != "labelled"]
   } else {# self = FALSE, unlabelise variables within the data.frame
     nc <- NCOL(x)
-    if (nc) {
-      for ( i in 1:NCOL(x))
-        x[[i]] <- unlabelise(x[[i]])
+    if (...length()) {# Name of columns to unlabelise
+      cols <- list(...)
+      for (col in cols) {
+        if (is.character(col)) {
+          if (!col %in% names(x))
+            stop("Column {.var {col}} not found in {.arg x}")
+          x[[col]] <- unlabelise(x[[col]])
+        } else if (is.numeric(col)) {
+          if (col < 1 || col > nc)
+            stop("Column number {.var {col}} out of range in {.arg x}")
+          x[[col]] <- unlabelise(x[[col]])
+        } else {
+          stop("Column specifier must be either {.cls character} or {.cls numeric}")
+        }
+      }
+    } else {
+      if (nc) {
+        for ( i in 1:NCOL(x))
+          x[[i]] <- unlabelise(x[[i]])
+      }
     }
   }
   x

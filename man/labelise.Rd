@@ -28,7 +28,7 @@ unlabelize(x, ...)
 
 \method{unlabelise}{default}(x, ...)
 
-\method{unlabelise}{data.frame}(x, self = FALSE, ...)
+\method{unlabelise}{data.frame}(x, ..., self = FALSE)
 }
 \arguments{
 \item{x}{An object.}
@@ -43,7 +43,8 @@ lead to a lost of \code{label} and \code{units} attributes for all variables. On
 other hand, labelled objects are not always correctly handled by R code.}
 
 \item{...}{Further arguments: items to be concatenated in a vector using
-\code{c(...)} for \code{cl()}.}
+\code{c(...)} for \code{cl()}. Columns where label should be eliminated for
+\code{unlabelise()}.}
 
 \item{self}{Do we label the \code{data.frame} itself (\code{self = TRUE}, by default)
 or variables within that \code{data.frame} (\code{self = FALSE})? In the later case,
