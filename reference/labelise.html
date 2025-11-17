@@ -108,7 +108,7 @@ the label in axes labels for plots. <code>cl()</code> is a shortcut for concaten
 <span><span class="fu">unlabelise</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'data.frame'</span></span>
-<span><span class="fu">unlabelise</span><span class="op">(</span><span class="va">x</span>, self <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">unlabelise</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, self <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -136,7 +136,8 @@ other hand, labelled objects are not always correctly handled by R code.</p></dd
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>Further arguments: items to be concatenated in a vector using
-<code>c(...)</code> for <code>cl()</code>.</p></dd>
+<code>c(...)</code> for <code>cl()</code>. Columns where label should be eliminated for
+<code>unlabelise()</code>.</p></dd>
 
 
 <dt id="arg-self">self<a class="anchor" aria-label="anchor" href="#arg-self"></a></dt>
