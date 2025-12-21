@@ -2,6 +2,7 @@ appveyor
 arg
 cli
 CMD
+codecov
 destructuring
 de
 df
@@ -11,6 +12,7 @@ dplyr's
 dbplyr
 dtplyr
 fn
+GitHub
 groupedData
 GRP
 Hmisc
@@ -24,12 +26,14 @@ ORCID
 perl
 poEdit
 quosure
+R’
 readr
 Retarget
 retargeted
 rlang
 rlang's
 RStudio
+’s
 SciViews
 sciviews
 seealso

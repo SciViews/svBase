@@ -1,9 +1,9 @@
 #' Create a data frame (data.trame, base's data.frame, data.table or tibble's tbl_df)
 #'
 #' @param ... A set of name-value pairs. The content of the data frame. See
-#' [tibble()] for more details on the way dynamic-dots are processed.
+#' [tibble::tibble()] for more details on the way dynamic-dots are processed.
 #' @param .name_repair The way problematic column names are treated, see also
-#' [tibble()] for details.
+#' [tibble::tibble()] for details.
 #'
 #' @note data.trame, data.table and tibble's tbl_df do no use row names.
 #' However, you can add a column named `.rownames`(by default), or the name that

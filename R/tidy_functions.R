@@ -63,8 +63,8 @@
 #'
 #' @note The help page here is very basic and it aims mainly to list all the
 #' tidy functions. For more complete help, see the \{dplyr\} or \{tidyr\}
-#' packages. From \{dplyr\}, the [slice()] and `slice_xxx()` functions are not
-#' added yet because they are not available for \{dbplyr\}. Also
+#' packages. From \{dplyr\}, the [dplyr::slice()] and `slice_xxx()` functions
+#' are not added yet because they are not available for \{dbplyr\}. Also
 #' [dplyr::anti_join()], [dplyr::semi_join()] and [dplyr::nest_join()] are not
 #' implemented yet. From \{dplyr\}, the [dplyr::slice()] and `slice_xxx()`
 #' functions are not added yet because they are not available for \{dbplyr\}.

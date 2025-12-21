@@ -91,46 +91,6 @@
 ---
 
     Code
-      test_gettext_lang("fr", n = 0)
-    Output
-      Test des fonctions `gettext()` et `gettextf()` de svBase :
-      Ceci doit être traduit si la langue 'fr' est prise en charge.
-      Il s'agit du message numéro 3
-      Vous n'avez demandé qu'un seul item
-
----
-
-    Code
-      test_gettext_lang("fr", n = 1)
-    Output
-      Test des fonctions `gettext()` et `gettextf()` de svBase :
-      Ceci doit être traduit si la langue 'fr' est prise en charge.
-      Il s'agit du message numéro 3
-      Vous n'avez demandé qu'un seul item
-
----
-
-    Code
-      test_gettext_lang("fr", n = 2)
-    Output
-      Test des fonctions `gettext()` et `gettextf()` de svBase :
-      Ceci doit être traduit si la langue 'fr' est prise en charge.
-      Il s'agit du message numéro 3
-      Vous avez demandé plusieurs items
-
----
-
-    Code
-      test_gettext_lang("fr_FR.UTF-8", n = 2)
-    Output
-      Test des fonctions `gettext()` et `gettextf()` de svBase :
-      Ceci doit être traduit si la langue 'fr_FR.UTF-8' est prise en charge.
-      Il s'agit du message numéro 3
-      Vous avez demandé plusieurs items
-
----
-
-    Code
       test_gettext_lang("C", n = 0)
     Output
       Test of svBase's `gettext()` and `gettextf()`:
@@ -197,4 +157,44 @@
       This should be transtlated, if 'zzzz' language is supported.
       This is message number 3
       You asked for only one item
+
+---
+
+    Code
+      test_gettext_lang("fr", n = 0)
+    Output
+      Test des fonctions `gettext()` et `gettextf()` de svBase :
+      Ceci doit être traduit si la langue 'fr' est prise en charge.
+      Il s'agit du message numéro 3
+      Vous n'avez demandé qu'un seul item
+
+---
+
+    Code
+      test_gettext_lang("fr", n = 1)
+    Output
+      Test des fonctions `gettext()` et `gettextf()` de svBase :
+      Ceci doit être traduit si la langue 'fr' est prise en charge.
+      Il s'agit du message numéro 3
+      Vous n'avez demandé qu'un seul item
+
+---
+
+    Code
+      test_gettext_lang("fr", n = 2)
+    Output
+      Test des fonctions `gettext()` et `gettextf()` de svBase :
+      Ceci doit être traduit si la langue 'fr' est prise en charge.
+      Il s'agit du message numéro 3
+      Vous avez demandé plusieurs items
+
+---
+
+    Code
+      test_gettext_lang("fr_FR.UTF-8", n = 2)
+    Output
+      Test des fonctions `gettext()` et `gettextf()` de svBase :
+      Ceci doit être traduit si la langue 'fr_FR.UTF-8' est prise en charge.
+      Il s'agit du message numéro 3
+      Vous avez demandé plusieurs items
 

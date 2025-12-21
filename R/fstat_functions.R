@@ -7,12 +7,12 @@
 #' \{collapse\} package
 #' For instance, base [mean()] operates on a vector, but not on a data frame. A
 #' matrix is recognized as a vector and a single mean is returned. On, the
-#' contrary, [fmean()] calculates one mean per column. It does the same for a
-#' data frame, and it does so usually quicker than base functions. No need for
-#' `colMeans()`, a separate function to do so. Fast statistical functions also
-#' recognize grouping with [fgroup_by()], [sgroup_by()] or [group_by()] and
-#' calculate the mean by group in this case. Again, no need for a different
-#' function like [stats::ave()].
+#' contrary, [collapse::fmean()] calculates one mean per column. It does the
+#' same for a data frame, and it does so usually quicker than base functions. No
+#' need for `colMeans()`, a separate function to do so. Fast statistical
+#' functions also recognize grouping with [collapse::fgroup_by()], [sgroup_by()]
+#' or [dplyr::group_by()] and calculate the mean by group in this case. Again,
+#' no need for a different function like [stats::ave()].
 #' Finally, these functions also have a `TRA=` argument that computes, for
 #' instance, if `TRA = "-"`, `(x  f(x))` very efficiently (for instance to
 #' calculate residuals by subtracting the mean).
@@ -42,7 +42,7 @@
 #'
 #' @note The page [collapse::fast-statistical-functions] gives more details.
 #' [fn()] count all observations, including `NA`s, [fna()] counts
-#' only `NA`s, where [fnobs()] counts non-missing observations.
+#' only `NA`s, where [collapse::fnobs()] counts non-missing observations.
 #' Instead of `TRA=` one can use the `%__f%` functions where `__` is `replace`,
 #' `replace_fill`, `-`, `+`, `-+`, `/`, `/*100` for `TRA="%"`, `*`, `mod` for
 #' `TRA="%%"`, or `-mod` for `TRA="-%%"`. See example.

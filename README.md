@@ -43,7 +43,7 @@ the {remotes} R package installed:
 install.packages("remotes")
 ```
 
-Use `install_github()` to install the {svBase} package from Github
+Use `install_github()` to install the {svBase} package from GitHub
 (source from **main** branch will be recompiled on your machine):
 
 ``` r
