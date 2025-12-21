@@ -1,8 +1,11 @@
 appveyor
+arg
+cli
 CMD
 destructuring
 de
 df
+discoverable
 dplyr
 dplyr's
 dbplyr
@@ -24,6 +27,8 @@ quosure
 readr
 Retarget
 retargeted
+rlang
+rlang's
 RStudio
 SciViews
 sciviews
@@ -35,10 +40,12 @@ srcs
 str
 subclassed
 subsettable
+svBase's
 svMisc
 svTidy
 tabularise
 tbl
+testthat
 tibble
 tibble's
 tidyr

@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: svBase 1.7.0\n"
-"POT-Creation-Date: 2025-08-27 23:51\n"
+"Project-Id-Version: svBase 1.7.3\n"
+"POT-Creation-Date: 2025-12-21 17:06\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -38,13 +38,79 @@ msgstr ""
 msgid "Use formulas instead."
 msgstr ""
 
+msgid "Argument {.arg lang} is missing or {.code NULL}."
+msgstr ""
+
+msgid "Provide a valid two-letter language code, e.g., 'en', 'fr', 'de'..."
+msgstr ""
+
+msgid "lang_missing_or_null"
+msgstr ""
+
+msgid "The argument {.arg lang} must be a single string."
+msgstr ""
+
+msgid "lang_not_single_string"
+msgstr ""
+
+msgid "Wrong {.arg lang} argument (must be either 'C' or a language code)."
+msgstr ""
+
+msgid "lang_wrong_code"
+msgstr ""
+
 msgid "Natural language support is available on this system,"
 msgstr ""
 
 msgid "but unable to properly switch language."
 msgstr ""
 
-msgid "Unable to switch to language '%s'. Using current language '%s' instead\n(displayed only once per session)."
+msgid "Argument {.arg n} must be numeric."
+msgstr ""
+
+msgid "You provided an object of class {.cls {class(n)}}."
+msgstr ""
+
+msgid "n_not_numeric"
+msgstr ""
+
+msgid "Argument {.arg n} must be a non-negative integer."
+msgstr ""
+
+msgid "You provided: {.code {deparse(n)}}."
+msgstr ""
+
+msgid "n_negative"
+msgstr ""
+
+msgid "Argument {.arg msg1} must be a single string."
+msgstr ""
+
+msgid "You provided: {.code {deparse(msg1)}}."
+msgstr ""
+
+msgid "This is an object of class {.cls {class(msg1)}}."
+msgstr ""
+
+msgid "This is an object of length {length(msg1)}."
+msgstr ""
+
+msgid "msg1_not_single_string"
+msgstr ""
+
+msgid "Argument {.arg msg2} must be a single string."
+msgstr ""
+
+msgid "You provided: {.code {deparse(msg2)}}."
+msgstr ""
+
+msgid "This is an object of class {.cls {class(msg2)}}."
+msgstr ""
+
+msgid "This is an object of length {length(msg2)}."
+msgstr ""
+
+msgid "msg2_not_single_string"
 msgstr ""
 
 msgid "Test of svBase's `gettext()` and `gettextf()`:"
@@ -92,6 +158,15 @@ msgstr ""
 msgid "{.arg x} must be a {.cls data.frame}"
 msgstr ""
 
+msgid "Column {.var {col}} not found in {.arg x}"
+msgstr ""
+
+msgid "Column number {.var {col}} out of range in {.arg x}"
+msgstr ""
+
+msgid "Column specifier must be either {.cls character} or {.cls numeric}"
+msgstr ""
+
 msgid "`%s` must be a 'data.frame'."
 msgstr ""
 
@@ -101,10 +176,13 @@ msgstr ""
 msgid "Data-dot mechanism activated, but no `.` object found."
 msgstr ""
 
-msgid "Define `.` before calling this function, or provide `%s=` explicitly."
+msgid "{.code {deparse(call0)}} rewritten as:\n{.code {deparse(call)}}"
 msgstr ""
 
-msgid "See {.help svMisc::data_dot_mechanism} for more infos."
+msgid "Define `.` before this call, or provide `%s =` explicitly."
+msgstr ""
+
+msgid "See {.help svBase::data_dot_mechanism} for more infos."
 msgstr ""
 
 msgid "`%s` and `%s` must both be 'data.frame'."
@@ -161,7 +239,10 @@ msgstr ""
 msgid "You must collect results from a tidy function before using a speedy one."
 msgstr ""
 
-msgid "{.emph The data-dot mechanism was activated (see {.help svMisc::data_dot_mechanism}).}"
+msgid "{.emph The data-dot mechanism was activated}"
+msgstr ""
+
+msgid "(see {.help svBase::data_dot_mechanism})."
 msgstr ""
 
 msgid "{.emph {.code .} is {object_info(.)}}"

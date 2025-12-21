@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# ‘SciViews::R’ - Base Objects like Data Frames <a href="https://www.sciviews.org/svBase"><img src="man/figures/logo.png" align="right" height="138"/></a>
+# ‘SciViews::R’ - Base Functions <a href="https://www.sciviews.org/svBase"><img src="man/figures/logo.png" align="right" height="138"/></a>
 
 <!-- badges: start -->
 

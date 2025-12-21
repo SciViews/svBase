@@ -5,7 +5,7 @@
 \alias{gettextf_}
 \alias{ngettext_}
 \alias{test_gettext_lang}
-\title{Translate text messages in a different language than the one currently defined in the R session}
+\title{Translate text messages in a different language than the one in the R session}
 \usage{
 gettext_(
   ...,

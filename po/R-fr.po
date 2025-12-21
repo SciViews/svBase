@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: svBase 1.7.0\n"
-"POT-Creation-Date: 2025-08-27 23:51\n"
-"PO-Revision-Date: 2025-08-27 23:54+0200\n"
+"Project-Id-Version: svBase 1.7.3\n"
+"POT-Creation-Date: 2025-12-21 17:06\n"
+"PO-Revision-Date: 2025-12-21 17:22+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 3.7\n"
+"X-Generator: Poedit 3.8\n"
 
 msgid "`exclude.names` must be a character vector or NULL."
 msgstr "`exclude.names` doit être un vecteur de caractères ou NULL."
@@ -46,19 +46,82 @@ msgstr "Toutes les entrées doivent être nommées."
 msgid "Use formulas instead."
 msgstr "Utilisez plutôt des formules."
 
+msgid "Argument {.arg lang} is missing or {.code NULL}."
+msgstr "L'argument {.arg lang} est manquant ou {.code NULL}."
+
+msgid "Provide a valid two-letter language code, e.g., 'en', 'fr', 'de'..."
+msgstr ""
+"Indiquez un code de langue valide à deux lettres, par exemple « en », "
+"« fr », « de »..."
+
+msgid "lang_missing_or_null"
+msgstr "lang_missing_or_null"
+
+msgid "The argument {.arg lang} must be a single string."
+msgstr "L'argument {.arg lang} doit être une chaîne unique."
+
+msgid "lang_not_single_string"
+msgstr "lang_not_single_string"
+
+msgid "Wrong {.arg lang} argument (must be either 'C' or a language code)."
+msgstr "Argument {.arg lang} incorrect (doit être « C » ou un code de langue)."
+
+msgid "lang_wrong_code"
+msgstr "lang_wrong_code"
+
 msgid "Natural language support is available on this system,"
 msgstr "Ce système offre une assistance en langage naturel,"
 
 msgid "but unable to properly switch language."
 msgstr "mais impossible de changer correctement de langue."
 
-msgid ""
-"Unable to switch to language '%s'. Using current language '%s' instead\n"
-"(displayed only once per session)."
-msgstr ""
-"Impossible de passer à la langue '%s'. Utilisation de la langue actuelle "
-"'%s' à la place\n"
-"(affiché une seule fois par session)."
+msgid "Argument {.arg n} must be numeric."
+msgstr "L'argument {.arg n} doit être numérique."
+
+msgid "You provided an object of class {.cls {class(n)}}."
+msgstr "Vous avez fourni un objet de classe {.cls {class(n)}}."
+
+msgid "n_not_numeric"
+msgstr "n_not_numeric"
+
+msgid "Argument {.arg n} must be a non-negative integer."
+msgstr "L'argument {.arg n} doit être un entier non négatif."
+
+msgid "You provided: {.code {deparse(n)}}."
+msgstr "Vous avez fourni : {.code {deparse(n)}}."
+
+msgid "n_negative"
+msgstr "n_negative"
+
+msgid "Argument {.arg msg1} must be a single string."
+msgstr "L'argument {.arg msg1} doit être une chaîne unique."
+
+msgid "You provided: {.code {deparse(msg1)}}."
+msgstr "Vous avez fourni : {.code {deparse(msg1)}}."
+
+msgid "This is an object of class {.cls {class(msg1)}}."
+msgstr "Il s'agit d'un objet de la classe {.cls {class(msg1)}}."
+
+msgid "This is an object of length {length(msg1)}."
+msgstr "Il s'agit d'un objet de longueur {length(msg1)}."
+
+msgid "msg1_not_single_string"
+msgstr "msg1_not_single_string"
+
+msgid "Argument {.arg msg2} must be a single string."
+msgstr "L'argument {.arg msg2} doit être une chaîne unique."
+
+msgid "You provided: {.code {deparse(msg2)}}."
+msgstr "Vous avez fourni : {.code {deparse(msg2)}}."
+
+msgid "This is an object of class {.cls {class(msg2)}}."
+msgstr "Il s'agit d'un objet de la classe {.cls {class(msg2)}}."
+
+msgid "This is an object of length {length(msg2)}."
+msgstr "Il s'agit d'un objet de longueur {length(msg2)}."
+
+msgid "msg2_not_single_string"
+msgstr "msg2_not_single_string"
 
 msgid "Test of svBase's `gettext()` and `gettextf()`:"
 msgstr "Test des fonctions `gettext()` et `gettextf()` de svBase :"
@@ -70,7 +133,7 @@ msgid "This is message number %i"
 msgstr "Il s'agit du message numéro %i"
 
 msgid "cannot assign a list to be a object label"
-msgstr "Impossible d’assigner une liste comme label d’un objet"
+msgstr "impossible d’assigner une liste comme label d’un objet"
 
 msgid "{.arg label} must be {.cls character} of length 1"
 msgstr "{.arg label} doit être {.cls character} de longueur 1"
@@ -116,6 +179,17 @@ msgstr "{missing_uvars}"
 msgid "{.arg x} must be a {.cls data.frame}"
 msgstr "{.arg x} doit être un {.cls data.frame}"
 
+msgid "Column {.var {col}} not found in {.arg x}"
+msgstr "Colonne {.var {col}} introuvable dans {.arg x}"
+
+msgid "Column number {.var {col}} out of range in {.arg x}"
+msgstr "Numéro de colonne {.var {col}} hors limites dans {.arg x}"
+
+msgid "Column specifier must be either {.cls character} or {.cls numeric}"
+msgstr ""
+"La spécification de colonne doit être soit {.cls caractère}, soit {.cls "
+"numérique}."
+
 msgid "`%s` must be a 'data.frame'."
 msgstr "`%s` doit être un \"data.frame\"."
 
@@ -126,13 +200,18 @@ msgid "Data-dot mechanism activated, but no `.` object found."
 msgstr ""
 "Le mécanisme « data-dot » est activé, mais aucun objet `.` n'a été trouvé."
 
-msgid "Define `.` before calling this function, or provide `%s=` explicitly."
+msgid ""
+"{.code {deparse(call0)}} rewritten as:\n"
+"{.code {deparse(call)}}"
+msgstr "{.code {deparse(call0)}} réécrit comme suit : {.code {deparse(call)}}"
+
+msgid "Define `.` before this call, or provide `%s =` explicitly."
 msgstr ""
 "Définissez `.` avant d'appeler cette fonction, ou fournissez `%s=` "
 "explicitement."
 
-msgid "See {.help svMisc::data_dot_mechanism} for more infos."
-msgstr "Voir {.help svMisc::data_dot_mechanism} pour plus d'informations."
+msgid "See {.help svBase::data_dot_mechanism} for more infos."
+msgstr "Voir {.help svBase::data_dot_mechanism} pour plus d'informations."
 
 msgid "`%s` and `%s` must both be 'data.frame'."
 msgstr "`%s` et `%s` doivent tous deux être des \"data.frame\"."
@@ -220,12 +299,11 @@ msgstr ""
 "Vous devez collecter les résultats d'une fonction ’tidy’ avant d'utiliser "
 "une fonction ‘speedy’."
 
-msgid ""
-"{.emph The data-dot mechanism was activated (see {.help "
-"svMisc::data_dot_mechanism}).}"
-msgstr ""
-"{.emph Le mécanisme «  data-dot » a été activé (voir {.help "
-"svMisc::data_dot_mechanism})"
+msgid "{.emph The data-dot mechanism was activated}"
+msgstr "{.emph Le mécanisme «  data-dot » a été activé"
+
+msgid "(see {.help svBase::data_dot_mechanism})."
+msgstr "(voir {.help svBase::data_dot_mechanism} )."
 
 msgid "{.emph {.code .} is {object_info(.)}}"
 msgstr "{.emph {.code .} est {object_info(.)}}"
@@ -255,3 +333,11 @@ msgid "You asked for only one item"
 msgid_plural "You asked for several items"
 msgstr[0] "Vous n'avez demandé qu'un seul item"
 msgstr[1] "Vous avez demandé plusieurs items"
+
+#~ msgid ""
+#~ "Unable to switch to language '%s'. Using current language '%s' instead\n"
+#~ "(displayed only once per session)."
+#~ msgstr ""
+#~ "Impossible de passer à la langue '%s'. Utilisation de la langue actuelle "
+#~ "'%s' à la place\n"
+#~ "(affiché une seule fois par session)."

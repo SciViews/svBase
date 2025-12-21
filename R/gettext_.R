@@ -1,3 +1,21 @@
+# This is calling Sys.setLanguage(), but using our own error message for wrong
+# lang= argument
+.set_language <- function(lang, unset = "en") {
+  if (missing(lang) || is.null(lang))
+    stop("Argument {.arg lang} is missing or {.code NULL}.",
+      i = "Provide a valid two-letter language code, e.g., 'en', 'fr', 'de'...",
+      class = "lang_missing_or_null")
+  if (!is.character(lang) || length(lang) != 1L)
+    stop("The argument {.arg lang} must be a single string.",
+      i = "Provide a valid two-letter language code, e.g., 'en', 'fr', 'de'...",
+      class = "lang_not_single_string")
+  if (lang != "C" && !grepl("^[a-z]{2}", lang))
+    stop("Wrong {.arg lang} argument (must be either 'C' or a language code).",
+      i = "Provide a valid two-letter language code, e.g., 'en', 'fr', 'de'...",
+      class = "lang_wrong_code")
+  invisible(Sys.setLanguage(lang, unset = unset))
+}
+
 .gettext_lang_factory <- function() {
   # This function makes necessary checking only once and keeps the results
   # Also, it keeps memory of languages already used and languages that failed
@@ -25,9 +43,9 @@
 
   # Run Sys.setLanguage() on current language to make sure everything is fine
   if (!no_nls) {
-    res <- attr(Sys.setLanguage(known_lang[1]), "ok")
+    res <- try(attr(Sys.setLanguage(known_lang[1]), "ok"), silent = TRUE)
     # If it fails, consider no_nls with a warning
-    if (!res) {
+    if (inherits(res, "try-error") || !res) {
       no_nls <- TRUE
       warning("Natural language support is available on this system, ",
         "but unable to properly switch language.")
@@ -43,33 +61,44 @@
     function(..., domain = NULL, trim = TRUE, lang = getOption("SciViews_lang",
       default = Sys.getenv("LANGUAGE", unset = "en"))) {
 
+      .__top_call__. <- TRUE
+
       if (missing(lang)) # Use default base::gettext()
         return(gettext_base(..., domain = domain, trim = trim))
 
+      if (!is.null(domain))
+        domain <- as.character(domain)[1L]
+
       # If no_nls, same as current language, or failed lang, just run gettext()
-      lang <- as.character(lang)[1] # Use only first string, without warning
-      cur_lang <- Sys.getenv("LANGUAGE", unset = "en")
-      if (no_nls || lang == cur_lang || any(failed_lang == lang)) {
-        #message("Optimisation #1!")
+      # Use only first string, without warning
+      lang <- as.character(lang)
+      if (!length(lang)) lang <- "en" else lang <- lang[1]
+      if (is.na(lang)) lang <- "en" # Default language
+      cur_lang <- substring(Sys.getenv("LANGUAGE", unset = "en"), 1L, 2L)
+      if (no_nls || lang == cur_lang || any(failed_lang == lang) ||
+          is.na(domain) || domain == "") {
+        #message("Optimization #1!")
         return(gettext_base(..., domain = domain, trim = trim))
       }
 
       # If the  language is already known, switch faster
       if (any(known_lang == lang)) {
-        #message("Optimisation #2!")
+        #message("Optimization #2!")
         Sys.setenv(LANGUAGE = lang)
         on.exit(Sys.setenv(LANGUAGE = cur_lang))
       } else {
         # Use the slower Sys.setLanguage() to switch language properly
         # the first time, then, record it in known_lang if it works
-        cur_lang <- Sys.setLanguage(lang)
+        # (through .set_language() to use our own error messages)
+        cur_lang <- .set_language(lang)
         on.exit(Sys.setenv(LANGUAGE = cur_lang))
         if (attr(cur_lang, "ok")) {
           known_lang <<- c(known_lang, lang) # Record the new language
         } else {# Failed to switch to this lang
           failed_lang <<- c(failed_lang, lang) # Record the failed language
-          warning(gettextf_base("Unable to switch to language '%s'. Using current language '%s' instead\n(displayed only once per session).",
-            lang, cur_lang))
+          msg <- paste("Unable to switch to language '%s'. Using current",
+            "language '%s' instead\n(displayed only once per session).")
+          warning(gettextf_base(msg, lang, cur_lang))
           return(gettext_base(..., domain = domain, trim = trim))
         }
       }
@@ -77,7 +106,7 @@
       # Flush the cache of translations since we switch to another language
       bindtextdomain(NULL)
 
-      res <- gettext_base(..., domain = domain, trim = trim)
+      res <- gettext_base(..., domain = domain, trim = isTRUE(trim))
 
       # Flush the cache of translations again before switching back to the
       # current language (done in on.exit)
@@ -97,7 +126,9 @@
       lang = getOption("SciViews_lang", default =
           Sys.getenv("LANGUAGE", unset = "en"))) {
       if (missing(lang)) {
-        sprintf(gettext_base(fmt, domain = domain, trim = trim), ...)
+        if (!is.null(domain))
+          domain <- as.character(domain)[1L]
+        sprintf(gettext_base(fmt, domain = domain, trim = isTRUE(trim)), ...)
       } else {
         sprintf(gettext_lang(fmt, domain = domain, trim = trim, lang = lang),
           ...)
@@ -108,18 +139,44 @@
   ngettext_lang <- compiler::cmpfun(
     function(n, msg1, msg2, domain = NULL) {
 
+      .__top_call__. <- TRUE
+
       def_lang <- getOption("SciViews_lang",
         default = Sys.getenv("LANGUAGE", unset = "en"))
 
+      if (!is.numeric(n))
+        stop("Argument {.arg n} must be numeric.",
+          i = "You provided an object of class {.cls {class(n)}}.",
+          class = "n_not_numeric")
+      n <- n[1L] # Only consider first bvalue, like base::ngettext() does
+      if (is.na(n) || n < 0)
+        stop("Argument {.arg n} must be a non-negative integer.",
+          i = "You provided: {.code {deparse(n)}}.",
+          class = "n_negative")
+
+      if (!is.character(msg1) || length(msg1) != 1L)
+        stop("Argument {.arg msg1} must be a single string.",
+          i = "You provided: {.code {deparse(msg1)}}.",
+          x = ifelse(length(msg1) == 1L,
+            " This is an object of class {.cls {class(msg1)}}.",
+            " This is an object of length {length(msg1)}."),
+          class = "msg1_not_single_string")
+
+      if (!is.character(msg2) || length(msg2) != 1L)
+        stop("Argument {.arg msg2} must be a single string.",
+          i = "You provided: {.code {deparse(msg2)}}.",
+          x = ifelse(length(msg2) == 1L,
+            " This is an object of class {.cls {class(msg2)}}.",
+            " This is an object of length {length(msg2)}."),
+          class = "msg2_not_single_string")
+
       if (is.null(domain)) {
         lang <- def_lang
-      } else {# Try to separate domain dans lang (should be domain_lang)
+      } else {# Try to separate domain from lang (should be domain_lang)
         dom_lang <- strsplit(domain, "_", fixed = TRUE)[[1]]
         if (length(dom_lang) > 1L) {
-          domain <- dom_lang[1]
-          if (domain == "")
-            domain <- NULL
-          lang <- dom_lang[2]
+          domain <- dom_lang[1L]
+          lang <- dom_lang[2L]
         } else {
           lang <- def_lang
         }
@@ -129,29 +186,34 @@
         return(ngettext_base(n = n, msg1 = msg1, msg2 = msg2, domain = domain))
 
       # If no_nls or same as current language, or failed lang, just run gettext()
-      lang <- as.character(lang)[1] # Use only first string, without warning
+      lang <- as.character(lang)
+      if (!length(lang)) lang <- "en" else lang <- lang[1]
+      if (is.na(lang)) lang <- "en" # Default language
       cur_lang <- Sys.getenv("LANGUAGE", unset = "en")
-      if (no_nls || lang == cur_lang || any(failed_lang == lang)) {
-        #message("Optimisation #1!")
+      if (no_nls || lang == cur_lang || any(failed_lang == lang) ||
+          is.na(domain) || domain == "") {
+        #message("Optimization #1!")
         return(ngettext_base(n = n, msg1 = msg1, msg2 = msg2, domain = domain))
       }
 
       # If the  language is already known, switch faster
       if (any(known_lang == lang)) {
-        #message("Optimisation #2!")
+        #message("Optimization #2!")
         Sys.setenv(LANGUAGE = lang)
         on.exit(Sys.setenv(LANGUAGE = cur_lang))
       } else {
         # Use the slower Sys.setLanguage() to switch language properly
         # the first time, then, record it in known_lang if it works
-        cur_lang <- Sys.setLanguage(lang)
+        # (through .set_language() to use our own error messages)
+        cur_lang <- .set_language(lang)
         on.exit(Sys.setenv(LANGUAGE = cur_lang))
         if (attr(cur_lang, "ok")) {
           known_lang <<- c(known_lang, lang) # Record the new language
         } else {# Failed to switch to this lang
           failed_lang <<- c(failed_lang, lang) # Record the failed language
-          warning(gettextf_base("Unable to switch to language '%s'. Using current language '%s' instead\n(displayed only once per session).",
-            lang, cur_lang))
+          msg <- paste("Unable to switch to language '%s'. Using current",
+            "language '%s' instead\n(displayed only once per session).")
+          warning(gettextf_base(msg, lang, cur_lang))
           return(ngettext_base(n = n, msg1 = msg1, msg2 = msg2,
             domain = domain))
         }
@@ -182,7 +244,7 @@
 
 .gettext_lang <- .gettext_lang_factory()
 
-#' Translate text messages in a different language than the one currently defined in the R session
+#' Translate text messages in a different language than the one in the R session
 #'
 #' Translation messages are obtained with [base::gettext()] or
 #' [base::ngettext()]. But, there is no way to specify that one needs translated
@@ -271,6 +333,10 @@ test_gettext_lang <- function(lang = getOption("SciViews_lang",
   gettext <- gettext_
   gettextf <- gettextf_
   ngettext <- ngettext_
+
+  .__top_call__. <- TRUE
+
+  if (!length(lang)) lang <- "en" # Default language
 
   # Test the gettext() function with lang= attribute
   res <- gettext("Test of svBase's `gettext()` and `gettextf()`:",

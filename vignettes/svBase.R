@@ -19,3 +19,13 @@ foo(rnorm(50), type = "histogram")
 foo$histogram(rnorm(50))
 foo$boxplot(rnorm(50))
 
+## -----------------------------------------------------------------------------
+# Create a regular base R data.frame
+dtf <- dtf(
+  x = 1:5,
+  y = rnorm(5)
+)
+# Convert it into the preferred version
+dtx <- as_dtx(dtf)
+class(dtx)
+

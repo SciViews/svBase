@@ -8,9 +8,9 @@
 #' `call. = FALSE` by default. Finally, `stop_top_call()` allows to tag from
 #' where an error should be reported (see examples).
 #'
-#' @param ... One or more character strings with the error or warning message(s).
-#'   Name them '*' =, 'i' =, 'v' =, 'x' = or '!' = to format message items.
-#'   First message item is considered to be '!' by default.
+#' @param ... One or more character strings with the error or warning
+#'   message(s). Name them '*' =, 'i' =, 'v' =, 'x' = or '!' = to format message
+#'   items. First message item is considered to be '!' by default.
 #' @param call. Logical, whether to include the call in the warning message. Not
 #'   used for `stop_()`.
 #' @param domain see [gettext()]. If NA, messages will not be translated.
@@ -80,17 +80,22 @@ stop_ <- function(..., call. = FALSE, domain = NULL, class = NULL,
   message <- gettext(..., domain = domain, trim = TRUE)
   # Sometimes, gettext() looses names -> reapply them
   names(message) <- ...names()
-  # If the data-dot mechanism was activated, we provide extra information, or if
-  # the first argument of the function was '.', we provide extra information.
+  # If the data-dot mechanism was activated, or if the first argument of the
+  # first argument was '(.)', we provide extra information.
   if (missing(last_call))
     last_call <- sys.call(-1L)
-  first_arg <- last_call[[2]]
-  if (is.null(first_arg)) first_arg <- ""
+  if (length(last_call) < 2L) {
+    first_arg <- ""
+  } else {
+    first_arg <- last_call[[2]]
+    if (is.null(first_arg)) first_arg <- ""
+  }
   data_dot <-  (first_arg == '(.)') # data-dot mechanisms is likely activated
   # Enhance the message
   if (data_dot)
-    message <- c(message, i = gettext(
-      "{.emph The data-dot mechanism was activated (see {.help svMisc::data_dot_mechanism}).}"))
+    message <- c(message, i = gettext(paste(
+      "{.emph The data-dot mechanism was activated}",
+      "(see {.help svBase::data_dot_mechanism}).")))
 
   if (data_dot || first_arg == '.')
     message <- c(message, `*` = gettext(
@@ -107,8 +112,8 @@ stop_ <- function(..., call. = FALSE, domain = NULL, class = NULL,
 #'   output as a single line when `options(warn = 1)`.
 warning_ <- function(..., call. = FALSE, immediate. = FALSE, noBreaks. = FALSE,
   domain = NULL) {
-  base::warning(..., call. = call., immediate. = immediate., noBreaks. = noBreaks.,
-    domain = domain)
+  base::warning(..., call. = call., immediate. = immediate.,
+    noBreaks. = noBreaks., domain = domain)
 }
 
 #' @rdname stop_

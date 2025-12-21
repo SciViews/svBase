@@ -1,0 +1,225 @@
+---
+title: "Enhanced messages with 'svBase'"
+author: "Philippe Grosjean"
+date: "`r Sys.Date()`"
+output:
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 3
+    fig_caption: yes
+vignette: >
+  %\VignetteIndexEntry{Enhanced messages with 'svBase'}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(svBase)
+```
+
+The {svBase} package builds on {rlang} and {cli} fantastic ways of dealing with messages for errors or warnings. It provides a few enhancements, like easy translation of these messages with the base R translation mechanism. It also offers enhanced translation functions that allow to chose the language independently from the one used in the R session. This is useful to produce tables, figures, or other outputs in a specific language, or in a multilingual context.
+
+## Messages translation
+
+...
+
+## Meaningful error messages
+
+The {rlang} package introduced `abort()`, `warn()` and `inform()` as alternatives to base R `stop()`, `warning()` and `message()`, respectively. These functions provide a more structured way to create messages, allowing for better context (see <https://rlang.r-lib.org/reference/topic-error-call.html>). However, on the contrary to base `stop()` or `warning()`, rlang `abort()` and `warn()` do not use the base R translation mechanism with `gettext()`, which is a drawback for package developers who want to provide translated messages. Here, we provide `stop_()` and `warning_()` functions that combine the best of both worlds: they use `gettext()` for translation and provide the structured messaging of {rlang}. In a package, you should rename them into `stop()` and `warning()` to have all messages translated automatically by tools like `xgettext`.
+
+```{r}
+# Use svBase stop_() and warning_(), but renamed
+# in your package (don't export stop and warning)
+stop <- stop_
+warning <- warning_
+```
+
+The {rlang} presentation of the error message is now adopted in your `stop()` call.
+
+```{r, error=TRUE}
+stop("You shouldn't end up here.")
+```
+
+If you run this in RStudio or Positron, you see an additional line "Run `rlang::last_trace()` to see where the error occurred." that helps debugging. In An R Markdown or Quarto document, like this vignette, it does not appear. Compare this with base `stop()`:
+
+```{r, error=TRUE}
+base::stop("You shouldn't end up here.")
+```
+
+The "new" `warning()` works similarly to base `warning()`, except that the default value for `call. =` is `FALSE`.
+
+The "new" `stop()` exposes more arguments than its base R equivalents. It first changes the default for `call. =` to `FALSE`, and even ignores it. It is superseded by the more informative presentation of the function call, implemented in {rlang}:
+
+```{r, error=TRUE}
+# A simple function that raises an error
+err_fun <- function() {
+  stop("You shouldn't end up here.")
+}
+err_fun()
+```
+
+Additional arguments, inherited from rlang `abort()` are (see following sections for more explanations):
+
+- `class`: the class of the error message, `NULL` by default.
+- `call`: the call to be displayed in the error message. By default, it is the call of the function that raised the error. You can change it to another call, or set it to `NULL` to avoid displaying any call.
+- `envir`: the environment where to evaluate the message expressions.
+- `last_call`: the last call issued by the user, used to check if a dot (`.`) object was invoked. In this case, additional information about the data-dot mechanism is added to the error message, see `?data_dot_mechanism`.
+
+### Classed error messages
+
+The `class=` argument allows to define a different class for each error message. This class is *not* visible to the end-user, but it can be used to more surely identify the error message that was triggered in tests. The {testthat} function `expect_error()` uses regular expressions to track messages. This mechanisms is not always reliable, especially when messages are translated, or when messages are rewritten. `expect_error()` can also indicate the `class`of the error message to track:
+
+```{r}
+# Classed error message
+err_fun <- function() {
+  stop("You shouldn't end up here.", class = "my_error_class")
+}
+```
+
+In {testthat} tests, you could then write something like this:
+
+```{r, eval=FALSE}
+expect_error(err_fun(), class = "my_error_class")
+```
+
+### Message formatting
+
+svBase's `stop_()` uses {cli} message formatting as in `cli::cli_abort()`, which allows to easily format messages with special tags. See <https://rlang.r-lib.org/reference/topic-condition-formatting.html> and `?help('inline-markup', package = 'cli')` for more information about message formatting with {cli}.
+
+```{r, error=TRUE}
+# An enhanced error message with formatting
+decrement <- function(x) {
+  if (!is.numeric(x))
+    stop("{.var x} must be a numeric vector.",
+      i = "You've supplied a {.cls {class(x)}}.",
+      class = "x_not_numeric")
+  x - 1
+}
+decrement("a string")
+```
+
+The `envir=` argument indicates in which environment {cli} should interpolate its formatting fields (the default value is OK most of the time).
+
+### Additional information with . or data-dot
+
+In the special case where the data-dot mechanism was triggered, or when `.` is passed as first argument, extra information that may be useful in this context is automatically appended to the `stop_()` message. The context where to look for it is provided in the `last_call=` argument (you rarely have to change its default value, so, you could forgot its existence).
+
+```{r, error=TRUE}
+# Trying to use our decrement() function on a data frame
+df <- dtx(x = 1:5, y = rnorm(5))
+decrement(df)
+
+# Idem, but when providing the argument as `.`
+.= df
+decrement(.)
+```
+
+An additional line with more info about the content of `.` is automatically appended to the error message. This eases debugging when passing, for instance, `.` in a pipeline.
+
+Also, when the data_dot mechanism was triggered, additional lines of information are automatically appended to the error message emphasizing it.
+
+```{r, error=TRUE}
+# A data-dot function
+my_head <- function(.data = (.), rows = 6L) {
+  # This makes it a data-dot function
+  if (!prepare_data_dot(.data))
+    return(recall_with_data_dot())
+  
+  # Checking rows (note, for simplicity, we consider data has several rows)
+  if (!is.numeric(rows) || length(rows) != 1L ||
+      rows < 1 || rows > nrow(.data))
+    stop("Incorrect {.arg rows} argument.",
+      i = "You must provide a single integer between 1 and {nrow(.data)}.",
+      class = "rows_wrong_value")
+  
+  .data[1:rows, ]
+}
+my_head(df, 2L) # OK
+my_head(df, -1L) # Error
+```
+
+Now, using the data-dot mechanism to insert `.` as first arg.
+
+```{r, error=TRUE}
+.= df
+my_head(2L) # OK
+my_head(-1L) # Error message with additional info for data-dot
+```
+
+### Easily changing the context of an error message
+
+It is quite common to use "input checker" functions to validate arguments of a function. One could rewrite `my_head()` like this:
+
+```{r, error=TRUE}
+check_rows <- function(x, arg = "x", max_value) {
+  if (!is.numeric(x) || length(x) != 1L ||
+      x < 1 || x > max_value)
+    stop("Incorrect {.arg {arg}} argument.",
+      i = "You must provide a single integer between 1 and {max_value}.",
+      class = "rows_wrong_value")
+}
+
+my_head <- function(.data = (.), rows = 6L) {
+  # This makes it a data-dot function
+  if (!prepare_data_dot(.data))
+    return(recall_with_data_dot())
+  
+  check_rows(rows, "rows", nrow(.data))
+
+  .data[1:rows, ]
+}
+my_head(df, 10L) # Error
+```
+
+On the contrary to `abort()` (see https://rlang.r-lib.org/reference/topic-error-call.html#passing-the-user-context), the context is automatically set to `my_head()`. Actually, `stop_()` is designed to be used inside input checkers. If you want to avoid this mechanism, you *must* provide a different value for `call=`:
+
+```{r, error=TRUE}
+check_rows2 <- function(x, arg = "x", max_value) {
+  if (!is.numeric(x) || length(x) != 1L ||
+      x < 1 || x > max_value)
+    stop(call = environment(),
+      "Incorrect {.arg {arg}} argument.",
+      i = "You must provide a single integer between 1 and {max_value}.",
+      class = "rows_wrong_value")
+}
+
+my_head2 <- function(.data = (.), rows = 6L) {
+  # This makes it a data-dot function
+  if (!prepare_data_dot(.data))
+    return(recall_with_data_dot())
+  
+  check_rows2(rows, "rows", nrow(.data))
+
+  .data[1:rows, ]
+}
+my_head2(df, 10L) # Error
+```
+
+But you easily realize that it is much better to point to the function that the end-user called (`my_head()` above), instead of a function called inside it (`check_rows2()`).
+
+Now, if `my_head()` is called from another function, say `my_fun()`, the focus is still on `my_head()` by default:
+
+```{r, error=TRUE}
+my_fun <- function(x, rows, ...) {
+  my_head(x, rows = rows)
+}
+my_fun(df, 10L) # Error
+```
+
+You can easily change this behavior globally for all your `stop_()` calls by defining `.__top_call__. <- TRUE` in the body of the function that should receive the focus of the error message. So, this does the work:
+
+```{r, error=TRUE}
+my_fun <- function(x, rows, ...) {
+  .__top_call__. <- TRUE
+  
+  my_head(x, rows = rows)
+}
+my_fun(df, 10L) # Error
+```
+
+On the contrary to rlang's `abort()`, you do not need to redefine `call=` in the input checker function, or any intermediate function(s). Now, this work well when the top function has the same argument (name). If this is not the case, the error message will refer to something that does not exist in the focused function. In this case, you should use rlang's [error chains](https://rlang.r-lib.org/reference/topic-error-chaining.html).
+
+### Note about `warning_()`
+
+`warning_()` is much like base's `warning()`, except for its `call. = FALSE` default argument. **It does not uses the formatting advantages of `cli::cli_warn()`.** This is because the formatting slows down significantly your code. So, in case you generate a lot of warnings, the impact could become measurable. For `stop_()`, it is less of a problem, since your code already failed anyway. Situations where it fails a lot of times, but still continues to run (e.g., in a `tryCatch()`) are much less frequent.

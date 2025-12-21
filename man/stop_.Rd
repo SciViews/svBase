@@ -30,9 +30,9 @@ stop_top_call(nframe = 2L)
 object_info(x)
 }
 \arguments{
-\item{...}{One or more character strings with the error or warning message(s).
-Name them '*' =, 'i' =, 'v' =, 'x' = or '!' = to format message items.
-First message item is considered to be '!' by default.}
+\item{...}{One or more character strings with the error or warning
+message(s). Name them '*' =, 'i' =, 'v' =, 'x' = or '!' = to format message
+items. First message item is considered to be '!' by default.}
 
 \item{call.}{Logical, whether to include the call in the warning message. Not
 used for \code{stop_()}.}

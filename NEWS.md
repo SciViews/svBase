@@ -1,3 +1,7 @@
+# svBase 1.7.3
+
+-   Better error management in `gettext_()`, `gettextf_()`, and `ngettext_()`, plus a vignette and more tests.
+
 # svBase 1.7.2
 
 -   `unlabelise()` now eliminate labels of the variables in a data.frame (`self = FALSE` by default), and returns an object of the same class.

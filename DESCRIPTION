@@ -1,8 +1,8 @@
 Package: svBase
 Type: Package
-Version: 1.7.2
-Title: 'SciViews::R' - Base Objects like Data Frames 
-Description: Functions to manipulated the three main classes of "data frames"
+Version: 1.7.3
+Title: 'SciViews::R' - Base Functions
+Description: Functions to manipulate the three main classes of "data frames"
   for 'SciViews::R': data.frame, data.table and tibble. Allow to select the
   preferred one, and to convert more carefully between the three, taking care of
   correct presentation of row names and data.table's keys. More homogeneous way
@@ -47,3 +47,4 @@ Encoding: UTF-8
 Language: en-US
 ByteCompile: yes
 Config/testthat/edition: 3
+Config/testthat/parallel: true
