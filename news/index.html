@@ -47,6 +47,16 @@
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Articles
+
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu"><li>
+      <a href="../articles/messages.html">Enhanced messages with 'svBase'</a>
+    </li>
+  </ul></li>
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
@@ -57,7 +67,7 @@
   </a>
 </li>
       </ul><div class="navbar-title">
-        <a class="navbar-brand" href="../index.html"><p class="h2">svBase <small>v1.7.2</small></p></a>
+        <a class="navbar-brand" href="../index.html"><p class="h2">svBase <small>v1.7.3</small></p></a>
       </div>
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
@@ -74,6 +84,10 @@
       <small>Source: <a href="https://github.com/SciViews/svBase/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="1.7.3" id="svbase-173">svBase 1.7.3<a class="anchor" aria-label="anchor" href="#svbase-173"></a></h2>
+<ul><li>Better error management in <code><a href="../reference/gettext_.html">gettext_()</a></code>, <code><a href="../reference/gettext_.html">gettextf_()</a></code>, and <code><a href="../reference/gettext_.html">ngettext_()</a></code>, plus a vignette and more tests.</li>
+</ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="1.7.2" id="svbase-172">svBase 1.7.2<a class="anchor" aria-label="anchor" href="#svbase-172"></a></h2>
 <ul><li>
@@ -98,7 +112,7 @@
     <div class="section level2">
 <h2 class="page-header" data-toc-text="1.6.0" id="svbase-160">svBase 1.6.0<a class="anchor" aria-label="anchor" href="#svbase-160"></a></h2>
 <ul><li><p>First implementation of the SciViews functions (ending with an underscore <code>_</code> and with standard evaluation of their arguments, except in formulas and with implicit data-dot).</p></li>
-<li><p>Functions <code><a href="https://dplyr.tidyverse.org/reference/se-deprecated.html" class="external-link">group_by_()</a></code>, <code>ungroup_()</code> (and the group companion functions), <code><a href="https://dplyr.tidyverse.org/reference/se-deprecated.html" class="external-link">summarise_()</a></code>, <code><a href="https://dplyr.tidyverse.org/reference/se-deprecated.html" class="external-link">select_()</a></code>, <code><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter()</a></code>, <code><a href="https://dplyr.tidyverse.org/reference/se-deprecated.html" class="external-link">mutate_()</a></code>, <code><a href="https://dplyr.tidyverse.org/reference/se-deprecated.html" class="external-link">transmute_()</a></code>, <code><a href="https://dplyr.tidyverse.org/reference/se-deprecated.html" class="external-link">rename_()</a></code>, <code>rename_with_()</code>, <code><a href="https://dplyr.tidyverse.org/reference/se-deprecated.html" class="external-link">arrange_()</a></code>, <code>pull_()</code>, <code>full_join_()</code>, <code>inner_join_()</code>, <code>left_join_()</code>, <code>right_join_()</code>, <code>semi_join_()</code>, <code>anti_join_()</code>, <code><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows()</a></code>, <code><a href="https://dplyr.tidyverse.org/reference/bind_cols.html" class="external-link">bind_cols()</a></code>, <code><a href="https://dplyr.tidyverse.org/reference/se-deprecated.html" class="external-link">slice_()</a></code>, <code><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice_head()</a></code>, <code>slice_tail_()</code>, <code><a href="https://dplyr.tidyverse.org/reference/se-deprecated.html" class="external-link">count_()</a></code>, <code><a href="https://dplyr.tidyverse.org/reference/count.html" class="external-link">tally()</a></code> <code><a href="https://dplyr.tidyverse.org/reference/se-deprecated.html" class="external-link">add_count_()</a></code>, <code><a href="https://dplyr.tidyverse.org/reference/se-deprecated.html" class="external-link">add_tally_()</a></code>, <code><a href="https://dplyr.tidyverse.org/reference/se-deprecated.html" class="external-link">distinct_()</a></code> <code>drop_na_()</code>, <code><a href="https://sebkrantz.github.io/collapse/reference/recode-replace.html" class="external-link">replace_na()</a></code>, <code>uncount_()</code>, <code>unite_()</code>, <code>fill_()</code>, <code>separate()</code> are done. <code>pivot_longer_()</code>/<code>pivot_wider_()</code> version with single columns only. A first version of <code>reframe_()</code> that does not accept data frame returns or <code><a href="https://dplyr.tidyverse.org/reference/across.html" class="external-link">across()</a></code> is implemented.</p></li>
+<li><p>Functions <code><a href="https://dplyr.tidyverse.org/reference/se-deprecated.html" class="external-link">group_by_()</a></code>, <code>ungroup_()</code> (and the group companion functions), <code><a href="https://dplyr.tidyverse.org/reference/se-deprecated.html" class="external-link">summarise_()</a></code>, <code><a href="https://dplyr.tidyverse.org/reference/se-deprecated.html" class="external-link">select_()</a></code>, <code><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter()</a></code>, <code><a href="https://dplyr.tidyverse.org/reference/se-deprecated.html" class="external-link">mutate_()</a></code>, <code><a href="https://dplyr.tidyverse.org/reference/se-deprecated.html" class="external-link">transmute_()</a></code>, <code><a href="https://dplyr.tidyverse.org/reference/se-deprecated.html" class="external-link">rename_()</a></code>, <code>rename_with_()</code>, <code><a href="https://dplyr.tidyverse.org/reference/se-deprecated.html" class="external-link">arrange_()</a></code>, <code>pull_()</code>, <code>full_join_()</code>, <code>inner_join_()</code>, <code>left_join_()</code>, <code>right_join_()</code>, <code>semi_join_()</code>, <code>anti_join_()</code>, <code><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows()</a></code>, <code><a href="https://dplyr.tidyverse.org/reference/bind_cols.html" class="external-link">bind_cols()</a></code>, <code><a href="https://dplyr.tidyverse.org/reference/se-deprecated.html" class="external-link">slice_()</a></code>, <code><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice_head()</a></code>, <code>slice_tail_()</code>, <code><a href="https://dplyr.tidyverse.org/reference/se-deprecated.html" class="external-link">count_()</a></code>, <code><a href="https://dplyr.tidyverse.org/reference/count.html" class="external-link">tally()</a></code> <code><a href="https://dplyr.tidyverse.org/reference/se-deprecated.html" class="external-link">add_count_()</a></code>, <code><a href="https://dplyr.tidyverse.org/reference/se-deprecated.html" class="external-link">add_tally_()</a></code>, <code><a href="https://dplyr.tidyverse.org/reference/se-deprecated.html" class="external-link">distinct_()</a></code> <code>drop_na_()</code>, <code><a href="https://rdrr.io/pkg/collapse/man/recode-replace.html" class="external-link">replace_na()</a></code>, <code>uncount_()</code>, <code>unite_()</code>, <code>fill_()</code>, <code>separate()</code> are done. <code>pivot_longer_()</code>/<code>pivot_wider_()</code> version with single columns only. A first version of <code>reframe_()</code> that does not accept data frame returns or <code><a href="https://dplyr.tidyverse.org/reference/across.html" class="external-link">across()</a></code> is implemented.</p></li>
 </ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="1.5.0" id="svbase-150">svBase 1.5.0<a class="anchor" aria-label="anchor" href="#svbase-150"></a></h2>
@@ -111,7 +125,7 @@
     <div class="section level2">
 <h2 class="page-header" data-toc-text="1.4.0" id="svbase-140">svBase 1.4.0<a class="anchor" aria-label="anchor" href="#svbase-140"></a></h2>
 <ul><li>
-<code><a href="../reference/speedy_functions.html">scount()</a></code>, <code><a href="../reference/speedy_functions.html">sadd_count()</a></code>, <code><a href="https://dplyr.tidyverse.org/reference/count.html" class="external-link">tally()</a></code> and <code><a href="https://dplyr.tidyverse.org/reference/count.html" class="external-link">add_tally()</a></code> are now based on <code><a href="https://sebkrantz.github.io/collapse/reference/fcount.html" class="external-link">collapse::fcount()</a></code> with some changes to better match the arguments and behavior of the corresponding{dplyr} functions. However, much work was needed to align these speedy functions to the behavior of their tidy counterparts, in part because the tidy functions sort of the frequencies columns and the <code><a href="https://sebkrantz.github.io/collapse/reference/fcount.html" class="external-link">collapse::fcount()</a></code> function that is used sorts on the categories labels… and it does not sort on it by default.</li>
+<code><a href="../reference/speedy_functions.html">scount()</a></code>, <code><a href="../reference/speedy_functions.html">sadd_count()</a></code>, <code><a href="https://dplyr.tidyverse.org/reference/count.html" class="external-link">tally()</a></code> and <code><a href="https://dplyr.tidyverse.org/reference/count.html" class="external-link">add_tally()</a></code> are now based on <code><a href="https://rdrr.io/pkg/collapse/man/fcount.html" class="external-link">collapse::fcount()</a></code> with some changes to better match the arguments and behavior of the corresponding{dplyr} functions. However, much work was needed to align these speedy functions to the behavior of their tidy counterparts, in part because the tidy functions sort of the frequencies columns and the <code><a href="https://rdrr.io/pkg/collapse/man/fcount.html" class="external-link">collapse::fcount()</a></code> function that is used sorts on the categories labels… and it does not sort on it by default.</li>
 </ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="1.3.0" id="svbase-130">svBase 1.3.0<a class="anchor" aria-label="anchor" href="#svbase-130"></a></h2>

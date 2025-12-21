@@ -50,6 +50,16 @@ argument.'><meta property="og:image" content="https://www.sciviews.org/svBase/lo
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Articles
+
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu"><li>
+      <a href="../articles/messages.html">Enhanced messages with 'svBase'</a>
+    </li>
+  </ul></li>
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
@@ -60,7 +70,7 @@ argument.'><meta property="og:image" content="https://www.sciviews.org/svBase/lo
   </a>
 </li>
       </ul><div class="navbar-title">
-        <a class="navbar-brand" href="../index.html"><p class="h2">svBase <small>v1.7.2</small></p></a>
+        <a class="navbar-brand" href="../index.html"><p class="h2">svBase <small>v1.7.3</small></p></a>
       </div>
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
@@ -249,7 +259,7 @@ called <code>x</code>and <code>y</code>.</p>
 <span class="r-in"><span><span class="co"># Error message with indication that the data-dot mechanism is activated</span></span></span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/try.html" class="external-link">try</a></span><span class="op">(</span><span class="fu">my_subset</span><span class="op">(</span><span class="st">'y'</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Error in my_subset(.data = (.), "y") : `i` must be numeric</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> <span style="font-style: italic;">The data-dot mechanism was activated (see `?svMisc::data_dot_mechanism()`).</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> <span style="font-style: italic;">The data-dot mechanism was activated</span> (see `?svBase::data_dot_mechanism()`).</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> <span style="font-style: italic;">`.` is a data frame with 3 rows and 2 columns: 'x', 'y'</span></span>
 <span class="r-in"><span><span class="co"># Data-dot mechanism not activate, but dot object used</span></span></span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/try.html" class="external-link">try</a></span><span class="op">(</span><span class="fu">my_subset</span><span class="op">(</span><span class="va">.</span>, <span class="st">'y'</span><span class="op">)</span><span class="op">)</span></span></span>
