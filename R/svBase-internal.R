@@ -42,3 +42,11 @@
 # We use our own stop_() and warning_(), but renamed
 stop <- stop_
 warning <- warning_
+
+# This is rlang::check_required(), but modified for translatable errors
+#check_required <- function(x) {
+#  if (missing(x))
+#    stop("{.arg {substitute(x)}} is absent but must be supplied.",
+#      class = "missing_argument", call = stop_top_call(2L))
+#  invisible(TRUE)
+#}

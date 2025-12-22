@@ -20,10 +20,10 @@ dtt(..., .name_repair = c("check_unique", "unique", "universal", "minimal"))
 }
 \arguments{
 \item{...}{A set of name-value pairs. The content of the data frame. See
-\code{\link[=tibble]{tibble()}} for more details on the way dynamic-dots are processed.}
+\code{\link[tibble:tibble]{tibble::tibble()}} for more details on the way dynamic-dots are processed.}
 
 \item{.name_repair}{The way problematic column names are treated, see also
-\code{\link[=tibble]{tibble()}} for details.}
+\code{\link[tibble:tibble]{tibble::tibble()}} for details.}
 }
 \value{
 A data frame as a \strong{data.trame} object for \code{\link[=dtrm]{dtrm()}}, a \strong{tbl_df} object

@@ -1,25 +1,7 @@
-# This is calling Sys.setLanguage(), but using our own error message for wrong
-# lang= argument
-.set_language <- function(lang, unset = "en") {
-  if (missing(lang) || is.null(lang))
-    stop("Argument {.arg lang} is missing or {.code NULL}.",
-      i = "Provide a valid two-letter language code, e.g., 'en', 'fr', 'de'...",
-      class = "lang_missing_or_null")
-  if (!is.character(lang) || length(lang) != 1L)
-    stop("The argument {.arg lang} must be a single string.",
-      i = "Provide a valid two-letter language code, e.g., 'en', 'fr', 'de'...",
-      class = "lang_not_single_string")
-  if (lang != "C" && !grepl("^[a-z]{2}", lang))
-    stop("Wrong {.arg lang} argument (must be either 'C' or a language code).",
-      i = "Provide a valid two-letter language code, e.g., 'en', 'fr', 'de'...",
-      class = "lang_wrong_code")
-  invisible(Sys.setLanguage(lang, unset = unset))
-}
-
 .gettext_lang_factory <- function() {
   # This function makes necessary checking only once and keeps the results
   # Also, it keeps memory of languages already used and languages that failed
-  # to speed up switch from one language to another
+  # to speed up switching from one language to another.
 
   # These are the original gettext(), gettextf() and ngettext() functions
   gettext_base <- base::gettext
@@ -32,34 +14,37 @@
 
   # The (growing) list of supported languages (each time a successful switch
   # to such a language is done, it is recorded here)
-  # Obviously, current language is already supported
-  known_lang <- Sys.getenv("LANGUAGE", unset = NA)
-  if (is.na(known_lang) || !nzchar(known_lang))
+  # Obviously, current R language is already supported
+  known_lang <- Sys.getenv("LANGUAGE", unset = "")
+  if (!nzchar(known_lang))
     known_lang <- "en"
+  # For debugging purpose
+  #message("Language: ", known_lang[1])
 
   # The growing list of failed languages (e.g., strings that do not match any
   # known language)
   failed_lang <- character(0)
 
-  # Run Sys.setLanguage() on current language to make sure everything is fine
+  # Run Sys.setLanguage() from base R on current language to make sure
+  # everything is fine
   if (!no_nls) {
     res <- try(attr(Sys.setLanguage(known_lang[1]), "ok"), silent = TRUE)
     # If it fails, consider no_nls with a warning
     if (inherits(res, "try-error") || !res) {
       no_nls <- TRUE
-      warning("Natural language support is available on this system, ",
-        "but unable to properly switch language.")
+      warning("Natural language supported on this system, ",
+        "but unable to properly switch language.", call. = FALSE)
     }
   }
 
-  # Make sure current language is properly defined in the LANGUAGE envir var
+  # Make sure current R language is defined in the LANGUAGE envir var
   Sys.setenv(LANGUAGE = known_lang[1])
 
   # The function that retrieves one or more translated character strings in a
-  # given language (may be different to current R language)
+  # given language (may be different to current R language, and defaults to
+  # SciViews language)
   gettext_lang <- compiler::cmpfun(
-    function(..., domain = NULL, trim = TRUE, lang = getOption("SciViews_lang",
-      default = Sys.getenv("LANGUAGE", unset = "en"))) {
+    function(..., domain = NULL, trim = TRUE, lang = get_sciviews_lang()) {
 
       .__top_call__. <- TRUE
 
@@ -74,23 +59,25 @@
       lang <- as.character(lang)
       if (!length(lang)) lang <- "en" else lang <- lang[1]
       if (is.na(lang)) lang <- "en" # Default language
+      # Uppercase lang must be transformed into lowercase
+      if (grepl("^[A-Z]{2}", lang))
+        substring(lang, 1L, 2L) <- tolower(substring(lang, 1L, 2L))
       cur_lang <- substring(Sys.getenv("LANGUAGE", unset = "en"), 1L, 2L)
       if (no_nls || lang == cur_lang || any(failed_lang == lang) ||
           is.na(domain) || domain == "") {
         #message("Optimization #1!")
-        return(gettext_base(..., domain = domain, trim = trim))
+        return(gettext_base(..., domain = domain, trim = isTRUE(trim)))
       }
 
-      # If the  language is already known, switch faster
+      # If the language is already known, switch faster
       if (any(known_lang == lang)) {
         #message("Optimization #2!")
         Sys.setenv(LANGUAGE = lang)
         on.exit(Sys.setenv(LANGUAGE = cur_lang))
       } else {
-        # Use the slower Sys.setLanguage() to switch language properly
-        # the first time, then, record it in known_lang if it works
-        # (through .set_language() to use our own error messages)
-        cur_lang <- .set_language(lang)
+        # Use the slower set_language() to switch language properly the first
+        # time, then, record it in known_lang if it works
+        cur_lang <- set_language(lang)
         on.exit(Sys.setenv(LANGUAGE = cur_lang))
         if (attr(cur_lang, "ok")) {
           known_lang <<- c(known_lang, lang) # Record the new language
@@ -98,8 +85,8 @@
           failed_lang <<- c(failed_lang, lang) # Record the failed language
           msg <- paste("Unable to switch to language '%s'. Using current",
             "language '%s' instead\n(displayed only once per session).")
-          warning(gettextf_base(msg, lang, cur_lang))
-          return(gettext_base(..., domain = domain, trim = trim))
+          warning(gettextf_base(msg, lang, cur_lang), call. = FALSE)
+          return(gettext_base(..., domain = domain, trim = isTRUE(trim)))
         }
       }
 
@@ -122,9 +109,12 @@
   )
 
   gettextf_lang <- compiler::cmpfun(
-    function(fmt, ..., domain = NULL, trim = TRUE,
-      lang = getOption("SciViews_lang", default =
-          Sys.getenv("LANGUAGE", unset = "en"))) {
+    function(fmt, ..., domain = NULL, trim = TRUE, lang = get_sciviews_lang()) {
+
+      if (missing(fmt))
+        stop("Argument {.arg fmt} is missing but must be provided.",
+          class = "fmt_missing")
+
       if (missing(lang)) {
         if (!is.null(domain))
           domain <- as.character(domain)[1L]
@@ -141,8 +131,17 @@
 
       .__top_call__. <- TRUE
 
-      def_lang <- getOption("SciViews_lang",
-        default = Sys.getenv("LANGUAGE", unset = "en"))
+      if (missing(n))
+        stop("Argument {.arg n} is missing but must be provided.",
+          class = "n_missing")
+      if (missing(msg1))
+        stop("Argument {.arg msg1} is missing but must be provided.",
+          class = "msg1_missing")
+      if (missing(msg2))
+        stop("Argument {.arg msg2} is missing but must be provided.",
+          class = "msg2_missing")
+
+      def_lang <- get_sciviews_lang()
 
       if (!is.numeric(n))
         stop("Argument {.arg n} must be numeric.",
@@ -172,10 +171,11 @@
 
       if (is.null(domain)) {
         lang <- def_lang
-      } else {# Try to separate domain from lang (should be domain_lang)
-        dom_lang <- strsplit(domain, "_", fixed = TRUE)[[1]]
+      } else {# Try to separate domain from lang (should be domain/lang)
+        dom_lang <- strsplit(domain, "/", fixed = TRUE)[[1]]
         if (length(dom_lang) > 1L) {
           domain <- dom_lang[1L]
+          if (domain == "NULL") domain <- NULL # Default value for domain
           lang <- dom_lang[2L]
         } else {
           lang <- def_lang
@@ -185,10 +185,13 @@
       if (lang == "") # Use default base::ngettext()
         return(ngettext_base(n = n, msg1 = msg1, msg2 = msg2, domain = domain))
 
-      # If no_nls or same as current language, or failed lang, just run gettext()
+      # If no_nls or same as current language or failed lang, just run gettext()
       lang <- as.character(lang)
       if (!length(lang)) lang <- "en" else lang <- lang[1]
       if (is.na(lang)) lang <- "en" # Default language
+      # Uppercase lang must be transformed into lowercase
+      if (grepl("^[A-Z]{2}", lang))
+        substring(lang, 1L, 2L) <- tolower(substring(lang, 1L, 2L))
       cur_lang <- Sys.getenv("LANGUAGE", unset = "en")
       if (no_nls || lang == cur_lang || any(failed_lang == lang) ||
           is.na(domain) || domain == "") {
@@ -196,16 +199,15 @@
         return(ngettext_base(n = n, msg1 = msg1, msg2 = msg2, domain = domain))
       }
 
-      # If the  language is already known, switch faster
+      # If the language is already known, switch faster
       if (any(known_lang == lang)) {
         #message("Optimization #2!")
         Sys.setenv(LANGUAGE = lang)
         on.exit(Sys.setenv(LANGUAGE = cur_lang))
       } else {
-        # Use the slower Sys.setLanguage() to switch language properly
-        # the first time, then, record it in known_lang if it works
-        # (through .set_language() to use our own error messages)
-        cur_lang <- .set_language(lang)
+        # Use the slower set_language() to switch language properly the first
+        # time, then, record it in known_lang if it works
+        cur_lang <- set_language(lang)
         on.exit(Sys.setenv(LANGUAGE = cur_lang))
         if (attr(cur_lang, "ok")) {
           known_lang <<- c(known_lang, lang) # Record the new language
@@ -213,7 +215,7 @@
           failed_lang <<- c(failed_lang, lang) # Record the failed language
           msg <- paste("Unable to switch to language '%s'. Using current",
             "language '%s' instead\n(displayed only once per session).")
-          warning(gettextf_base(msg, lang, cur_lang))
+          warning(gettextf_base(msg, lang, cur_lang), call. = FALSE)
           return(ngettext_base(n = n, msg1 = msg1, msg2 = msg2,
             domain = domain))
         }
@@ -244,44 +246,83 @@
 
 .gettext_lang <- .gettext_lang_factory()
 
-#' Translate text messages in a different language than the one in the R session
+#' Translate messages in a different language than the one in the R session
 #'
-#' Translation messages are obtained with [base::gettext()] or
+#' Message translation in R is obtained with [base::gettext()] or
 #' [base::ngettext()]. But, there is no way to specify that one needs translated
-#' messages in a different language than the current one in R. These functions
-#' have an additional `lang=` argument that allows to do so. If the `lang=`
-#' argument is not provided in the call, they behave exactly like the base
-#' functions.
+#' messages in a different language than the current one in R. Here are
+#' alternate functions that have an additional `lang=` argument allowing to do
+#' so. If the `lang=` argument is not provided in the call, they use an
+#' alternate language defined by [set_sciviews_lang()]. This is useful, for
+#' instance, to keep R error and warning messages in English, but to generate
+#' translation for tables and figures in a different language in a report.
 #'
 #' @param fmt  a character vector of format strings, each of up to 8192 bytes.
 #' @param ... one of more character vectors.
 #' @param domain the 'domain' for the translation, a character string or `NULL`;
-#' see [base::gettext()] for more details.
+#' see [base::gettext()] for more details. For `ngettext_()`, it should combine
+#' the domain and the lang, like `"domain/lang"` (e.g., `"NULL/en_US"` or
+#' `"R-stats/fr"`). This is a workaround to define the language, because base
+#' version of that function does not allow additional arguments and we have to
+#' remain compatible here.
 #' @param trim logical indicating if the white space trimming should happen.
 #' @param n a non-negative integer.
 #' @param msg1 the message to be used in English for `n = 1`.
-#' @param msg2 the message to be used in English for `n = 0, 2, 3, ...`.
-#' @param lang the target language (usually two lowercase letters, e.g., "en"
-#' for English, "fr" for French, "de" for German, etc.)
+#' @param msg2 the message to be used in English for `n = 0, 2, 3, ...`
+#' @param lang the target language (could be two lowercase letters, e.g., "en"
+#' for English, "fr" for French, "de" for German, etc.). One can also further
+#' specify variants, e.g., "en_US", or "en_GB", or even "fr_FR.UTF-8". For
+#' `get_language()` and `set_language()`, it is the default language of the R
+#' session. For the other functions, it is the alternate language used by
+#' SciViews. One can specify it globally with either the SCIVIEWS_LANG
+#' environment variable, or with the R option `SciViews_lang`, but it is a
+#' better practice to use `set_sciviews_lang()` in the R session. If missing,
+#' `NULL`, or `""`, the default is used from `unset`. For the SciViews language,
+#' uppercase letters are accepted, and they mean "translate more" (typically,
+#' **factor** and **ordered** levels are also translated, for instance).
+#' @param unset The default language to use if not defined yet, "en" (English)
+#' by default for regular R language, and the currently defined R language for
+#' the alternate SciViews language.
+#' @param allow_uppercase logical indicating if uppercase letters are allowed
+#' for the first two letters of the language code (`FALSE` by default, but
+#' should be `TRUE` for the SciViews language).
 #'
 #' @details
 #' To prepare your package for translation with these functions, you should
-#' import `gettext_()`, `gettextf_()` and `ngettext_()` from svMisc. Then, you
+#' import `gettext_()`, `gettextf_()` and `ngettext_()` from svBase. Then, you
 #' define `gettext <- gettext_`, `gettextf <- gettextf_` and
-#' `ngettext <- ngettext_` in your R scripts in the package. Finally, you
-#' change the current directory of your R console to the base folder of the
-#' sources of your package and you issue `tools::update_pkg_po(".")` in R. Then,
-#' you create translations for different languages and you provide translated
-#' strings with, say, [poEdit](https://poedit.net/).
+#' `ngettext <- ngettext_` somewhere in your package. To prepare translation
+#' strings, you change the current directory of your R console to the base
+#' folder of the sources of your package and you issue
+#' `tools::update_pkg_po(".")` in R (or you include it in the tests: for an
+#' example, see tests/testthat/test-translations.R in the source of the svBase
+#' package). Then, you perform the translation for different languages with,
+#' say, [poEdit](https://poedit.net/), and recompile your package.
 #'
-#' @returns A character vector with translated messages. `test_gettext_lang()`
-#' only serve to test and demonstrate the translation in a given language.
+#' @returns A character vector with translated messages for the `gettext...()`
+#' functions.
+#'
+#' `test_gettext_lang()` just serves to test and demonstrate the translation in
+#' a given language.
+#'
+#' `get_language()` and `get_sciviews_lang()` return the current language.
+#' `set_language()`and `set_sciviews_lang()` return the previous language
+#' invisibly (with an attribute `attr(*, "ok")` a **logical** indicating
+#' success.
+#'
+#' `check_lang()` validates a `lang=` argument by returning `TRUE` invisibly,
+#' otherwise, it `stop()`s.
+#'
 #' @export
 #'
 #' @seealso [base::gettext()], [base::gettextf()], [tools::update_pkg_po()].
 #'
 #' @examples
-#' old_lang <- Sys.setLanguage("fr") # Switch to French for R language
+#' get_language()
+#' get_sciviews_lang()
+#'
+#' old_lang <- set_language("fr") # Switch to French for R language
+#' old_sv_lang <- set_sciviews_lang("fr") # Switch to French for SciViews also
 #'
 #' # R look for messages to be translated into gettext() calls, not gettext_()
 #' # So, rename accordingly in your package:
@@ -310,8 +351,24 @@
 #' svBase::test_gettext_lang("en", n = 1)
 #' svBase::test_gettext_lang("en", n = 2)
 #'
-#' Sys.setLanguage(old_lang) # Restore original language
-#' rm(old_lang, gettext, gettextf, ngettext)
+#' # Restore original languages
+#' set_language(old_lang)
+#' set_sciviews_lang(old_sv_lang)
+#' rm(old_lang, old_sv_lang, gettext, gettextf, ngettext)
+#'
+#' # In case you must check if a lang= argument gets a correct value:
+#' check_lang("en")
+#' check_lang("en_US.UTF-8")
+#' # Only for SciViews language!
+#' check_lang("FR", allow_uppercase = TRUE)
+#' # But these are incorrect
+#' try(check_lang("EN"))
+#' try(check_lang(""))
+#' try(check_lang(NA_character_))
+#' try(check_lang(NULL))
+#' try(check_lang(42))
+#' try(check_lang(c("en", "fr")))
+#' try(check_lang("Fr", allow_uppercase = TRUE))
 gettext_ <- .gettext_lang$gettext
 
 #' @export
@@ -324,8 +381,70 @@ ngettext_ <- .gettext_lang$ngettext
 
 #' @export
 #' @rdname gettext_
-test_gettext_lang <- function(lang = getOption("SciViews_lang",
-  default = Sys.getenv("LANGUAGE", unset = "en")), n = 1) {
+get_language <- function(unset = "en") {
+  lang <- Sys.getenv("LANGUAGE", unset = unset)
+  if (!nzchar(lang))
+    lang <- unset
+  lang
+}
+
+#' @export
+#' @rdname gettext_
+set_language <- function(lang, unset = get_language()) {
+  .__top_call__. <- TRUE
+  check_lang(lang)
+
+  invisible(Sys.setLanguage(lang, unset = unset))
+}
+
+#' @export
+#' @rdname gettext_
+get_sciviews_lang <- function(unset = get_language()) {
+  getOption("SciViews_lang",
+    default = Sys.getenv("SCIVIEWS_LANG", unset = unset))
+}
+
+#' @export
+#' @rdname gettext_
+set_sciviews_lang <- function(lang, unset = "en") {
+  .__top_call__. <- TRUE
+  check_lang(lang, allow_uppercase = TRUE)
+
+  olang <- get_sciviews_lang(unset = unset)
+
+  options(SciViews_lang = lang)
+  Sys.setenv(SCIVIEWS_LANG = lang)
+
+  invisible(olang)
+}
+
+#' @export
+#' @rdname gettext_
+check_lang <- function(lang, allow_uppercase = FALSE) {
+  if (missing(lang) || is.null(lang))
+    stop("Argument {.arg lang} is missing , or {.code NULL}.",
+      i = "Provide a valid language code ('en', 'en_US.UTF-8', 'fr', 'de'...)",
+      class = "lang_missing_or_null")
+
+  if (!is.character(lang) || length(lang) != 1L)
+    stop("The argument {.arg lang} must be a single string.",
+      x = "It is {.code {deparse(lang)}}.",
+      i = "Provide a valid language code ('en', 'en_US.UTF-8', 'fr', 'de'...)",
+      class = "lang_not_single_string")
+
+  rex <- if (isFALSE(allow_uppercase)) "^[a-z]{2}" else "^[a-z]{2}|^[A-Z]{2}"
+  if (is.na(lang) || (lang != "C" && !grepl(rex, lang)))
+    stop("Wrong {.arg lang} argument (must be either 'C' or a language code).",
+      x = "It is {.code {deparse(lang)}}.",
+      i = "Provide a valid language code ('en', 'en_US.UTF-8', 'fr', 'de'...)",
+      class = "lang_wrong_code")
+
+  invisible(TRUE)
+}
+
+#' @export
+#' @rdname gettext_
+test_gettext_lang <- function(lang = get_sciviews_lang(), n = 1) {
   # You should import gettext_(), gettextf_() and ngettext_() from svMisc and
   # rename them gettext, gettextf, and ngettext respectively instead of using
   # the base functions to get the lang= argument working properly.
@@ -342,17 +461,18 @@ test_gettext_lang <- function(lang = getOption("SciViews_lang",
   res <- gettext("Test of svBase's `gettext()` and `gettextf()`:",
     "This should be transtlated, if '%s' language is supported.",
     lang = lang, domain = "R-svBase")
-  cat(res[1], "\n", sep = "")
-  cat(sprintf(res[2], lang), "\n", sep = "")
+  #cat(res[1], "\n", sep = "")
+  #cat(sprintf(res[2], lang), "\n", sep = "")
+  res[2] <- sprintf(res[2], lang)
 
   # It is easier to use gettextf() for formatted messages
-  cat(gettextf("This is message number %i", 3L,
-    lang = lang, domain = "R-svBase"), "\n", sep = "")
+  res <- c(res, gettextf("This is message number %i", 3L,
+    lang = lang, domain = "R-svBase"))
 
   # For pluralisation, use ngettext() and append _lang to the domain
   # (because it is not possible to add a lang= argument to ngettext())
-  domain_lang <- paste("R-svBase", lang, sep = "_")
-  cat(ngettext(n, "You asked for only one item", "You asked for several items",
-    domain = domain_lang), "\n", sep = "")
-  invisible(res)
+  domain_lang <- paste("R-svBase", lang, sep = "/")
+  res <- c(res, ngettext(n, "You asked for only one item", "You asked for several items",
+    domain = domain_lang))
+  noquote(res)
 }

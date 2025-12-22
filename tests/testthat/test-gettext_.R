@@ -1,15 +1,3 @@
-test_that("The .po files are up to date", {
-  skip_on_cran()
-  skip_on_ci()
-  # Update .po and .mo files (only test in the source package, not R CMD check)
-  if (file.exists("../../DESCRIPTION")) {# This is the source of the package
-    cat("\nCompiling .po files...\n")
-    res <- try(tools::update_pkg_po("../.."), silent = TRUE)
-    expect_false(inherits(res, "try-error"),
-      "Updating .po files failed. Run tools::update_pkg_po() manually to debug.")
-  }
-})
-
 test_that("gettext_(), gettextf_() and ngettext_() behave like their base equivalent", {
   # Update .po and .mo files (only test in the source package, not R CMD check)
   if (file.exists("../../DESCRIPTION")) {# This is the source of the package
@@ -17,8 +5,9 @@ test_that("gettext_(), gettextf_() and ngettext_() behave like their base equiva
     res <- try(tools::update_pkg_po("../.."), silent = TRUE)
   }
 
-  # Test with English language first
-  old_lang <- Sys.setLanguage("en")
+  # Test with English languages first
+  old_lang <- set_language("en") # This is the regular R language
+  old_lang2 <- set_sciviews_lang("en") # This is the second "SciViews" language
 
   gettext <- gettext_
   gettextf <- gettextf_
@@ -64,7 +53,8 @@ test_that("gettext_(), gettextf_() and ngettext_() behave like their base equiva
   )
 
   # Test with French translations
-  Sys.setLanguage("fr")
+  set_language("fr") # used by base functions
+  set_sciviews_lang("fr") # used by svBase functions
 
   expect_identical(
     gettext("Test of svBase's `gettext()` and `gettextf()`:",
@@ -114,17 +104,25 @@ test_that("gettext_(), gettextf_() and ngettext_() behave like their base equiva
     gettext(" a\n", trim = FALSE),
     base::gettext(" a\n", trim = FALSE)
   )
+  expect_identical(
+    gettext(" a\n", trim = TRUE),
+    base::gettext(" a\n", trim = TRUE)
+  )
 
   # Wrong arguments
   # Wrong domain
-  # TODO...
+  expect_error(gettext("test", domain = 1))
+  # Wrong lang
 
-  Sys.setLanguage(old_lang)
+  # Reset languages
+  set_language(old_lang)
+  set_sciviews_lang(old_lang2)
 })
 
 test_that("gettext_(), gettextf_() and ngettext_() can use lang=", {
-  # Make sure R is in English language
-  old_lang <- Sys.setLanguage("en")
+  # Make sure R and SciViews are in English language
+  old_lang <- set_language("en")
+  old_lang2 <- set_sciviews_lang("en")
 
   gettext <- gettext_
   gettextf <- gettextf_
@@ -210,17 +208,17 @@ test_that("gettext_(), gettextf_() and ngettext_() can use lang=", {
   expect_identical(
     ngettext(0,
       "You asked for only one item", "You asked for several items",
-      domain = "R-svBase_fr"), ngettext_fr0
+      domain = "R-svBase/fr"), ngettext_fr0
   )
   expect_identical(
     ngettext(1,
       "You asked for only one item", "You asked for several items",
-      domain = "R-svBase_fr"), ngettext_fr1
+      domain = "R-svBase/fr"), ngettext_fr1
   )
   expect_identical(
     ngettext(2,
       "You asked for only one item", "You asked for several items",
-      domain = "R-svBase_fr"), ngettext_fr2
+      domain = "R-svBase/fr"), ngettext_fr2
   )
   expect_identical(
     gettext("  Test of svBase's `gettext()` and `gettextf()`:\n",
@@ -255,12 +253,15 @@ test_that("gettext_(), gettextf_() and ngettext_() can use lang=", {
       domain = "R-svBase")
   )
 
-  Sys.setLanguage(old_lang)
+  # Reset languages
+  set_language(old_lang)
+  set_sciviews_lang(old_lang2)
 })
 
 test_that("test_gettext_lang() is working as expected", {
-  # Make sure R is in English language
-  old_lang <- Sys.setLanguage("en")
+  # Make sure R and SciViews are in English language
+  old_lang <- set_language("en")
+  old_lang2 <- set_sciviews_lang("en")
 
   # default
   expect_snapshot(test_gettext_lang(), cran = TRUE)
@@ -290,33 +291,28 @@ test_that("test_gettext_lang() is working as expected", {
   expect_snapshot(test_gettext_lang("zz"), cran = TRUE)
   expect_snapshot(test_gettext_lang("zzzz"), cran = TRUE)
   # Other cases are not accepted
-  expect_error(test_gettext_lang("e"), class = "lang_wrong_code",
-    info = "Too short language code in lang=")
-  expect_error(test_gettext_lang(NA_character_), class = "lang_wrong_code",
-    info = "Missing value provided to lang=")
-  expect_error(test_gettext_lang("EN"), class = "lang_wrong_code",
-    info = "Uppercase language code for lang=")
+  expect_error(test_gettext_lang("e"), class = "lang_wrong_code")
+  expect_error(test_gettext_lang(NA_character_), class = "lang_wrong_code")
+  expect_error(test_gettext_lang("EN"), class = "lang_wrong_code")
 
   # Wrong n
-  expect_error(test_gettext_lang(n = -1), class = "n_negative",
-    info = "Negative number or {.code NA} for n= in ngettext()")
-  expect_error(test_gettext_lang(n = NA_integer_), class = "n_negative",
-    info = "Not a number for n= in ngettext()")
+  expect_error(test_gettext_lang(n = -1), class = "n_negative")
+  expect_error(test_gettext_lang(n = NA_integer_), class = "n_negative")
   # Something else
-  expect_error(test_gettext_lang(n = "a"), class = "n_not_numeric",
-    info = "Not a number for n= in ngettext()")
-  expect_error(test_gettext_lang(n = NULL), class = "n_not_numeric",
-    info = "Not a number for n= in ngettext()")
+  expect_error(test_gettext_lang(n = "a"), class = "n_not_numeric")
+  expect_error(test_gettext_lang(n = NULL), class = "n_not_numeric")
 
-  Sys.setLanguage(old_lang)
+  set_language(old_lang)
 
   # fr (apparently, it does not work on Ubuntu in GitHub actions)
   skip_on_os("linux") # For now...
-  old_lang <- Sys.setLanguage("en")
+  old_lang <- set_language("en")
   expect_snapshot(test_gettext_lang("fr", n = 0), cran = TRUE)
   expect_snapshot(test_gettext_lang("fr", n = 1), cran = TRUE)
   expect_snapshot(test_gettext_lang("fr", n = 2), cran = TRUE)
   expect_snapshot(test_gettext_lang("fr_FR.UTF-8", n = 2), cran = TRUE)
 
-  Sys.setLanguage(old_lang)
+  # Reset languages
+  set_language(old_lang)
+  set_sciviews_lang(old_lang2)
 })

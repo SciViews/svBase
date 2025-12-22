@@ -4,41 +4,55 @@
 \alias{gettext_}
 \alias{gettextf_}
 \alias{ngettext_}
+\alias{get_language}
+\alias{set_language}
+\alias{get_sciviews_lang}
+\alias{set_sciviews_lang}
+\alias{check_lang}
 \alias{test_gettext_lang}
-\title{Translate text messages in a different language than the one in the R session}
+\title{Translate messages in a different language than the one in the R session}
 \usage{
-gettext_(
-  ...,
-  domain = NULL,
-  trim = TRUE,
-  lang = getOption("SciViews_lang", default = Sys.getenv("LANGUAGE", unset = "en"))
-)
+gettext_(..., domain = NULL, trim = TRUE, lang = get_sciviews_lang())
 
-gettextf_(
-  fmt,
-  ...,
-  domain = NULL,
-  trim = TRUE,
-  lang = getOption("SciViews_lang", default = Sys.getenv("LANGUAGE", unset = "en"))
-)
+gettextf_(fmt, ..., domain = NULL, trim = TRUE, lang = get_sciviews_lang())
 
 ngettext_(n, msg1, msg2, domain = NULL)
 
-test_gettext_lang(
-  lang = getOption("SciViews_lang", default = Sys.getenv("LANGUAGE", unset = "en")),
-  n = 1
-)
+get_language(unset = "en")
+
+set_language(lang, unset = get_language())
+
+get_sciviews_lang(unset = get_language())
+
+set_sciviews_lang(lang, unset = "en")
+
+check_lang(lang, allow_uppercase = FALSE)
+
+test_gettext_lang(lang = get_sciviews_lang(), n = 1)
 }
 \arguments{
 \item{...}{one of more character vectors.}
 
 \item{domain}{the 'domain' for the translation, a character string or \code{NULL};
-see \code{\link[base:gettext]{base::gettext()}} for more details.}
+see \code{\link[base:gettext]{base::gettext()}} for more details. For \code{ngettext_()}, it should combine
+the domain and the lang, like \code{"domain/lang"} (e.g., \code{"NULL/en_US"} or
+\code{"R-stats/fr"}). This is a workaround to define the language, because base
+version of that function does not allow additional arguments and we have to
+remain compatible here.}
 
 \item{trim}{logical indicating if the white space trimming should happen.}
 
-\item{lang}{the target language (usually two lowercase letters, e.g., "en"
-for English, "fr" for French, "de" for German, etc.)}
+\item{lang}{the target language (could be two lowercase letters, e.g., "en"
+for English, "fr" for French, "de" for German, etc.). One can also further
+specify variants, e.g., "en_US", or "en_GB", or even "fr_FR.UTF-8". For
+\code{get_language()} and \code{set_language()}, it is the default language of the R
+session. For the other functions, it is the alternate language used by
+SciViews. One can specify it globally with either the SCIVIEWS_LANG
+environment variable, or with the R option \code{SciViews_lang}, but it is a
+better practice to use \code{set_sciviews_lang()} in the R session. If missing,
+\code{NULL}, or \code{""}, the default is used from \code{unset}. For the SciViews language,
+uppercase letters are accepted, and they mean "translate more" (typically,
+\strong{factor} and \strong{ordered} levels are also translated, for instance).}
 
 \item{fmt}{a character vector of format strings, each of up to 8192 bytes.}
 
@@ -46,32 +60,59 @@ for English, "fr" for French, "de" for German, etc.)}
 
 \item{msg1}{the message to be used in English for \code{n = 1}.}
 
-\item{msg2}{the message to be used in English for \verb{n = 0, 2, 3, ...}.}
+\item{msg2}{the message to be used in English for \verb{n = 0, 2, 3, ...}}
+
+\item{unset}{The default language to use if not defined yet, "en" (English)
+by default for regular R language, and the currently defined R language for
+the alternate SciViews language.}
+
+\item{allow_uppercase}{logical indicating if uppercase letters are allowed
+for the first two letters of the language code (\code{FALSE} by default, but
+should be \code{TRUE} for the SciViews language).}
 }
 \value{
-A character vector with translated messages. \code{test_gettext_lang()}
-only serve to test and demonstrate the translation in a given language.
+A character vector with translated messages for the \code{gettext...()}
+functions.
+
+\code{test_gettext_lang()} just serves to test and demonstrate the translation in
+a given language.
+
+\code{get_language()} and \code{get_sciviews_lang()} return the current language.
+\code{set_language()}and \code{set_sciviews_lang()} return the previous language
+invisibly (with an attribute \verb{attr(*, "ok")} a \strong{logical} indicating
+success.
+
+\code{check_lang()} validates a \verb{lang=} argument by returning \code{TRUE} invisibly,
+otherwise, it \code{stop()}s.
 }
 \description{
-Translation messages are obtained with \code{\link[base:gettext]{base::gettext()}} or
+Message translation in R is obtained with \code{\link[base:gettext]{base::gettext()}} or
 \code{\link[base:gettext]{base::ngettext()}}. But, there is no way to specify that one needs translated
-messages in a different language than the current one in R. These functions
-have an additional \verb{lang=} argument that allows to do so. If the \verb{lang=}
-argument is not provided in the call, they behave exactly like the base
-functions.
+messages in a different language than the current one in R. Here are
+alternate functions that have an additional \verb{lang=} argument allowing to do
+so. If the \verb{lang=} argument is not provided in the call, they use an
+alternate language defined by \code{\link[=set_sciviews_lang]{set_sciviews_lang()}}. This is useful, for
+instance, to keep R error and warning messages in English, but to generate
+translation for tables and figures in a different language in a report.
 }
 \details{
 To prepare your package for translation with these functions, you should
-import \code{gettext_()}, \code{gettextf_()} and \code{ngettext_()} from svMisc. Then, you
+import \code{gettext_()}, \code{gettextf_()} and \code{ngettext_()} from svBase. Then, you
 define \code{gettext <- gettext_}, \code{gettextf <- gettextf_} and
-\code{ngettext <- ngettext_} in your R scripts in the package. Finally, you
-change the current directory of your R console to the base folder of the
-sources of your package and you issue \code{tools::update_pkg_po(".")} in R. Then,
-you create translations for different languages and you provide translated
-strings with, say, \href{https://poedit.net/}{poEdit}.
+\code{ngettext <- ngettext_} somewhere in your package. To prepare translation
+strings, you change the current directory of your R console to the base
+folder of the sources of your package and you issue
+\code{tools::update_pkg_po(".")} in R (or you include it in the tests: for an
+example, see tests/testthat/test-translations.R in the source of the svBase
+package). Then, you perform the translation for different languages with,
+say, \href{https://poedit.net/}{poEdit}, and recompile your package.
 }
 \examples{
-old_lang <- Sys.setLanguage("fr") # Switch to French for R language
+get_language()
+get_sciviews_lang()
+
+old_lang <- set_language("fr") # Switch to French for R language
+old_sv_lang <- set_sciviews_lang("fr") # Switch to French for SciViews also
 
 # R look for messages to be translated into gettext() calls, not gettext_()
 # So, rename accordingly in your package:
@@ -100,8 +141,24 @@ svBase::test_gettext_lang("fr", n = 2)
 svBase::test_gettext_lang("en", n = 1)
 svBase::test_gettext_lang("en", n = 2)
 
-Sys.setLanguage(old_lang) # Restore original language
-rm(old_lang, gettext, gettextf, ngettext)
+# Restore original languages
+set_language(old_lang)
+set_sciviews_lang(old_sv_lang)
+rm(old_lang, old_sv_lang, gettext, gettextf, ngettext)
+
+# In case you must check if a lang= argument gets a correct value:
+check_lang("en")
+check_lang("en_US.UTF-8")
+# Only for SciViews language!
+check_lang("FR", allow_uppercase = TRUE)
+# But these are incorrect
+try(check_lang("EN"))
+try(check_lang(""))
+try(check_lang(NA_character_))
+try(check_lang(NULL))
+try(check_lang(42))
+try(check_lang(c("en", "fr")))
+try(check_lang("Fr", allow_uppercase = TRUE))
 }
 \seealso{
 \code{\link[base:gettext]{base::gettext()}}, \code{\link[base:sprintf]{base::gettextf()}}, \code{\link[tools:update_pkg_po]{tools::update_pkg_po()}}.

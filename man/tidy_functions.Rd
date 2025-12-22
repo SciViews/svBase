@@ -90,8 +90,8 @@ plus the functions defined here under.
 \note{
 The help page here is very basic and it aims mainly to list all the
 tidy functions. For more complete help, see the \{dplyr\} or \{tidyr\}
-packages. From \{dplyr\}, the \code{\link[=slice]{slice()}} and \code{slice_xxx()} functions are not
-added yet because they are not available for \{dbplyr\}. Also
+packages. From \{dplyr\}, the \code{\link[dplyr:slice]{dplyr::slice()}} and \code{slice_xxx()} functions
+are not added yet because they are not available for \{dbplyr\}. Also
 \code{\link[dplyr:filter-joins]{dplyr::anti_join()}}, \code{\link[dplyr:filter-joins]{dplyr::semi_join()}} and \code{\link[dplyr:nest_join]{dplyr::nest_join()}} are not
 implemented yet. From \{dplyr\}, the \code{\link[dplyr:slice]{dplyr::slice()}} and \code{slice_xxx()}
 functions are not added yet because they are not available for \{dbplyr\}.

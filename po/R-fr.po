@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: svBase 1.7.3\n"
-"POT-Creation-Date: 2025-12-21 17:06\n"
-"PO-Revision-Date: 2025-12-21 17:22+0100\n"
+"POT-Creation-Date: 2025-12-22 14:44\n"
+"PO-Revision-Date: 2025-12-22 15:33+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -46,34 +46,35 @@ msgstr "Toutes les entrées doivent être nommées."
 msgid "Use formulas instead."
 msgstr "Utilisez plutôt des formules."
 
-msgid "Argument {.arg lang} is missing or {.code NULL}."
-msgstr "L'argument {.arg lang} est manquant ou {.code NULL}."
-
-msgid "Provide a valid two-letter language code, e.g., 'en', 'fr', 'de'..."
-msgstr ""
-"Indiquez un code de langue valide à deux lettres, par exemple « en », "
-"« fr », « de »..."
-
-msgid "lang_missing_or_null"
-msgstr "lang_missing_or_null"
-
-msgid "The argument {.arg lang} must be a single string."
-msgstr "L'argument {.arg lang} doit être une chaîne unique."
-
-msgid "lang_not_single_string"
-msgstr "lang_not_single_string"
-
-msgid "Wrong {.arg lang} argument (must be either 'C' or a language code)."
-msgstr "Argument {.arg lang} incorrect (doit être « C » ou un code de langue)."
-
-msgid "lang_wrong_code"
-msgstr "lang_wrong_code"
-
-msgid "Natural language support is available on this system,"
+msgid "Natural language supported on this system,"
 msgstr "Ce système offre une assistance en langage naturel,"
 
 msgid "but unable to properly switch language."
 msgstr "mais impossible de changer correctement de langue."
+
+msgid "Argument {.arg fmt} is missing but must be provided."
+msgstr "L'argument {.arg fmt} est manquant mais doit être fourni."
+
+msgid "fmt_missing"
+msgstr "fmt_missing"
+
+msgid "Argument {.arg n} is missing but must be provided."
+msgstr "L'argument {.arg n} est manquant mais doit être fourni."
+
+msgid "n_missing"
+msgstr "n_missing"
+
+msgid "Argument {.arg msg1} is missing but must be provided."
+msgstr "L'argument {.arg msg1} est manquant mais doit être fourni."
+
+msgid "msg1_missing"
+msgstr "msg1_missing"
+
+msgid "Argument {.arg msg2} is missing but must be provided."
+msgstr "L'argument {.arg msg2} est manquant mais doit être fourni."
+
+msgid "msg2_missing"
+msgstr "msg2_missing"
 
 msgid "Argument {.arg n} must be numeric."
 msgstr "L'argument {.arg n} doit être numérique."
@@ -122,6 +123,30 @@ msgstr "Il s'agit d'un objet de longueur {length(msg2)}."
 
 msgid "msg2_not_single_string"
 msgstr "msg2_not_single_string"
+
+msgid "Argument {.arg lang} is missing , or {.code NULL}."
+msgstr "L'argument {.arg lang} est manquant ou {.code NULL}."
+
+msgid "Provide a valid language code ('en', 'en_US.UTF-8', 'fr', 'de'...)"
+msgstr "Indiquez un code de langue valide ('en', 'en_US.UTF-8', 'fr', 'de'...)"
+
+msgid "lang_missing_or_null"
+msgstr "lang_missing_or_null"
+
+msgid "The argument {.arg lang} must be a single string."
+msgstr "L'argument {.arg lang} doit être une chaîne unique."
+
+msgid "It is {.code {deparse(lang)}}."
+msgstr "C'est {.code {deparse(lang)}}."
+
+msgid "lang_not_single_string"
+msgstr "lang_not_single_string"
+
+msgid "Wrong {.arg lang} argument (must be either 'C' or a language code)."
+msgstr "Argument {.arg lang} incorrect (doit être « C » ou un code de langue)."
+
+msgid "lang_wrong_code"
+msgstr "lang_wrong_code"
 
 msgid "Test of svBase's `gettext()` and `gettextf()`:"
 msgstr "Test des fonctions `gettext()` et `gettextf()` de svBase :"
@@ -299,8 +324,8 @@ msgstr ""
 "Vous devez collecter les résultats d'une fonction ’tidy’ avant d'utiliser "
 "une fonction ‘speedy’."
 
-msgid "{.emph The data-dot mechanism was activated}"
-msgstr "{.emph Le mécanisme «  data-dot » a été activé"
+msgid "{.emph The data-dot mechanism was likely activated}"
+msgstr "{.emph Le mécanisme «  data-dot » a été probablement activé"
 
 msgid "(see {.help svBase::data_dot_mechanism})."
 msgstr "(voir {.help svBase::data_dot_mechanism} )."

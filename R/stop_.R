@@ -87,14 +87,16 @@ stop_ <- function(..., call. = FALSE, domain = NULL, class = NULL,
   if (length(last_call) < 2L) {
     first_arg <- ""
   } else {
-    first_arg <- last_call[[2]]
-    if (is.null(first_arg)) first_arg <- ""
+    first_arg <- deparse(last_call[[2]])
+    if (is.null(first_arg) || is.na(first_arg))
+      first_arg <- ""
   }
-  data_dot <-  (first_arg == '(.)') # data-dot mechanisms is likely activated
-  # Enhance the message
+
+  # Enhance the message (data-dot mechanisms is likely activated)
+  data_dot <-  (first_arg == '(.)')
   if (data_dot)
     message <- c(message, i = gettext(paste(
-      "{.emph The data-dot mechanism was activated}",
+      "{.emph The data-dot mechanism was likely activated}",
       "(see {.help svBase::data_dot_mechanism}).")))
 
   if (data_dot || first_arg == '.')

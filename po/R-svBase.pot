@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: svBase 1.7.3\n"
-"POT-Creation-Date: 2025-12-21 17:06\n"
+"POT-Creation-Date: 2025-12-22 14:44\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -38,31 +38,34 @@ msgstr ""
 msgid "Use formulas instead."
 msgstr ""
 
-msgid "Argument {.arg lang} is missing or {.code NULL}."
-msgstr ""
-
-msgid "Provide a valid two-letter language code, e.g., 'en', 'fr', 'de'..."
-msgstr ""
-
-msgid "lang_missing_or_null"
-msgstr ""
-
-msgid "The argument {.arg lang} must be a single string."
-msgstr ""
-
-msgid "lang_not_single_string"
-msgstr ""
-
-msgid "Wrong {.arg lang} argument (must be either 'C' or a language code)."
-msgstr ""
-
-msgid "lang_wrong_code"
-msgstr ""
-
-msgid "Natural language support is available on this system,"
+msgid "Natural language supported on this system,"
 msgstr ""
 
 msgid "but unable to properly switch language."
+msgstr ""
+
+msgid "Argument {.arg fmt} is missing but must be provided."
+msgstr ""
+
+msgid "fmt_missing"
+msgstr ""
+
+msgid "Argument {.arg n} is missing but must be provided."
+msgstr ""
+
+msgid "n_missing"
+msgstr ""
+
+msgid "Argument {.arg msg1} is missing but must be provided."
+msgstr ""
+
+msgid "msg1_missing"
+msgstr ""
+
+msgid "Argument {.arg msg2} is missing but must be provided."
+msgstr ""
+
+msgid "msg2_missing"
 msgstr ""
 
 msgid "Argument {.arg n} must be numeric."
@@ -111,6 +114,30 @@ msgid "This is an object of length {length(msg2)}."
 msgstr ""
 
 msgid "msg2_not_single_string"
+msgstr ""
+
+msgid "Argument {.arg lang} is missing , or {.code NULL}."
+msgstr ""
+
+msgid "Provide a valid language code ('en', 'en_US.UTF-8', 'fr', 'de'...)"
+msgstr ""
+
+msgid "lang_missing_or_null"
+msgstr ""
+
+msgid "The argument {.arg lang} must be a single string."
+msgstr ""
+
+msgid "It is {.code {deparse(lang)}}."
+msgstr ""
+
+msgid "lang_not_single_string"
+msgstr ""
+
+msgid "Wrong {.arg lang} argument (must be either 'C' or a language code)."
+msgstr ""
+
+msgid "lang_wrong_code"
 msgstr ""
 
 msgid "Test of svBase's `gettext()` and `gettextf()`:"
@@ -239,7 +266,7 @@ msgstr ""
 msgid "You must collect results from a tidy function before using a speedy one."
 msgstr ""
 
-msgid "{.emph The data-dot mechanism was activated}"
+msgid "{.emph The data-dot mechanism was likely activated}"
 msgstr ""
 
 msgid "(see {.help svBase::data_dot_mechanism})."
