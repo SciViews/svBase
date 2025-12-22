@@ -24,6 +24,12 @@ The {svBase} package builds on {rlang} and {cli} fantastic ways of dealing with 
 
 Base R provides `gettext()`, `gettextf()`, and `ngettext()` to translate messages. Moreover, `stop()`, `warning()` and `message()` are also automatically translated. However, you cannot indicate a different language to the one used for the R session (for instance, if you want to create a figure in French, while still getting error messages in English). The {svBase}'s versions `gettext_()`, `gettextf_()` and `ngettext_()` allow for specifying `lang=` independently.
 
+This works only if natural language translation is active in your R (decision made at the compile time). Check it with:
+
+```{r}
+capabilities("NLS")
+```
+
 ### Setting first and secondary languages
 
 A "secondary" language can be set globally with `set_sciviews_lang()`, and it is used automatically by these versions. Here is how you can use them. First, set or get R language, and alternate SciViews language:
