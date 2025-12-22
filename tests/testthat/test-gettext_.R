@@ -1,3 +1,48 @@
+test_that("set/get_language() & set/get_sciviews_lang() work properly", {
+  # Make sure R and SciViews are in English language
+  old_lang <- set_language("en")
+  old_lang2 <- set_sciviews_lang("en")
+
+  expect_identical(get_language(), "en")
+  expect_identical(get_sciviews_lang(), "en")
+
+  set_language("fr")
+  expect_identical(get_language(), "fr")
+  set_sciviews_lang("fr")
+  expect_identical(get_sciviews_lang(), "fr")
+  set_sciviews_lang("FR")
+  expect_identical(get_sciviews_lang(), "FR")
+  set_language("en_US.UTF-8")
+  expect_identical(get_language(), "en_US.UTF-8")
+  set_sciviews_lang("en_US.UTF-8")
+  expect_identical(get_sciviews_lang(), "en_US.UTF-8")
+  set_sciviews_lang("FR_BE.UTF-8")
+  expect_identical(get_sciviews_lang(), "FR_BE.UTF-8")
+
+  # check_lang() catches wrong language codes
+  expect_true(check_lang("en"))
+  expect_true(check_lang("en_US.UTF-8"))
+  expect_true(check_lang("FR", allow_uppercase = TRUE))
+  # But these are incorrect
+  expect_error(check_lang(), class = "lang_missing_or_null")
+  expect_error(check_lang(NULL), class = "lang_missing_or_null")
+  expect_error(check_lang(42), class = "lang_not_single_string")
+  expect_error(check_lang(c("en", "fr")), class = "lang_not_single_string")
+  expect_error(check_lang("EN"), class = "lang_wrong_code")
+  expect_error(check_lang("Fr", allow_uppercase = TRUE),
+    class = "lang_wrong_code")
+  expect_error(check_lang(""), class = "lang_wrong_code")
+  expect_error(check_lang(NA_character_), class = "lang_wrong_code")
+
+  # When LANGUAGE="", still report "en" correctly
+  Sys.setenv(LANGUAGE = "")
+  expect_identical(get_language(), "en")
+
+  # Reset languages
+  set_language(old_lang)
+  set_sciviews_lang(old_lang2)
+})
+
 test_that("gettext_(), gettextf_() and ngettext_() behave like their base equivalent", {
   # Update .po and .mo files (only test in the source package, not R CMD check)
   if (file.exists("../../DESCRIPTION")) {# This is the source of the package
@@ -108,11 +153,56 @@ test_that("gettext_(), gettextf_() and ngettext_() behave like their base equiva
     gettext(" a\n", trim = TRUE),
     base::gettext(" a\n", trim = TRUE)
   )
+  # No translation
+  expect_identical(gettext("test", lang = NA_character_), "test")
+  expect_identical(gettextf("This is a %s", "test", lang = NA_character_),
+    "This is a test")
+  expect_identical(ngettext(1, "test1", "test2", domain = "NULL/"), "test1")
+  expect_identical(ngettext(1, "test1", "test2", domain = "NULL/zz"), "test1")
+  expect_identical(gettext("test", lang = "zz"), "test")
+  expect_identical(gettextf("This is a %s", "test", lang = "zz"),
+    "This is a test")
+
+  # Trivial cases
+  expect_identical(gettext(), NULL)
+  expect_identical(gettextf(""), "")
+  expect_identical(ngettext(1, "", ""), "")
 
   # Wrong arguments
   # Wrong domain
   expect_error(gettext("test", domain = 1))
+  expect_error(gettextf("%s", "test", domain = 1))
+  expect_error(ngettext(1, "test1", "test2", domain = 1))
   # Wrong lang
+  expect_error(gettext("test", lang = 1), class = "lang_wrong_code")
+  expect_error(gettext("test", lang = ""), class = "lang_wrong_code")
+  expect_error(gettextf("%s", "test", lang = 1), class = "lang_wrong_code")
+  expect_error(gettextf("%s", "test", lang = ""), class = "lang_wrong_code")
+  expect_error(ngettext(1, "test1", "test2", domain = "NULL/1"),
+    class = "lang_wrong_code")
+  # Missing or wrong fmt
+  expect_error(gettextf(), class = "fmt_missing")
+  # TODO: better catch sprintf() errors
+  expect_error(gettextf("%s"))
+  expect_error(gettextf("%i", "a"))
+  expect_warning(gettextf("%s", "a", "b", lang = "fr"))
+  # Missing or wrong arguments for n, msg1, or msg2
+  expect_error(ngettext(), class = "n_missing")
+  expect_error(ngettext(1), class = "msg1_missing")
+  expect_error(ngettext(1, "test1"), class = "msg2_missing")
+  expect_error(ngettext(-1, "test", "test2"), class = "n_negative")
+  expect_error(ngettext(NA_integer_, "test", "test2"), class = "n_negative")
+  expect_error(ngettext("a", "test", "test2"), class = "n_not_numeric")
+  expect_error(ngettext(1, 2, "test2"), class = "msg1_not_single_string")
+  expect_error(ngettext(1, c("a", "b"), "test2"),
+    class = "msg1_not_single_string")
+  expect_error(ngettext(1, character(0), "test2"),
+    class = "msg1_not_single_string")
+  expect_error(ngettext(1, "test", 2), class = "msg2_not_single_string")
+  expect_error(ngettext(1, "test", c("a", "b")),
+    class = "msg2_not_single_string")
+  expect_error(ngettext(1, "test", character(0)),
+    class = "msg2_not_single_string")
 
   # Reset languages
   set_language(old_lang)
@@ -194,7 +284,7 @@ test_that("gettext_(), gettextf_() and ngettext_() can use lang=", {
     domain = "R-svBase", trim = FALSE)
 
   # Switch R back to English
-  Sys.setLanguage("en")
+  set_language("en")
 
   expect_identical(
     gettext("Test of svBase's `gettext()` and `gettextf()`:",

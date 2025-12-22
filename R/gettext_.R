@@ -4,7 +4,7 @@
   # to speed up switching from one language to another.
 
   # These are the original gettext(), gettextf() and ngettext() functions
-  gettext_base <- base::gettext
+  gettext_base <- base::gettext # nocov start
   gettextf_base <- base::gettextf
   ngettext_base <- base::ngettext
 
@@ -38,7 +38,10 @@
   }
 
   # Make sure current R language is defined in the LANGUAGE envir var
-  Sys.setenv(LANGUAGE = known_lang[1])
+  Sys.setenv(LANGUAGE = known_lang[1]) # nocov end
+  # Note: code up to here cannot be tested because it is executed only once
+  # when the package loads... but subsequent tests of following functions
+  # cannot succeed if this code did not run correctly.
 
   # The function that retrieves one or more translated character strings in a
   # given language (may be different to current R language, and defaults to
@@ -62,9 +65,12 @@
       # Uppercase lang must be transformed into lowercase
       if (grepl("^[A-Z]{2}", lang))
         substring(lang, 1L, 2L) <- tolower(substring(lang, 1L, 2L))
-      cur_lang <- substring(Sys.getenv("LANGUAGE", unset = "en"), 1L, 2L)
+      cur_lang <- Sys.getenv("LANGUAGE", unset = "en")
+      # For debugging purpose
+      #message("lang=", lang, "; cur_lang=", cur_lang)
+
       if (no_nls || lang == cur_lang || any(failed_lang == lang) ||
-          is.na(domain) || domain == "") {
+          !is.null(domain) && (is.na(domain) || domain == "")) {
         #message("Optimization #1!")
         return(gettext_base(..., domain = domain, trim = isTRUE(trim)))
       }
@@ -116,8 +122,6 @@
           class = "fmt_missing")
 
       if (missing(lang)) {
-        if (!is.null(domain))
-          domain <- as.character(domain)[1L]
         sprintf(gettext_base(fmt, domain = domain, trim = isTRUE(trim)), ...)
       } else {
         sprintf(gettext_lang(fmt, domain = domain, trim = trim, lang = lang),
@@ -188,13 +192,13 @@
       # If no_nls or same as current language or failed lang, just run gettext()
       lang <- as.character(lang)
       if (!length(lang)) lang <- "en" else lang <- lang[1]
-      if (is.na(lang)) lang <- "en" # Default language
+      # Never happens: if (is.na(lang)) lang <- "en" # Default language
       # Uppercase lang must be transformed into lowercase
       if (grepl("^[A-Z]{2}", lang))
         substring(lang, 1L, 2L) <- tolower(substring(lang, 1L, 2L))
       cur_lang <- Sys.getenv("LANGUAGE", unset = "en")
       if (no_nls || lang == cur_lang || any(failed_lang == lang) ||
-          is.na(domain) || domain == "") {
+          !is.null(domain) && (is.na(domain) || domain == "")) {
         #message("Optimization #1!")
         return(ngettext_base(n = n, msg1 = msg1, msg2 = msg2, domain = domain))
       }
@@ -240,8 +244,8 @@
   )
 
   # Return the functions in a list
-  list(gettext = gettext_lang, gettextf = gettextf_lang,
-    ngettext = ngettext_lang)
+  list(gettext = gettext_lang, gettextf = gettextf_lang, # nocov
+    ngettext = ngettext_lang) # nocov
 }
 
 .gettext_lang <- .gettext_lang_factory()
