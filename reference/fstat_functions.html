@@ -6,12 +6,12 @@ matrix-like and data frame objects. Most of them are defined in the
 {collapse} package
 For instance, base mean() operates on a vector, but not on a data frame. A
 matrix is recognized as a vector and a single mean is returned. On, the
-contrary, fmean() calculates one mean per column. It does the same for a
-data frame, and it does so usually quicker than base functions. No need for
-colMeans(), a separate function to do so. Fast statistical functions also
-recognize grouping with fgroup_by(), sgroup_by() or group_by() and
-calculate the mean by group in this case. Again, no need for a different
-function like stats::ave().
+contrary, collapse::fmean() calculates one mean per column. It does the
+same for a data frame, and it does so usually quicker than base functions. No
+need for colMeans(), a separate function to do so. Fast statistical
+functions also recognize grouping with collapse::fgroup_by(), sgroup_by()
+or dplyr::group_by() and calculate the mean by group in this case. Again,
+no need for a different function like stats::ave().
 Finally, these functions also have a TRA= argument that computes, for
 instance, if TRA = "-", (x  f(x)) very efficiently (for instance to
 calculate residuals by subtracting the mean).
@@ -102,7 +102,7 @@ here, together with an alternate syntax to replace TRA= with %_f%.'><meta proper
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Fast (flexible and friendly) statistical functions (mainly from collapse) for matrix-like and data frame objects</h1>
-    <small class="dont-index">Source: <a href="https://github.com/SciViews/svBase/blob/main/R/fast_functions.R" class="external-link"><code>R/fast_functions.R</code></a></small>
+    <small class="dont-index">Source: <a href="https://github.com/SciViews/svBase/blob/main/R/fstat_functions.R" class="external-link"><code>R/fstat_functions.R</code></a></small>
     <div class="hidden name"><code>fstat_functions.Rd</code></div>
     </div>
 
@@ -114,12 +114,12 @@ matrix-like and data frame objects. Most of them are defined in the
 {collapse} package
 For instance, base <code><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean()</a></code> operates on a vector, but not on a data frame. A
 matrix is recognized as a vector and a single mean is returned. On, the
-contrary, <code>fmean()</code> calculates one mean per column. It does the same for a
-data frame, and it does so usually quicker than base functions. No need for
-<code><a href="https://rdrr.io/r/base/colSums.html" class="external-link">colMeans()</a></code>, a separate function to do so. Fast statistical functions also
-recognize grouping with <code>fgroup_by()</code>, <code><a href="speedy_functions.html">sgroup_by()</a></code> or <code><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by()</a></code> and
-calculate the mean by group in this case. Again, no need for a different
-function like <code><a href="https://rdrr.io/r/stats/ave.html" class="external-link">stats::ave()</a></code>.
+contrary, <code><a href="https://rdrr.io/pkg/collapse/man/fmean.html" class="external-link">collapse::fmean()</a></code> calculates one mean per column. It does the
+same for a data frame, and it does so usually quicker than base functions. No
+need for <code><a href="https://rdrr.io/r/base/colSums.html" class="external-link">colMeans()</a></code>, a separate function to do so. Fast statistical
+functions also recognize grouping with <code><a href="https://rdrr.io/pkg/collapse/man/GRP.html" class="external-link">collapse::fgroup_by()</a></code>, <code><a href="speedy_functions.html">sgroup_by()</a></code>
+or <code><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">dplyr::group_by()</a></code> and calculate the mean by group in this case. Again,
+no need for a different function like <code><a href="https://rdrr.io/r/stats/ave.html" class="external-link">stats::ave()</a></code>.
 Finally, these functions also have a <code>TRA=</code> argument that computes, for
 instance, if <code>TRA = "-"</code>, <code>(x  f(x))</code> very efficiently (for instance to
 calculate residuals by subtracting the mean).
@@ -198,7 +198,7 @@ all the known fast statistical functions.</p>
     <h2>Note</h2>
     <p>The page <a href="https://rdrr.io/pkg/collapse/man/fast-statistical-functions.html" class="external-link">collapse::fast-statistical-functions</a> gives more details.
 <code>fn()</code> count all observations, including <code>NA</code>s, <code>fna()</code> counts
-only <code>NA</code>s, where <code><a href="https://rdrr.io/pkg/collapse/man/fnobs.html" class="external-link">fnobs()</a></code> counts non-missing observations.
+only <code>NA</code>s, where <code><a href="https://rdrr.io/pkg/collapse/man/fnobs.html" class="external-link">collapse::fnobs()</a></code> counts non-missing observations.
 Instead of <code>TRA=</code> one can use the <code>%__f%</code> functions where <code>__</code> is <code>replace</code>,
 <code>replace_fill</code>, <code>-</code>, <code>+</code>, <code>-+</code>, <code>/</code>, <code>/*100</code> for <code>TRA="%"</code>, <code>*</code>, <code>mod</code> for
 <code>TRA="%%"</code>, or <code>-mod</code> for <code>TRA="-%%"</code>. See example.</p>
