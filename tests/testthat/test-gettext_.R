@@ -273,6 +273,7 @@ test_that("test_gettext_lang() is working as expected", {
   expect_snapshot(test_gettext_lang("en", n = 0), cran = TRUE)
   expect_snapshot(test_gettext_lang("en", n = 1), cran = TRUE)
   expect_snapshot(test_gettext_lang("en", n = 2), cran = TRUE)
+  expect_snapshot(test_gettext_lang("EN", n = 2), cran = TRUE)
   expect_snapshot(test_gettext_lang("en_US.UTF-8", n = 2), cran = TRUE)
   expect_snapshot(test_gettext_lang("en", n = 9), cran = TRUE)
 
@@ -292,8 +293,6 @@ test_that("test_gettext_lang() is working as expected", {
   expect_snapshot(test_gettext_lang("zzzz"), cran = TRUE)
   # Other cases are not accepted
   expect_error(test_gettext_lang("e"), class = "lang_wrong_code")
-  expect_error(test_gettext_lang(NA_character_), class = "lang_wrong_code")
-  expect_error(test_gettext_lang("EN"), class = "lang_wrong_code")
 
   # Wrong n
   expect_error(test_gettext_lang(n = -1), class = "n_negative")

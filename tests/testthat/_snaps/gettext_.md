@@ -71,6 +71,16 @@
 ---
 
     Code
+      test_gettext_lang("EN", n = 2)
+    Output
+      [1] Test of svBase's `gettext()` and `gettextf()`:            
+      [2] This should be transtlated, if 'EN' language is supported.
+      [3] This is message number 3                                  
+      [4] You asked for several items                               
+
+---
+
+    Code
       test_gettext_lang("en_US.UTF-8", n = 2)
     Output
       [1] Test of svBase's `gettext()` and `gettextf()`:                     
