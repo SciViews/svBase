@@ -146,6 +146,12 @@ you want to create a figure in French, while still getting error
 messages in English). The {svBase}’s versions <code><a href="../reference/gettext_.html">gettext_()</a></code>,
 <code><a href="../reference/gettext_.html">gettextf_()</a></code> and <code><a href="../reference/gettext_.html">ngettext_()</a></code> allow for
 specifying <code>lang=</code> independently.</p>
+<p>This works only if natural language translation is active in your R
+(decision made at the compile time). Check it with:</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/capabilities.html" class="external-link">capabilities</a></span><span class="op">(</span><span class="st">"NLS"</span><span class="op">)</span></span>
+<span><span class="co">#&gt;  NLS </span></span>
+<span><span class="co">#&gt; TRUE</span></span></code></pre></div>
 <div class="section level3">
 <h3 id="setting-first-and-secondary-languages">Setting first and secondary languages<a class="anchor" aria-label="anchor" href="#setting-first-and-secondary-languages"></a>
 </h3>
@@ -153,13 +159,13 @@ specifying <code>lang=</code> independently.</p>
 <code><a href="../reference/gettext_.html">set_sciviews_lang()</a></code>, and it is used automatically by these
 versions. Here is how you can use them. First, set or get R language,
 and alternate SciViews language:</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/gettext_.html">get_language</a></span><span class="op">(</span><span class="op">)</span> <span class="co"># Current R session language</span></span>
 <span><span class="co">#&gt; [1] "en-US"</span></span>
 <span><span class="fu"><a href="../reference/gettext_.html">get_sciviews_lang</a></span><span class="op">(</span><span class="op">)</span> <span class="co"># Current alternate language for gettext_()...</span></span>
 <span><span class="co">#&gt; [1] "en"</span></span></code></pre></div>
 <p>You change those languages like this:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">olang</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gettext_.html">set_language</a></span><span class="op">(</span><span class="st">"de"</span><span class="op">)</span></span>
 <span><span class="va">olang2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gettext_.html">set_sciviews_lang</a></span><span class="op">(</span><span class="st">"fr"</span><span class="op">)</span></span>
 <span><span class="co"># Check</span></span>
@@ -171,7 +177,7 @@ and alternate SciViews language:</p>
 for table or plots is in French. We assigned results to
 <code>olang</code> and <code>olang2</code> in order to easily comme back
 later to the original languages.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span> <span class="op">+</span> <span class="fl">1</span><span class="op">:</span><span class="fl">3</span></span>
 <span><span class="co">#&gt; Warning in 1:2 + 1:3: longer object length is not a multiple of shorter object</span></span>
 <span><span class="co">#&gt; length</span></span>
@@ -180,12 +186,12 @@ later to the original languages.</p>
 <span><span class="co">#&gt; <span style="color: #BBBB00; font-weight: bold;">Error</span><span style="font-weight: bold;">:</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> object 'nonexisting' not found</span></span></code></pre></div>
 <p>But, using <code><a href="../reference/gettext_.html">gettext_()</a></code>, we got French translation:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/gettext_.html">gettext_</a></span><span class="op">(</span><span class="st">"Test of svBase's `gettext()` and `gettextf()`:"</span>, domain <span class="op">=</span> <span class="st">"R-svBase"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "Test of svBase's `gettext()` and `gettextf()`:"</span></span></code></pre></div>
 <p>Of course, one could force a different language in
 <code><a href="../reference/gettext_.html">gettext_()</a></code>:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/gettext_.html">gettext_</a></span><span class="op">(</span><span class="st">"Test of svBase's `gettext()` and `gettextf()`:"</span>, domain <span class="op">=</span> <span class="st">"R-svBase"</span>,</span>
 <span>  lang <span class="op">=</span> <span class="st">"en_US"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "Test of svBase's `gettext()` and `gettextf()`:"</span></span></code></pre></div>
@@ -194,7 +200,7 @@ plots, or columns titles of your tables. In order to use the extraction
 mechanism of <code><a href="https://rdrr.io/r/tools/update_pkg_po.html" class="external-link">tools::update_pkg_po()</a></code>, you should rename the
 {svBase} function with the original base R names in your package. So,
 place this somewhere in your package:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">gettext</span> <span class="op">&lt;-</span> <span class="va">gettext_</span></span>
 <span><span class="va">gettextf</span> <span class="op">&lt;-</span> <span class="va">gettextf_</span></span>
 <span><span class="va">ngettext</span> <span class="op">&lt;-</span> <span class="va">ngettext_</span></span></code></pre></div>
@@ -203,7 +209,7 @@ automatically. You can use sometnig like <a href="https://poedit.net" class="ext
 You could also add this in a
 <code>tests/testthat/test-translations.R</code> file in your {testthat}
 tests to update the files automatically each time tests are run:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">test_that</span><span class="op">(</span><span class="st">"The .po translation files are up to date"</span>, <span class="op">{</span></span>
 <span>  <span class="fu">skip_on_cran</span><span class="op">(</span><span class="op">)</span></span>
 <span>  <span class="fu">skip_on_ci</span><span class="op">(</span><span class="op">)</span></span>
@@ -227,12 +233,12 @@ provide both the domain <em>and</em> the language. You must combine both
 like <code>domain/lang</code>. So, <code>NULL/fr</code> will use the
 default domain and French language, or <code>R-stats/de</code> uses a
 specified domain and German language.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/gettext.html" class="external-link">ngettext</a></span><span class="op">(</span><span class="fl">1</span>, <span class="st">"You asked for only one item"</span>, <span class="st">"You asked for several items"</span>,</span>
 <span>  domain <span class="op">=</span> <span class="st">"R-svBase/fr"</span><span class="op">)</span> <span class="co"># Using svBase::ngettext_(), renamed ngettext() above</span></span>
 <span><span class="co">#&gt; [1] "You asked for only one item"</span></span></code></pre></div>
 <p>To reset previous languages:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/gettext_.html">set_language</a></span><span class="op">(</span><span class="va">olang</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/gettext_.html">set_sciviews_lang</a></span><span class="op">(</span><span class="va">olang2</span><span class="op">)</span></span></code></pre></div>
 <p>Of course, you probably rarely change R session language, but may set
@@ -259,14 +265,14 @@ messaging of {rlang}. In a package, you should rename it into
 <code><a href="https://rdrr.io/r/base/stop.html" class="external-link">stop()</a></code> to have all messages translated automatically by
 tools like <code>xgettext</code>. There is also <code><a href="../reference/stop_.html">warning_()</a></code>
 that you may want to convert into <code><a href="https://rdrr.io/r/base/warning.html" class="external-link">warning()</a></code>.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Use svBase stop_() and warning_(), but renamed</span></span>
 <span><span class="co"># in your package (don't export stop and warning)</span></span>
 <span><span class="va">stop</span> <span class="op">&lt;-</span> <span class="va">stop_</span></span>
 <span><span class="va">warning</span> <span class="op">&lt;-</span> <span class="va">warning_</span></span></code></pre></div>
 <p>The {rlang} presentation of the error message is now adopted in your
 <code><a href="https://rdrr.io/r/base/stop.html" class="external-link">stop()</a></code> call.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/stop.html" class="external-link">stop</a></span><span class="op">(</span><span class="st">"You shouldn't end up here."</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #BBBB00; font-weight: bold;">Error</span><span style="font-weight: bold;">:</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> You shouldn't end up here.</span></span></code></pre></div>
@@ -275,7 +281,7 @@ that you may want to convert into <code><a href="https://rdrr.io/r/base/warning.
 that helps debugging. In An R Markdown or Quarto document, like this
 vignette, it does not appear. Compare this with base
 <code><a href="https://rdrr.io/r/base/stop.html" class="external-link">stop()</a></code>:</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">base</span><span class="fu">::</span><span class="kw"><a href="https://rdrr.io/r/base/stop.html" class="external-link">stop</a></span><span class="op">(</span><span class="st">"You shouldn't end up here."</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #BBBB00; font-weight: bold;">Error</span><span style="font-weight: bold;">:</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> You shouldn't end up here.</span></span></code></pre></div>
@@ -287,7 +293,7 @@ equivalents. It first changes the default for <code>call. =</code> to
 <code>FALSE</code>, and even ignores it. It is superseded by the more
 informative presentation of the function call, implemented in
 {rlang}:</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># A simple function that raises an error</span></span>
 <span><span class="va">err_fun</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/stop.html" class="external-link">stop</a></span><span class="op">(</span><span class="st">"You shouldn't end up here."</span><span class="op">)</span></span>
@@ -327,13 +333,13 @@ This mechanisms is not always reliable, especially when messages are
 translated, or when messages are rewritten. <code>expect_error()</code>
 can also indicate the <code>class</code>of the error message to
 track:</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Classed error message</span></span>
 <span><span class="va">err_fun</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/stop.html" class="external-link">stop</a></span><span class="op">(</span><span class="st">"You shouldn't end up here."</span>, class <span class="op">=</span> <span class="st">"my_error_class"</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
 <p>In {testthat} tests, you could then write something like this:</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">expect_error</span><span class="op">(</span><span class="fu">err_fun</span><span class="op">(</span><span class="op">)</span>, class <span class="op">=</span> <span class="st">"my_error_class"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
@@ -344,7 +350,7 @@ track:</p>
 with special tags. See <a href="https://rlang.r-lib.org/reference/topic-condition-formatting.html" class="external-link uri">https://rlang.r-lib.org/reference/topic-condition-formatting.html</a>
 and <code>?help('inline-markup', package = 'cli')</code> for more
 information about message formatting with {cli}.</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># An enhanced error message with formatting</span></span>
 <span><span class="va">decrement</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">is.numeric</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span></span>
@@ -370,7 +376,7 @@ may be useful in this context is automatically appended to the
 <code><a href="../reference/stop_.html">stop_()</a></code> message. The context where to look for it is
 provided in the <code>last_call=</code> argument (you rarely have to
 change its default value, so, you could forgot its existence).</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Trying to use our decrement() function on a data frame</span></span>
 <span><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/dtx.html">dtx</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">5</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu">decrement</span><span class="op">(</span><span class="va">df</span><span class="op">)</span></span>
@@ -391,7 +397,7 @@ when passing, for instance, <code>.</code> in a pipeline.</p>
 <p>Also, when the data_dot mechanism was triggered, additional lines of
 information are automatically appended to the error message emphasizing
 it.</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># A data-dot function</span></span>
 <span><span class="va">my_head</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">.data</span> <span class="op">=</span> <span class="op">(</span><span class="va">.</span><span class="op">)</span>, <span class="va">rows</span> <span class="op">=</span> <span class="fl">6L</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="co"># This makes it a data-dot function</span></span>
@@ -419,7 +425,7 @@ it.</p>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> You must provide a single integer between 1 and 5.</span></span></code></pre></div>
 <p>Now, using the data-dot mechanism to insert <code>.</code> as first
 arg.</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">.</span><span class="op">=</span> <span class="va">df</span></span>
 <span><span class="fu">my_head</span><span class="op">(</span><span class="fl">2L</span><span class="op">)</span> <span class="co"># OK</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A data.trame: [2 × 2]</span></span></span>
@@ -441,7 +447,7 @@ arg.</p>
 <p>It is quite common to use “input checker” functions to validate
 arguments of a function. One could rewrite <code>my_head()</code> like
 this:</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">check_rows</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span>, <span class="va">arg</span> <span class="op">=</span> <span class="st">"x"</span>, <span class="va">max_value</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">is.numeric</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">||</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">!=</span> <span class="fl">1L</span> <span class="op">||</span></span>
 <span>      <span class="va">x</span> <span class="op">&lt;</span> <span class="fl">1</span> <span class="op">||</span> <span class="va">x</span> <span class="op">&gt;</span> <span class="va">max_value</span><span class="op">)</span></span>
@@ -469,7 +475,7 @@ the context is automatically set to <code>my_head()</code>, but it is
 <code><a href="../reference/stop_.html">stop_()</a></code> is designed to be used inside input checkers. If
 you want to avoid this mechanism, you <em>must</em> provide a different
 value for <code>call=</code>:</p>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">check_rows2</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span>, <span class="va">arg</span> <span class="op">=</span> <span class="st">"x"</span>, <span class="va">max_value</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">is.numeric</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">||</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">!=</span> <span class="fl">1L</span> <span class="op">||</span></span>
 <span>      <span class="va">x</span> <span class="op">&lt;</span> <span class="fl">1</span> <span class="op">||</span> <span class="va">x</span> <span class="op">&gt;</span> <span class="va">max_value</span><span class="op">)</span></span>
@@ -498,7 +504,7 @@ instead of a function called inside it (<code>check_rows2()</code>).</p>
 <p>Now, if <code>my_head()</code> is called from another function, say
 <code>my_fun()</code>, the focus is still on <code>my_head()</code> by
 default:</p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">my_fun</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span>, <span class="va">rows</span>, <span class="va">...</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu">my_head</span><span class="op">(</span><span class="va">x</span>, rows <span class="op">=</span> <span class="va">rows</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
@@ -511,7 +517,7 @@ default:</p>
 <code>.__top_call__. &lt;- TRUE</code> in the body of the function that
 should receive the focus of the error message. So, this does the
 work:</p>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">my_fun</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span>, <span class="va">rows</span>, <span class="va">...</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">.__top_call__.</span> <span class="op">&lt;-</span> <span class="cn">TRUE</span></span>
 <span>  </span>
