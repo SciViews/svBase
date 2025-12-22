@@ -3,6 +3,56 @@ knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
 library(svBase)
 
 ## -----------------------------------------------------------------------------
+get_language() # Current R session language
+get_sciviews_lang() # Current alternate language for gettext_()...
+
+## -----------------------------------------------------------------------------
+olang <- set_language("de")
+olang2 <- set_sciviews_lang("fr")
+# Check
+get_language()
+get_sciviews_lang()
+
+## ----warning=TRUE, error=TRUE-------------------------------------------------
+try({
+1:2 + 1:3
+nonexisting
+})
+
+## -----------------------------------------------------------------------------
+gettext_("Test of svBase's `gettext()` and `gettextf()`:", domain = "R-svBase")
+
+## -----------------------------------------------------------------------------
+gettext_("Test of svBase's `gettext()` and `gettextf()`:", domain = "R-svBase",
+  lang = "en_US")
+
+## -----------------------------------------------------------------------------
+gettext <- gettext_
+gettextf <- gettextf_
+ngettext <- ngettext_
+
+## ----eval=FALSE---------------------------------------------------------------
+# test_that("The .po translation files are up to date", {
+#   skip_on_cran()
+#   skip_on_ci()
+#   # Update .po and .mo files (only test in the source package, not R CMD check)
+#   if (file.exists("../../DESCRIPTION")) {# This is the source of the package
+#     cat("\nCompiling .po files...\n")
+#     res <- try(tools::update_pkg_po("../.."), silent = TRUE)
+#     expect_false(inherits(res, "try-error"),
+#       "Updating .po files failed. Run tools::update_pkg_po() manually to debug.")
+#   }
+# })
+
+## -----------------------------------------------------------------------------
+ngettext(1, "You asked for only one item", "You asked for several items",
+  domain = "R-svBase/fr") # Using svBase::ngettext_(), renamed ngettext() above
+
+## -----------------------------------------------------------------------------
+set_language(olang)
+set_sciviews_lang(olang2)
+
+## -----------------------------------------------------------------------------
 # Use svBase stop_() and warning_(), but renamed
 # in your package (don't export stop and warning)
 stop <- stop_

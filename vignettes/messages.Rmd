@@ -18,15 +18,96 @@ knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
 library(svBase)
 ```
 
-The {svBase} package builds on {rlang} and {cli} fantastic ways of dealing with messages for errors or warnings. It provides a few enhancements, like easy translation of these messages with the base R translation mechanism. It also offers enhanced translation functions that allow to chose the language independently from the one used in the R session. This is useful to produce tables, figures, or other outputs in a specific language, or in a multilingual context.
+The {svBase} package builds on {rlang} and {cli} fantastic ways of dealing with messages for errors or warnings. It provides a few enhancements, like easy translation of these messages with the base R translation mechanism. It also offers enhanced translation functions that allow to choose the language independently from the one used in the R session. This is useful to produce tables, figures, or other outputs in a specific language, or in a multilingual context.
 
 ## Messages translation
 
-...
+Base R provides `gettext()`, `gettextf()`, and `ngettext()` to translate messages. Moreover, `stop()`, `warning()` and `message()` are also automatically translated. However, you cannot indicate a different language to the one used for the R session (for instance, if you want to create a figure in French, while still getting error messages in English). The {svBase}'s versions `gettext_()`, `gettextf_()` and `ngettext_()` allow for specifying `lang=` independently.
+
+### Setting first and secondary languages
+
+A "secondary" language can be set globally with `set_sciviews_lang()`, and it is used automatically by these versions. Here is how you can use them. First, set or get R language, and alternate SciViews language:
+
+```{r}
+get_language() # Current R session language
+get_sciviews_lang() # Current alternate language for gettext_()...
+```
+
+You change those languages like this:
+
+```{r}
+olang <- set_language("de")
+olang2 <- set_sciviews_lang("fr")
+# Check
+get_language()
+get_sciviews_lang()
+```
+
+Now, error messages and warnings are in German, while other material for table or plots is in French. We assigned results to `olang` and `olang2` in order to easily comme back later to the original languages.
+
+```{r, warning=TRUE, error=TRUE}
+1:2 + 1:3
+nonexisting
+```
+
+But, using `gettext_()`, we got French translation:
+
+```{r}
+gettext_("Test of svBase's `gettext()` and `gettextf()`:", domain = "R-svBase")
+```
+
+Of course, one could force a different language in `gettext_()`:
+
+```{r}
+gettext_("Test of svBase's `gettext()` and `gettextf()`:", domain = "R-svBase",
+  lang = "en_US")
+```
+
+You could use these to translate, for instance, axis labels of your plots, or columns titles of your tables. In order to use the extraction mechanism of `tools::update_pkg_po()`, you should rename the {svBase} function with the original base R names in your package. So, place this somewhere in your package:
+
+```{r}
+gettext <- gettext_
+gettextf <- gettextf_
+ngettext <- ngettext_
+```
+
+And use the renamed versions, otherwise, messages will not be added automatically. You can use sometnig like [poEdit](https://poedit.net) to write your translations easily. You could also add this in a `tests/testthat/test-translations.R` file in your {testthat} tests to update the files automatically each time tests are run:
+
+```{r, eval=FALSE}
+test_that("The .po translation files are up to date", {
+  skip_on_cran()
+  skip_on_ci()
+  # Update .po and .mo files (only test in the source package, not R CMD check)
+  if (file.exists("../../DESCRIPTION")) {# This is the source of the package
+    cat("\nCompiling .po files...\n")
+    res <- try(tools::update_pkg_po("../.."), silent = TRUE)
+    expect_false(inherits(res, "try-error"),
+      "Updating .po files failed. Run tools::update_pkg_po() manually to debug.")
+  }
+})
+```
+
+### Specifying language with `ngettext_()`
+
+The `ngettext()` function accepts only a fixed number of arguments, on the contrary to `gettext()` or `gettextf()`. We had to remain consistent with this. So, `ngettext_()` uses the `domain =` argument to provide both the domain *and* the language. You must combine both like `domain/lang`. So, `NULL/fr` will use the default domain and French language, or `R-stats/de` uses a specified domain and German language.
+
+```{r}
+ngettext(1, "You asked for only one item", "You asked for several items",
+  domain = "R-svBase/fr") # Using svBase::ngettext_(), renamed ngettext() above
+```
+
+To reset previous languages:
+
+```{r}
+set_language(olang)
+set_sciviews_lang(olang2)
+```
+
+Of course, you probably rarely change R session language, but may set a different alternate SciViews language in an international, or polyglot environment.
 
 ## Meaningful error messages
 
-The {rlang} package introduced `abort()`, `warn()` and `inform()` as alternatives to base R `stop()`, `warning()` and `message()`, respectively. These functions provide a more structured way to create messages, allowing for better context (see <https://rlang.r-lib.org/reference/topic-error-call.html>). However, on the contrary to base `stop()` or `warning()`, rlang `abort()` and `warn()` do not use the base R translation mechanism with `gettext()`, which is a drawback for package developers who want to provide translated messages. Here, we provide `stop_()` and `warning_()` functions that combine the best of both worlds: they use `gettext()` for translation and provide the structured messaging of {rlang}. In a package, you should rename them into `stop()` and `warning()` to have all messages translated automatically by tools like `xgettext`.
+The {rlang} package introduced `abort()`, `warn()` and `inform()` as alternatives to base R `stop()`, `warning()` and `message()`, respectively. These functions provide a more structured way to create messages, allowing for better context (see <https://rlang.r-lib.org/reference/topic-error-call.html>). However, on the contrary to base `stop()` or `warning()`, rlang `abort()` and `warn()` do not use the base R translation mechanism with `gettext()`, which is a drawback for package developers who want to provide translated messages. Here, we provide `stop_()` function that combine the best of both worlds: it uses `gettext()` for translation and provide the structured messaging of {rlang}. In a package, you should rename it into `stop()` to have all messages translated automatically by tools like `xgettext`. There is also `warning_()` that you may want to convert into `warning()`.
 
 ```{r}
 # Use svBase stop_() and warning_(), but renamed
@@ -172,7 +253,7 @@ my_head <- function(.data = (.), rows = 6L) {
 my_head(df, 10L) # Error
 ```
 
-On the contrary to `abort()` (see https://rlang.r-lib.org/reference/topic-error-call.html#passing-the-user-context), the context is automatically set to `my_head()`. Actually, `stop_()` is designed to be used inside input checkers. If you want to avoid this mechanism, you *must* provide a different value for `call=`:
+On the contrary to `abort()` (see https://rlang.r-lib.org/reference/topic-error-call.html#passing-the-user-context), the context is automatically set to `my_head()`, but it is `prepare_data_dot()` that manages to do that. Actually, `stop_()` is designed to be used inside input checkers. If you want to avoid this mechanism, you *must* provide a different value for `call=`:
 
 ```{r, error=TRUE}
 check_rows2 <- function(x, arg = "x", max_value) {

@@ -244,7 +244,7 @@ test_that("gettext_(), gettextf_() and ngettext_() can use lang=", {
   expect_identical(
     ngettext(1,
       "You asked for only one item", "You asked for several items",
-      domain = "R-svBase_en"),
+      domain = "R-svBase/en"),
     base::ngettext(1,
       "You asked for only one item", "You asked for several items",
       domain = "R-svBase")
@@ -252,7 +252,7 @@ test_that("gettext_(), gettextf_() and ngettext_() can use lang=", {
   expect_identical(
     ngettext(2,
       "You asked for only one item", "You asked for several items",
-      domain = "R-svBase_en"),
+      domain = "R-svBase/en"),
     base::ngettext(2,
       "You asked for only one item", "You asked for several items",
       domain = "R-svBase")

@@ -51,11 +51,8 @@
 
       .__top_call__. <- TRUE
 
-      if (missing(lang)) # Use default base::gettext()
-        return(gettext_base(..., domain = domain, trim = trim))
-
       if (!is.null(domain))
-        domain <- as.character(domain)[1L]
+        domain <- domain[1L]
 
       # If no_nls, same as current language, or failed lang, just run gettext()
       # Use only first string, without warning
