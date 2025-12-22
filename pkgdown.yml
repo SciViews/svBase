@@ -4,7 +4,7 @@ pkgdown_sha: ~
 articles:
   messages: messages.html
   svBase: svBase.html
-last_built: 2025-12-22T14:36Z
+last_built: 2025-12-22T14:39Z
 urls:
   reference: https://www.sciviews.org/svBase/reference
   article: https://www.sciviews.org/svBase/articles
