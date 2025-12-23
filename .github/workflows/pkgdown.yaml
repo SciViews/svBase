@@ -22,15 +22,6 @@ jobs:
     permissions:
       contents: write
     steps:
-      - name: SetLocale
-        run: |
-          sudo locale-gen fr_FR
-          sudo locale-gen fr_FR.UTF-8
-          sudo locale-gen de_DE
-          sudo locale-gen de_DE.UTF-8
-          sudo update-locale LANG="en_US.UTF-8" LANGUAGE="en_US"
-          sudo dpkg-reconfigure locales
-
       - uses: actions/checkout@v4
 
       - uses: r-lib/actions/setup-pandoc@v2

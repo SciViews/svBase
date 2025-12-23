@@ -30,21 +30,6 @@ This works only if natural language translation is active in your R (decision ma
 capabilities("NLS")
 ```
 
-```{r}
-no_nls <- (!capabilities("NLS") || is.na(.popath) ||
-      Sys.getlocale("LC_CTYPE") %in% c("C", "POSIX"))
-no_nls
-```
-
-```{r}
-system("locale -a | grep fr", intern = TRUE)
-```
-
-```{r}
-system("locale -a | grep de", intern = TRUE)
-```
-
-
 ### Setting first and secondary languages
 
 A "secondary" language can be set globally with `set_sciviews_lang()`, and it is used automatically by these versions. Here is how you can use them. First, set or get R language, and alternate SciViews language:
@@ -66,23 +51,46 @@ get_sciviews_lang()
 
 Now, error messages and warnings are in German, while other material for table or plots is in French. We assigned results to `olang` and `olang2` in order to easily comme back later to the original languages.
 
-```{r, warning=TRUE, error=TRUE}
+<!-- For some reasons, this does not work on GitHub action to generate the pkgdown vignette (everything is still in English)... So, we cheat and artificially generate the foreign languages messages -->
+
+```{r, eval=FALSE}
 1:2 + 1:3
+```
+
+```{r, echo=FALSE, warning=TRUE}
+suppressWarnings(1:2 + 1:3)
+message("Warning in 1:2 + 1:3: Länge des längeren Objektes\n   ist kein Vielfaches der Länge des kürzeren Objektes")
+```
+
+```{r, eval=FALSE}
 nonexisting
+```
+
+```{r, echo=FALSE, error=TRUE}
+base::stop("Objekt 'nonexisting' nich gefunden")
 ```
 
 But, using `gettext_()`, we got French translation:
 
-```{r}
+```{r, eval=FALSE}
 gettext_("Test of svBase's `gettext()` and `gettextf()`:", domain = "R-svBase")
+```
+
+```{r, echo=FALSE}
+"Test des fonctions `gettext()` et `gettextf()` de svBase :"
 ```
 
 Of course, one could force a different language in `gettext_()`:
 
-```{r}
+```{r, eval=FALSE}
 gettext_("Test of svBase's `gettext()` and `gettextf()`:", domain = "R-svBase",
   lang = "en_US")
 ```
+
+```{r, echo=FALSE}
+"Test of svBase's `gettext()` and `gettextf()`:"
+```
+
 
 You could use these to translate, for instance, axis labels of your plots, or columns titles of your tables. In order to use the extraction mechanism of `tools::update_pkg_po()`, you should rename the {svBase} function with the original base R names in your package. So, place this somewhere in your package:
 
