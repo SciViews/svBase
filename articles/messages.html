@@ -159,18 +159,10 @@ specifying <code>lang=</code> independently.</p>
 <span><span class="co">#&gt; [1] FALSE</span></span></code></pre></div>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/system.html" class="external-link">system</a></span><span class="op">(</span><span class="st">"locale -a | grep fr"</span>, intern <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning in system("locale -a | grep fr", intern = TRUE): running command</span></span>
-<span><span class="co">#&gt; 'locale -a | grep fr' had status 1</span></span>
-<span><span class="co">#&gt; character(0)</span></span>
-<span><span class="co">#&gt; attr(,"status")</span></span>
-<span><span class="co">#&gt; [1] 1</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "fr_FR"          "fr_FR.iso88591" "fr_FR.utf8"     "french"</span></span></code></pre></div>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/system.html" class="external-link">system</a></span><span class="op">(</span><span class="st">"locale -a | grep de"</span>, intern <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning in system("locale -a | grep de", intern = TRUE): running command</span></span>
-<span><span class="co">#&gt; 'locale -a | grep de' had status 1</span></span>
-<span><span class="co">#&gt; character(0)</span></span>
-<span><span class="co">#&gt; attr(,"status")</span></span>
-<span><span class="co">#&gt; [1] 1</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "de_DE"          "de_DE.iso88591" "de_DE.utf8"     "deutsch"</span></span></code></pre></div>
 <div class="section level3">
 <h3 id="setting-first-and-secondary-languages">Setting first and secondary languages<a class="anchor" aria-label="anchor" href="#setting-first-and-secondary-languages"></a>
 </h3>
