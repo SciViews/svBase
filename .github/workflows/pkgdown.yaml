@@ -22,6 +22,10 @@ jobs:
     permissions:
       contents: write
     steps:
+      - name: SetLocale
+        run: |
+          sudo apt-get update && sudo apt-get install tzdata locales -y && sudo locale-gen
+
       - uses: actions/checkout@v4
 
       - uses: r-lib/actions/setup-pandoc@v2
