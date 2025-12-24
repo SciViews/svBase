@@ -1,5 +1,5 @@
 ---
-title: "Translations with 'svBase'"
+title: "Translation"
 author: "Philippe Grosjean"
 date: "`r Sys.Date()`"
 output:
@@ -8,7 +8,7 @@ output:
     toc_depth: 3
     fig_caption: yes
 vignette: >
-  %\VignetteIndexEntry{Translations with 'svBase'}
+  %\VignetteIndexEntry{Translations}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
