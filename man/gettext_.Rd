@@ -45,14 +45,15 @@ remain compatible here.}
 \item{lang}{the target language (could be two lowercase letters, e.g., "en"
 for English, "fr" for French, "de" for German, etc.). One can also further
 specify variants, e.g., "en_US", or "en_GB", or even "fr_FR.UTF-8". For
-\code{get_language()} and \code{set_language()}, it is the default language of the R
-session. For the other functions, it is the alternate language used by
-SciViews. One can specify it globally with either the SCIVIEWS_LANG
-environment variable, or with the R option \code{SciViews_lang}, but it is a
-better practice to use \code{set_sciviews_lang()} in the R session. If missing,
-\code{NULL}, or \code{""}, the default is used from \code{unset}. For the SciViews language,
-uppercase letters are accepted, and they mean "translate more" (typically,
-\strong{factor} and \strong{ordered} levels are also translated, for instance).}
+\code{get_sciviews_lang()} and \code{set_sciviews_lang()}, it is the secondary
+language. For the other functions, it is the R session language that is used
+by default. One can specify the alternate SciViews language globally with
+either the SCIVIEWS_LANG environment variable, or with the R option
+\code{SciViews_lang}, but it is a better practice to use \code{set_sciviews_lang()}
+in the R session. If missing, \code{NULL}, or \code{""}, the default is used from
+\code{unset}. For the SciViews language, uppercase letters are accepted, and they
+mean "translate more" (typically, \strong{factor} and \strong{ordered} levels are also
+translated, for instance).}
 
 \item{fmt}{a character vector of format strings, each of up to 8192 bytes.}
 
@@ -90,10 +91,11 @@ Message translation in R is obtained with \code{\link[base:gettext]{base::gettex
 \code{\link[base:gettext]{base::ngettext()}}. But, there is no way to specify that one needs translated
 messages in a different language than the current one in R. Here are
 alternate functions that have an additional \verb{lang=} argument allowing to do
-so. If the \verb{lang=} argument is not provided in the call, they use an
-alternate language defined by \code{\link[=set_sciviews_lang]{set_sciviews_lang()}}. This is useful, for
-instance, to keep R error and warning messages in English, but to generate
-translation for tables and figures in a different language in a report.
+so. If the \verb{lang=} argument is not provided in the call, they use the
+language defined in the R session. It is useful to define a different
+language, for instance, to keep R error and warning messages in English, but
+to generate translation for tables and figures in a different language in a
+report.
 }
 \details{
 To prepare your package for translation with these functions, you should

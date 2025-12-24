@@ -54,6 +54,10 @@
       if (!is.null(domain))
         domain <- domain[1L]
 
+      # If lang not provide, use plain base::gettext()
+      if (missing(lang))
+        return(gettext_base(..., domain = domain, trim = isTRUE(trim)))
+
       # If no_nls, same as current language, or failed lang, just run gettext()
       # Use only first string, without warning
       lang <- as.character(lang)
@@ -142,8 +146,6 @@
         stop("Argument {.arg msg2} is missing but must be provided.",
           class = "msg2_missing")
 
-      def_lang <- get_sciviews_lang()
-
       if (!is.numeric(n))
         stop("Argument {.arg n} must be numeric.",
           i = "You provided an object of class {.cls {class(n)}}.",
@@ -171,7 +173,7 @@
           class = "msg2_not_single_string")
 
       if (is.null(domain)) {
-        lang <- def_lang
+        lang <- ""
       } else {# Try to separate domain from lang (should be domain/lang)
         dom_lang <- strsplit(domain, "/", fixed = TRUE)[[1]]
         if (length(dom_lang) > 1L) {
@@ -179,7 +181,7 @@
           if (domain == "NULL") domain <- NULL # Default value for domain
           lang <- dom_lang[2L]
         } else {
-          lang <- def_lang
+          lang <- ""
         }
       }
 
@@ -253,10 +255,11 @@
 #' [base::ngettext()]. But, there is no way to specify that one needs translated
 #' messages in a different language than the current one in R. Here are
 #' alternate functions that have an additional `lang=` argument allowing to do
-#' so. If the `lang=` argument is not provided in the call, they use an
-#' alternate language defined by [set_sciviews_lang()]. This is useful, for
-#' instance, to keep R error and warning messages in English, but to generate
-#' translation for tables and figures in a different language in a report.
+#' so. If the `lang=` argument is not provided in the call, they use the
+#' language defined in the R session. It is useful to define a different
+#' language, for instance, to keep R error and warning messages in English, but
+#' to generate translation for tables and figures in a different language in a
+#' report.
 #'
 #' @param fmt  a character vector of format strings, each of up to 8192 bytes.
 #' @param ... one of more character vectors.
@@ -273,14 +276,15 @@
 #' @param lang the target language (could be two lowercase letters, e.g., "en"
 #' for English, "fr" for French, "de" for German, etc.). One can also further
 #' specify variants, e.g., "en_US", or "en_GB", or even "fr_FR.UTF-8". For
-#' `get_language()` and `set_language()`, it is the default language of the R
-#' session. For the other functions, it is the alternate language used by
-#' SciViews. One can specify it globally with either the SCIVIEWS_LANG
-#' environment variable, or with the R option `SciViews_lang`, but it is a
-#' better practice to use `set_sciviews_lang()` in the R session. If missing,
-#' `NULL`, or `""`, the default is used from `unset`. For the SciViews language,
-#' uppercase letters are accepted, and they mean "translate more" (typically,
-#' **factor** and **ordered** levels are also translated, for instance).
+#' `get_sciviews_lang()` and `set_sciviews_lang()`, it is the secondary
+#' language. For the other functions, it is the R session language that is used
+#' by default. One can specify the alternate SciViews language globally with
+#' either the SCIVIEWS_LANG environment variable, or with the R option
+#' `SciViews_lang`, but it is a better practice to use `set_sciviews_lang()`
+#' in the R session. If missing, `NULL`, or `""`, the default is used from
+#' `unset`. For the SciViews language, uppercase letters are accepted, and they
+#' mean "translate more" (typically, **factor** and **ordered** levels are also
+#' translated, for instance).
 #' @param unset The default language to use if not defined yet, "en" (English)
 #' by default for regular R language, and the currently defined R language for
 #' the alternate SciViews language.

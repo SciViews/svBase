@@ -70,27 +70,16 @@ nonexisting
 base::stop("Objekt 'nonexisting' nich gefunden")
 ```
 
-But, using `gettext_()`, we got French translation:
+But, using `gettext_()`, we can, for instance, get a French translation:
 
 ```{r, eval=FALSE}
-gettext_("Test of svBase's `gettext()` and `gettextf()`:", domain = "R-svBase")
+gettext_("Test of svBase's `gettext()` and `gettextf()`:", domain = "R-svBase",
+  lang = "fr")
 ```
 
 ```{r, echo=FALSE}
 "Test des fonctions `gettext()` et `gettextf()` de svBase :"
 ```
-
-Of course, one could force a different language in `gettext_()`:
-
-```{r, eval=FALSE}
-gettext_("Test of svBase's `gettext()` and `gettextf()`:", domain = "R-svBase",
-  lang = "en_US")
-```
-
-```{r, echo=FALSE}
-"Test of svBase's `gettext()` and `gettextf()`:"
-```
-
 
 You could use these to translate, for instance, axis labels of your plots, or columns titles of your tables. In order to use the extraction mechanism of `tools::update_pkg_po()`, you should rename the {svBase} function with the original base R names in your package. So, place this somewhere in your package:
 

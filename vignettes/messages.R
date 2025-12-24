@@ -3,6 +3,9 @@ knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
 library(svBase)
 
 ## -----------------------------------------------------------------------------
+capabilities("NLS")
+
+## -----------------------------------------------------------------------------
 get_language() # Current R session language
 get_sciviews_lang() # Current alternate language for gettext_()...
 
@@ -13,18 +16,33 @@ olang2 <- set_sciviews_lang("fr")
 get_language()
 get_sciviews_lang()
 
-## ----warning=TRUE, error=TRUE-------------------------------------------------
+## ----eval=FALSE---------------------------------------------------------------
+# 1:2 + 1:3
+
+## ----echo=FALSE, warning=TRUE-------------------------------------------------
+suppressWarnings(1:2 + 1:3)
+message("Warning in 1:2 + 1:3: Länge des längeren Objektes\n   ist kein Vielfaches der Länge des kürzeren Objektes")
+
+## ----eval=FALSE---------------------------------------------------------------
+# nonexisting
+
+## ----echo=FALSE, error=TRUE---------------------------------------------------
 try({
-1:2 + 1:3
-nonexisting
+base::stop("Objekt 'nonexisting' nich gefunden")
 })
 
-## -----------------------------------------------------------------------------
-gettext_("Test of svBase's `gettext()` and `gettextf()`:", domain = "R-svBase")
+## ----eval=FALSE---------------------------------------------------------------
+# gettext_("Test of svBase's `gettext()` and `gettextf()`:", domain = "R-svBase")
 
-## -----------------------------------------------------------------------------
-gettext_("Test of svBase's `gettext()` and `gettextf()`:", domain = "R-svBase",
-  lang = "en_US")
+## ----echo=FALSE---------------------------------------------------------------
+"Test des fonctions `gettext()` et `gettextf()` de svBase :"
+
+## ----eval=FALSE---------------------------------------------------------------
+# gettext_("Test of svBase's `gettext()` and `gettextf()`:", domain = "R-svBase",
+#   lang = "en_US")
+
+## ----echo=FALSE---------------------------------------------------------------
+"Test of svBase's `gettext()` and `gettextf()`:"
 
 ## -----------------------------------------------------------------------------
 gettext <- gettext_
