@@ -3,10 +3,11 @@
 base::ngettext(). But, there is no way to specify that one needs translated
 messages in a different language than the current one in R. Here are
 alternate functions that have an additional lang= argument allowing to do
-so. If the lang= argument is not provided in the call, they use an
-alternate language defined by set_sciviews_lang(). This is useful, for
-instance, to keep R error and warning messages in English, but to generate
-translation for tables and figures in a different language in a report."><meta property="og:image" content="https://www.sciviews.org/svBase/logo.png"><meta name="twitter:card" content="summary"><!-- Mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.6/MathJax.js" async integrity="sha256-nlrDrBTHxJJlDDX22AS33xYI1OJHnGMDhiYMSe2U0e0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.6/config/TeX-AMS-MML_HTMLorMML.js" async integrity="sha256-4zys9A4hMQmtq2EUL+JRoXc0NZi8jVJMzb8onewOaSQ=" crossorigin="anonymous"></script><!-- Global site tag (gtag.js) - Google Analytics --><!--<script async src="https://www.googletagmanager.com/gtag/js?id=UA-462421-8"></script>
+so. If the lang= argument is not provided in the call, they use the
+language defined in the R session. It is useful to define a different
+language, for instance, to keep R error and warning messages in English, but
+to generate translation for tables and figures in a different language in a
+report."><meta property="og:image" content="https://www.sciviews.org/svBase/logo.png"><meta name="twitter:card" content="summary"><!-- Mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.6/MathJax.js" async integrity="sha256-nlrDrBTHxJJlDDX22AS33xYI1OJHnGMDhiYMSe2U0e0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.6/config/TeX-AMS-MML_HTMLorMML.js" async integrity="sha256-4zys9A4hMQmtq2EUL+JRoXc0NZi8jVJMzb8onewOaSQ=" crossorigin="anonymous"></script><!-- Global site tag (gtag.js) - Google Analytics --><!--<script async src="https://www.googletagmanager.com/gtag/js?id=UA-462421-8"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
@@ -97,10 +98,11 @@ translation for tables and figures in a different language in a report."><meta p
 <code><a href="https://rdrr.io/r/base/gettext.html" class="external-link">base::ngettext()</a></code>. But, there is no way to specify that one needs translated
 messages in a different language than the current one in R. Here are
 alternate functions that have an additional <code>lang=</code> argument allowing to do
-so. If the <code>lang=</code> argument is not provided in the call, they use an
-alternate language defined by <code>set_sciviews_lang()</code>. This is useful, for
-instance, to keep R error and warning messages in English, but to generate
-translation for tables and figures in a different language in a report.</p>
+so. If the <code>lang=</code> argument is not provided in the call, they use the
+language defined in the R session. It is useful to define a different
+language, for instance, to keep R error and warning messages in English, but
+to generate translation for tables and figures in a different language in a
+report.</p>
     </div>
 
     <div id="ref-usage">
@@ -148,14 +150,15 @@ remain compatible here.</p></dd>
 <dd><p>the target language (could be two lowercase letters, e.g., "en"
 for English, "fr" for French, "de" for German, etc.). One can also further
 specify variants, e.g., "en_US", or "en_GB", or even "fr_FR.UTF-8". For
-<code>get_language()</code> and <code>set_language()</code>, it is the default language of the R
-session. For the other functions, it is the alternate language used by
-SciViews. One can specify it globally with either the SCIVIEWS_LANG
-environment variable, or with the R option <code>SciViews_lang</code>, but it is a
-better practice to use <code>set_sciviews_lang()</code> in the R session. If missing,
-<code>NULL</code>, or <code>""</code>, the default is used from <code>unset</code>. For the SciViews language,
-uppercase letters are accepted, and they mean "translate more" (typically,
-<strong>factor</strong> and <strong>ordered</strong> levels are also translated, for instance).</p></dd>
+<code>get_sciviews_lang()</code> and <code>set_sciviews_lang()</code>, it is the secondary
+language. For the other functions, it is the R session language that is used
+by default. One can specify the alternate SciViews language globally with
+either the SCIVIEWS_LANG environment variable, or with the R option
+<code>SciViews_lang</code>, but it is a better practice to use <code>set_sciviews_lang()</code>
+in the R session. If missing, <code>NULL</code>, or <code>""</code>, the default is used from
+<code>unset</code>. For the SciViews language, uppercase letters are accepted, and they
+mean "translate more" (typically, <strong>factor</strong> and <strong>ordered</strong> levels are also
+translated, for instance).</p></dd>
 
 
 <dt id="arg-fmt">fmt<a class="anchor" aria-label="anchor" href="#arg-fmt"></a></dt>
