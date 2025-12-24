@@ -1,5 +1,5 @@
 ---
-title: "Enhanced messages with 'svBase'"
+title: "Error messages"
 author: "Philippe Grosjean"
 date: "`r Sys.Date()`"
 output:
@@ -8,7 +8,7 @@ output:
     toc_depth: 3
     fig_caption: yes
 vignette: >
-  %\VignetteIndexEntry{Enhanced messages with 'svBase'}
+  %\VignetteIndexEntry{Error messages}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -18,110 +18,7 @@ knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
 library(svBase)
 ```
 
-The {svBase} package builds on {rlang} and {cli} fantastic ways of dealing with messages for errors or warnings. It provides a few enhancements, like easy translation of these messages with the base R translation mechanism. It also offers enhanced translation functions that allow to choose the language independently from the one used in the R session. This is useful to produce tables, figures, or other outputs in a specific language, or in a multilingual context.
-
-## Messages translation
-
-Base R provides `gettext()`, `gettextf()`, and `ngettext()` to translate messages. Moreover, `stop()`, `warning()` and `message()` are also automatically translated. However, you cannot indicate a different language to the one used for the R session (for instance, if you want to create a figure in French, while still getting error messages in English). The {svBase}'s versions `gettext_()`, `gettextf_()` and `ngettext_()` allow for specifying `lang=` independently.
-
-This works only if natural language translation is active in your R (decision made at the compile time). Check it with:
-
-```{r}
-capabilities("NLS")
-```
-
-### Setting first and secondary languages
-
-A "secondary" language can be set globally with `set_sciviews_lang()`, and it is used automatically by these versions. Here is how you can use them. First, set or get R language, and alternate SciViews language:
-
-```{r}
-get_language() # Current R session language
-get_sciviews_lang() # Current alternate language for gettext_()...
-```
-
-You change those languages like this:
-
-```{r}
-olang <- set_language("de")
-olang2 <- set_sciviews_lang("fr")
-# Check
-get_language()
-get_sciviews_lang()
-```
-
-Now, error messages and warnings are in German, while other material for table or plots is in French. We assigned results to `olang` and `olang2` in order to easily comme back later to the original languages.
-
-<!-- For some reasons, this does not work on GitHub action to generate the pkgdown vignette (everything is still in English)... So, we cheat and artificially generate the foreign languages messages -->
-
-```{r, eval=FALSE}
-1:2 + 1:3
-```
-
-```{r, echo=FALSE, warning=TRUE}
-suppressWarnings(1:2 + 1:3)
-message("Warning in 1:2 + 1:3: Länge des längeren Objektes\n   ist kein Vielfaches der Länge des kürzeren Objektes")
-```
-
-```{r, eval=FALSE}
-nonexisting
-```
-
-```{r, echo=FALSE, error=TRUE}
-base::stop("Objekt 'nonexisting' nich gefunden")
-```
-
-But, using `gettext_()`, we can, for instance, get a French translation:
-
-```{r, eval=FALSE}
-gettext_("Test of svBase's `gettext()` and `gettextf()`:", domain = "R-svBase",
-  lang = "fr")
-```
-
-```{r, echo=FALSE}
-"Test des fonctions `gettext()` et `gettextf()` de svBase :"
-```
-
-You could use these to translate, for instance, axis labels of your plots, or columns titles of your tables. In order to use the extraction mechanism of `tools::update_pkg_po()`, you should rename the {svBase} function with the original base R names in your package. So, place this somewhere in your package:
-
-```{r}
-gettext <- gettext_
-gettextf <- gettextf_
-ngettext <- ngettext_
-```
-
-And use the renamed versions, otherwise, messages will not be added automatically. You can use sometnig like [poEdit](https://poedit.net) to write your translations easily. You could also add this in a `tests/testthat/test-translations.R` file in your {testthat} tests to update the files automatically each time tests are run:
-
-```{r, eval=FALSE}
-test_that("The .po translation files are up to date", {
-  skip_on_cran()
-  skip_on_ci()
-  # Update .po and .mo files (only test in the source package, not R CMD check)
-  if (file.exists("../../DESCRIPTION")) {# This is the source of the package
-    cat("\nCompiling .po files...\n")
-    res <- try(tools::update_pkg_po("../.."), silent = TRUE)
-    expect_false(inherits(res, "try-error"),
-      "Updating .po files failed. Run tools::update_pkg_po() manually to debug.")
-  }
-})
-```
-
-### Specifying language with `ngettext_()`
-
-The `ngettext()` function accepts only a fixed number of arguments, on the contrary to `gettext()` or `gettextf()`. We had to remain consistent with this. So, `ngettext_()` uses the `domain =` argument to provide both the domain *and* the language. You must combine both like `domain/lang`. So, `NULL/fr` will use the default domain and French language, or `R-stats/de` uses a specified domain and German language.
-
-```{r}
-ngettext(1, "You asked for only one item", "You asked for several items",
-  domain = "R-svBase/fr") # Using svBase::ngettext_(), renamed ngettext() above
-```
-
-To reset previous languages:
-
-```{r}
-set_language(olang)
-set_sciviews_lang(olang2)
-```
-
-Of course, you probably rarely change R session language, but may set a different alternate SciViews language in an international, or polyglot environment.
+The {svBase} package builds on {rlang} and {cli} fantastic ways of dealing with messages for errors or warnings. It provides a few enhancements, like easy translation of these messages with the base R translation mechanism.
 
 ## Meaningful error messages
 
@@ -165,7 +62,7 @@ Additional arguments, inherited from rlang `abort()` are (see following sections
 - `envir`: the environment where to evaluate the message expressions.
 - `last_call`: the last call issued by the user, used to check if a dot (`.`) object was invoked. In this case, additional information about the data-dot mechanism is added to the error message, see `?data_dot_mechanism`.
 
-### Classed error messages
+## Classed error messages
 
 The `class=` argument allows to define a different class for each error message. This class is *not* visible to the end-user, but it can be used to more surely identify the error message that was triggered in tests. The {testthat} function `expect_error()` uses regular expressions to track messages. This mechanisms is not always reliable, especially when messages are translated, or when messages are rewritten. `expect_error()` can also indicate the `class`of the error message to track:
 
@@ -182,7 +79,7 @@ In {testthat} tests, you could then write something like this:
 expect_error(err_fun(), class = "my_error_class")
 ```
 
-### Message formatting
+## Message formatting
 
 svBase's `stop_()` uses {cli} message formatting as in `cli::cli_abort()`, which allows to easily format messages with special tags. See <https://rlang.r-lib.org/reference/topic-condition-formatting.html> and `?help('inline-markup', package = 'cli')` for more information about message formatting with {cli}.
 
@@ -200,53 +97,11 @@ decrement("a string")
 
 The `envir=` argument indicates in which environment {cli} should interpolate its formatting fields (the default value is OK most of the time).
 
-### Additional information with . or data-dot
+### Note about `warning_()`
 
-In the special case where the data-dot mechanism was triggered, or when `.` is passed as first argument, extra information that may be useful in this context is automatically appended to the `stop_()` message. The context where to look for it is provided in the `last_call=` argument (you rarely have to change its default value, so, you could forgot its existence).
+`warning_()` is much like base's `warning()`, except for its `call. = FALSE` default argument. **It does not uses the formatting advantages of `cli::cli_warn()`.** This is because the formatting slows down significantly your code. So, in case you generate a lot of warnings, the impact could become measurable. For `stop_()`, it is less of a problem, since your code already failed anyway. Situations where it fails a lot of times, but still continues to run (e.g., in a `tryCatch()`) are much less frequent.
 
-```{r, error=TRUE}
-# Trying to use our decrement() function on a data frame
-df <- dtx(x = 1:5, y = rnorm(5))
-decrement(df)
-
-# Idem, but when providing the argument as `.`
-.= df
-decrement(.)
-```
-
-An additional line with more info about the content of `.` is automatically appended to the error message. This eases debugging when passing, for instance, `.` in a pipeline.
-
-Also, when the data_dot mechanism was triggered, additional lines of information are automatically appended to the error message emphasizing it.
-
-```{r, error=TRUE}
-# A data-dot function
-my_head <- function(.data = (.), rows = 6L) {
-  # This makes it a data-dot function
-  if (!prepare_data_dot(.data))
-    return(recall_with_data_dot())
-  
-  # Checking rows (note, for simplicity, we consider data has several rows)
-  if (!is.numeric(rows) || length(rows) != 1L ||
-      rows < 1 || rows > nrow(.data))
-    stop("Incorrect {.arg rows} argument.",
-      i = "You must provide a single integer between 1 and {nrow(.data)}.",
-      class = "rows_wrong_value")
-  
-  .data[1:rows, ]
-}
-my_head(df, 2L) # OK
-my_head(df, -1L) # Error
-```
-
-Now, using the data-dot mechanism to insert `.` as first arg.
-
-```{r, error=TRUE}
-.= df
-my_head(2L) # OK
-my_head(-1L) # Error message with additional info for data-dot
-```
-
-### Easily changing the context of an error message
+## Context of error messages
 
 It is quite common to use "input checker" functions to validate arguments of a function. One could rewrite `my_head()` like this:
 
@@ -319,6 +174,48 @@ my_fun(df, 10L) # Error
 
 On the contrary to rlang's `abort()`, you do not need to redefine `call=` in the input checker function, or any intermediate function(s). Now, this work well when the top function has the same argument (name). If this is not the case, the error message will refer to something that does not exist in the focused function. In this case, you should use rlang's [error chains](https://rlang.r-lib.org/reference/topic-error-chaining.html).
 
-### Note about `warning_()`
+## Additional information with . or data-dot
 
-`warning_()` is much like base's `warning()`, except for its `call. = FALSE` default argument. **It does not uses the formatting advantages of `cli::cli_warn()`.** This is because the formatting slows down significantly your code. So, in case you generate a lot of warnings, the impact could become measurable. For `stop_()`, it is less of a problem, since your code already failed anyway. Situations where it fails a lot of times, but still continues to run (e.g., in a `tryCatch()`) are much less frequent.
+In the special case where the data-dot mechanism was triggered, or when `.` is passed as first argument, extra information that may be useful in this context is automatically appended to the `stop_()` message. The context where to look for it is provided in the `last_call=` argument (you rarely have to change its default value, so, you could forgot its existence).
+
+```{r, error=TRUE}
+# Trying to use our decrement() function on a data frame
+df <- dtx(x = 1:5, y = rnorm(5))
+decrement(df)
+
+# Idem, but when providing the argument as `.`
+.= df
+decrement(.)
+```
+
+An additional line with more info about the content of `.` is automatically appended to the error message. This eases debugging when passing, for instance, `.` in a pipeline.
+
+Also, when the data_dot mechanism was triggered, additional lines of information are automatically appended to the error message emphasizing it.
+
+```{r, error=TRUE}
+# A data-dot function
+my_head <- function(.data = (.), rows = 6L) {
+  # This makes it a data-dot function
+  if (!prepare_data_dot(.data))
+    return(recall_with_data_dot())
+  
+  # Checking rows (note, for simplicity, we consider data has several rows)
+  if (!is.numeric(rows) || length(rows) != 1L ||
+      rows < 1 || rows > nrow(.data))
+    stop("Incorrect {.arg rows} argument.",
+      i = "You must provide a single integer between 1 and {nrow(.data)}.",
+      class = "rows_wrong_value")
+  
+  .data[1:rows, ]
+}
+my_head(df, 2L) # OK
+my_head(df, -1L) # Error
+```
+
+Now, using the data-dot mechanism to insert `.` as first arg.
+
+```{r, error=TRUE}
+.= df
+my_head(2L) # OK
+my_head(-1L) # Error message with additional info for data-dot
+```

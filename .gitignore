@@ -60,3 +60,5 @@ Meta
 # C compilation files
 *.o
 *.so
+/doc/
+/Meta/
