@@ -74,7 +74,7 @@ in the process.'><meta property="og:image" content="https://www.sciviews.org/svB
   </a>
 </li>
       </ul><div class="navbar-title">
-        <a class="navbar-brand" href="../index.html"><p class="h2">svBase <small>v1.7.3</small></p></a>
+        <a class="navbar-brand" href="../index.html"><p class="h2">svBase <small>v1.7.4</small></p></a>
       </div>
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
@@ -310,7 +310,7 @@ arguments to better account for <code>rownames</code> in data.table and tibble!<
 <span class="r-out co"><span class="r-pr">#&gt;</span>     setattr(x, "class", c("data.trame", "data.frame"))</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     x</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;bytecode: 0x563add2138f0&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;bytecode: 0x55c520fed2f8&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: namespace:svBase&gt;</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># default_dtx() does the same as as_dtx(),</span></span></span>
@@ -340,10 +340,10 @@ arguments to better account for <code>rownames</code> in data.table and tibble!<
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># data.table keys are converted into a 'key' attribute and back</span></span></span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-datatable.com" class="external-link">data.table</a></span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/setkey.html" class="external-link">setkey</a></span><span class="op">(</span><span class="va">dtt2</span>, <span class="st">'x'</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/setkey.html" class="external-link">haskey</a></span><span class="op">(</span><span class="va">dtt2</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/setkey.html" class="external-link">setkey</a></span><span class="op">(</span><span class="va">dtt2</span>, <span class="st">'x'</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/setkey.html" class="external-link">haskey</a></span><span class="op">(</span><span class="va">dtt2</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
-<span class="r-in"><span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/setkey.html" class="external-link">key</a></span><span class="op">(</span><span class="va">dtt2</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/setkey.html" class="external-link">key</a></span><span class="op">(</span><span class="va">dtt2</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "x"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="op">(</span><span class="va">dtf3</span> <span class="op">&lt;-</span> <span class="fu">as_dtf</span><span class="op">(</span><span class="va">dtt2</span><span class="op">)</span><span class="op">)</span></span></span>
@@ -376,9 +376,9 @@ arguments to better account for <code>rownames</code> in data.table and tibble!<
 <span class="r-out co"><span class="r-pr">#&gt;</span> 3:         c     3 -1.86301149      c   TRUE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 4:         d     4 -0.52201251      d   TRUE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 5:         e     5 -0.05260191      e  FALSE</span>
-<span class="r-in"><span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/setkey.html" class="external-link">haskey</a></span><span class="op">(</span><span class="va">dtt3</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/setkey.html" class="external-link">haskey</a></span><span class="op">(</span><span class="va">dtt3</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
-<span class="r-in"><span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/setkey.html" class="external-link">key</a></span><span class="op">(</span><span class="va">dtt3</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/setkey.html" class="external-link">key</a></span><span class="op">(</span><span class="va">dtt3</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "x"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Grouped tibbles are ungrouped with as_dtbl() or as_dtx()/default_dtx()!</span></span></span>

@@ -101,7 +101,7 @@
 </li>
       </ul>
 <div class="navbar-title">
-        <a class="navbar-brand" href="../index.html"><p class="h2">svBase <small>v1.7.3</small></p></a>
+        <a class="navbar-brand" href="../index.html"><p class="h2">svBase <small>v1.7.4</small></p></a>
       </div>
     </div>
 <!--/.nav-collapse -->
@@ -121,7 +121,7 @@
                         <h4 data-toc-skip class="author">Philippe
 Grosjean</h4>
             
-            <h4 data-toc-skip class="date">2025-12-24</h4>
+            <h4 data-toc-skip class="date">2026-02-26</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/SciViews/svBase/blob/main/vignettes/translations.Rmd" class="external-link"><code>vignettes/translations.Rmd</code></a></small>
       <div class="hidden name"><code>translations.Rmd</code></div>
@@ -177,7 +177,7 @@ use them. First, set or get R language, and alternate SciViews language
 <span><span class="co">#&gt; [1] "fr"</span></span></code></pre></div>
 <p>Now, error messages and warnings are in German, while other material
 for table or plots is in French. We assigned results to
-<code>olang</code> and <code>olang2</code> in order to easily comme back
+<code>olang</code> and <code>olang2</code> in order to easily come back
 later to the original languages.</p>
 <!-- For some reasons, this does not work on GitHub action to generate the pkgdown vignette (everything is still in English)... So, we cheat and artificially generate the foreign languages messages -->
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
@@ -228,10 +228,10 @@ tests to update the files automatically each time tests are run:</p>
 arguments, on the contrary to <code><a href="https://rdrr.io/r/base/gettext.html" class="external-link">gettext()</a></code> or
 <code><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">gettextf()</a></code>. We had to remain consistent with this. So,
 <code><a href="../reference/gettext_.html">ngettext_()</a></code> hacks the <code>domain =</code> argument to
-provide both the domain <em>and</em> the language. You must combine
-tboth like <code>domain/lang</code>. So, <code>NULL/fr</code> will use
-the default domain and French language, or <code>R-stats/de</code> uses
-a specified domain ‘R-stats’ and German language.</p>
+provide both the domain <em>and</em> the language. You must combine both
+like <code>domain/lang</code>. So, <code>NULL/fr</code> will use the
+default domain and French language, or <code>R-stats/de</code> uses a
+specified domain ‘R-stats’ and German language.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/gettext.html" class="external-link">ngettext</a></span><span class="op">(</span><span class="fl">1</span>, <span class="st">"You asked for only one item"</span>, <span class="st">"You asked for several items"</span>,</span>
 <span>  domain <span class="op">=</span> <span class="st">"R-svBase/fr"</span><span class="op">)</span> <span class="co"># Using svBase::ngettext_(), renamed ngettext() above</span></span>
