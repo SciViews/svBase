@@ -49,7 +49,7 @@ get_language()
 get_sciviews_lang()
 ```
 
-Now, error messages and warnings are in German, while other material for table or plots is in French. We assigned results to `olang` and `olang2` in order to easily comme back later to the original languages.
+Now, error messages and warnings are in German, while other material for table or plots is in French. We assigned results to `olang` and `olang2` in order to easily come back later to the original languages.
 
 <!-- For some reasons, this does not work on GitHub action to generate the pkgdown vignette (everything is still in English)... So, we cheat and artificially generate the foreign languages messages -->
 
@@ -107,7 +107,7 @@ test_that("The .po translation files are up to date", {
 
 ### Specifying language with `ngettext_()`
 
-The `ngettext()` function accepts only a fixed number of arguments, on the contrary to `gettext()` or `gettextf()`. We had to remain consistent with this. So, `ngettext_()` hacks the `domain =` argument to provide both the domain *and* the language. You must combine tboth like `domain/lang`. So, `NULL/fr` will use the default domain and French language, or `R-stats/de` uses a specified domain 'R-stats' and German language.
+The `ngettext()` function accepts only a fixed number of arguments, on the contrary to `gettext()` or `gettextf()`. We had to remain consistent with this. So, `ngettext_()` hacks the `domain =` argument to provide both the domain *and* the language. You must combine both like `domain/lang`. So, `NULL/fr` will use the default domain and French language, or `R-stats/de` uses a specified domain 'R-stats' and German language.
 
 ```{r}
 ngettext(1, "You asked for only one item", "You asked for several items",

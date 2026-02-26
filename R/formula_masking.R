@@ -87,8 +87,8 @@ formula_masking <- function(..., .max.args = NULL, .must.be.named = FALSE,
 
   if (are_formulas) {# Everything is supposed to be formulas
     # The environment where to expand macros is .envir if it contains
-    # .__top_call__. == TRUE, otherwise, no macro expansion is done.
-    if (isTRUE(.envir$.__top_call__.)) {
+    # .__macros__. == TRUE, otherwise, no macro expansion is done.
+    if (isTRUE(.envir$.__macros__.)) {
       macro_env <- .envir
       all_vars <- names(macro_env)
       nvars <- length(all_vars)
@@ -142,8 +142,15 @@ formula_masking <- function(..., .max.args = NULL, .must.be.named = FALSE,
       dots_i <- dots[[i]]
       lhs <- f_lhs(dots_i)
       # TODO: also a replacement mechanism here ?
-      if (!is.null(lhs) && names_args[i] == "")
-        names_args[i] <- eval_bare(lhs, env = .envir)
+      if (!is.null(lhs) && names_args[i] == "") {
+        name <- eval_bare(lhs, env = .envir)
+        if (is_formula(name)) {
+          name <- as.character(f_rhs(name))
+        } else {
+          name <- as.character(name)
+        }
+        names_args[i] <- .glue(name, env = .envir)
+      }
 
       # Do we need everything named?
       if (isTRUE(.must.be.named) && anyv(names_args, ""))

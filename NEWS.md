@@ -1,3 +1,13 @@
+# svBase 1.7.4
+
+-   Now formula masking allows also to pass a single-sided formula as name in `name ~ expr`.
+
+-   Macro expansion in formulas is now activated in an environment through `.__macros__. <- TRUE`.
+
+-   Names on the left-hand side of a formula are now resolving variables names between `{{ }}`, like Tidyverse function do (but they do not resolve more complex expressions).
+
+-   New function `f_()` to create a formula from a name (`'var'`-> `~var`).
+
 # svBase 1.7.3
 
 -   Better error management in `gettext_()`, `gettextf_()`, and `ngettext_()`, plus a vignette and more tests.

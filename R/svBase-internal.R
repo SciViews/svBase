@@ -43,6 +43,27 @@
 stop <- stop_
 warning <- warning_
 
+# Similar to glue::glue() but using {{var}} instead of {var} and allowing only
+# variable names inside {{ }}, not expressions. Also it eliminates ~ in front of
+# var content in case it contians a right-sided formula like var <- ~expr
+# It is 5 to 10x faster than glue::glue() and is used to resolve variable names
+# in constructs like mutate("my_{{var}}" := x^2)
+.glue <- function(str, env = parent.frame()) {
+  # Extract all variable names form the string
+  str <- strsplit(str, "{{", fixed = TRUE)[[1]]
+  str <- unlist(strsplit(str, "}}", fixed = TRUE))
+  # If there is nothing to replace, return the string
+  if (length(str) < 2) return(str)
+  # Now, even items are names of variables to be replaced
+  vars <- as.character(mget(str[c(FALSE, TRUE)], envir = env))
+  # Eliminate ~ from formulas in front of vars
+  is_tilde <- startsWith(vars, "~")
+  if (any(is_tilde))
+    vars[is_tilde] <- substring(vars[is_tilde], 2)
+  str[c(FALSE, TRUE)] <- vars
+  paste(unlist(str), sep = "", collapse = "")
+}
+
 # This is rlang::check_required(), but modified for translatable errors
 #check_required <- function(x) {
 #  if (missing(x))

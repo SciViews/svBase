@@ -273,7 +273,7 @@ indication of the return values.
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
 
 \emph{These function are deprecated to the benefit of the functions whose name
-ends with an underscore \verb{_} (e.g., \code{sselect()} -> \code{\link[svTidy:sciviews_functions]{svTidy::select_()}}) in the
+ends with an underscore \verb{_} (e.g., \code{sselect()} -> \code{\link[svTidy:selecting]{svTidy::select_()}}) in the
 svTidy package}.
 
 The Tidyverse defines a coherent set of tools to manipulate
