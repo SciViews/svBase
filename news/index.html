@@ -90,7 +90,7 @@
     <div class="section level2">
 <h2 class="page-header" data-toc-text="1.7.4" id="svbase-174">svBase 1.7.4<a class="anchor" aria-label="anchor" href="#svbase-174"></a></h2>
 <ul><li><p>Now formula masking allows also to pass a single-sided formula as name in <code>name ~ expr</code>.</p></li>
-<li><p>Macro expansion in formulas is now activated in an environment through <code>.__macros__. &lt;- TRUE</code>.</p></li>
+<li><p>Indirection in formulas is now activated by default unless there is <code>.__indirection__. &lt;- FALSE</code> in the environment.</p></li>
 <li><p>Names on the left-hand side of a formula are now resolving variables names between <code>{{ }}</code>, like Tidyverse function do (but they do not resolve more complex expressions).</p></li>
 <li><p>New function <code><a href="../reference/f_.html">f_()</a></code> to create a formula from a name (<code>'var'</code>-&gt; <code>~var</code>).</p></li>
 </ul></div>
