@@ -2,7 +2,7 @@
 
 -   Now formula masking allows also to pass a single-sided formula as name in `name ~ expr`.
 
--   Macro expansion in formulas is now activated in an environment through `.__macros__. <- TRUE`.
+-   Indirection in formulas is now activated by default unless there is `.__indirection__. <- FALSE` in the environment.
 
 -   Names on the left-hand side of a formula are now resolving variables names between `{{ }}`, like Tidyverse function do (but they do not resolve more complex expressions).
 

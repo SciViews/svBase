@@ -86,13 +86,13 @@ formula_masking <- function(..., .max.args = NULL, .must.be.named = FALSE,
   are_formulas <- is_formula(first_item)
 
   if (are_formulas) {# Everything is supposed to be formulas
-    # The environment where to expand macros is .envir if it contains
-    # .__macros__. == TRUE, otherwise, no macro expansion is done.
-    if (isTRUE(.envir$.__macros__.)) {
-      macro_env <- .envir
-      all_vars <- names(macro_env)
+    # The environment where to resolve indirection is .envir unless it contains
+    # .__indirection__. == FALSE.
+    if (!isFALSE(.envir$.__indirection__.)) {
+      indir_env <- .envir
+      all_vars <- names(indir_env)
       nvars <- length(all_vars)
-    } else {# No macro expansion)
+    } else {# No indirection candidates
       nvars <- 0L
     }
 
@@ -104,21 +104,21 @@ formula_masking <- function(..., .max.args = NULL, .must.be.named = FALSE,
     # (and if there are left-hand side, they become the name)
     f_to_expr <- function(x, env) {
       if (is_formula(x)) {
-        if (nvars) {# Perform macro expansion now
+        if (nvars) {# Perform indirection now
           vars <- all_vars[fmatch(all.vars(x), all_vars,
             nomatch = 0L)] # Same as intersect(all.vars(x), all_vars) but faster
-          macros <- list()
+          indirs <- list()
           for (var in vars) {
-            macro <- macro_env[[var]]
-            if (is_formula(macro)) {# TODO: also deal with lhs!!!
-              macros[[var]] <- f_rhs(macro)
+            candidate <- indir_env[[var]]
+            if (is_formula(candidate)) {# TODO: also deal with lhs!!!
+              indirs[[var]] <- f_rhs(candidate)
               #} else {
-              #  macros[[var]] <- macro
+              #  indirs[[var]] <- candidate # No? Only formulas allowed?
             }
-            if (length(macros)) {
-              x <- do.call(substitute, list(x, macros)) # Do macro expansion
+            if (length(indirs)) {
+              x <- do.call(substitute, list(x, indirs)) # Perform indirection
               if (isTRUE(.verbose))
-                message("Macro expanded expression: ", expr_text(x))
+                message("Expression after indirection: ", expr_text(x))
             }
           }
         }
