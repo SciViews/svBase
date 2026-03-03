@@ -62,3 +62,4 @@ Meta
 *.so
 /doc/
 /Meta/
+.positai
